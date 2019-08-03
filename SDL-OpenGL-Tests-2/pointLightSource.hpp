@@ -1,0 +1,48 @@
+//
+//  pointLightSource.hpp
+//  SDL-OpenGL-Tests-2
+//
+//  Created by Tobias Pflüger on 24.07.19.
+//  Copyright © 2019 Tobias Pflüger. All rights reserved.
+//
+
+#ifndef pointLightSource_hpp
+#define pointLightSource_hpp
+
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/normal.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <string>
+#include <SDL2/SDL.h>
+
+#include "arrayBuffers/arrayBuffer.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
+#include "cubemap.hpp"
+#include "utils.hpp"
+#include "object.hpp"
+
+using namespace glm;
+
+class PointLightSource: public Object {
+public:
+    PointLightSource(Object *renderObject, Shader *shaders, int shaderAmount);
+    
+    void render();
+    
+    void setPosition(vec3 position);
+    vec3 getPosition();
+    
+private:
+    Object *renderObject;
+    Shader *shaders;
+    int shaderAmount;
+    
+    vec3 position;
+};
+
+#endif /* pointLightSource_hpp */

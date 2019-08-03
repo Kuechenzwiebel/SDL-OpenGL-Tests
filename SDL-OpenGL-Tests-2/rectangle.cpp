@@ -1,0 +1,99 @@
+//
+//  rectangle.cpp
+//  SDL-OpenGL-Tests-2
+//
+//  Created by Tobias Pflüger on 17.03.19.
+//  Copyright © 2019 Tobias Pflüger. All rights reserved.
+//
+
+#include "rectangle.hpp"
+
+static vec3 rectangleVertices[] = {
+    vec3(-1.0f, 0.0f, -1.0f),
+    vec3(1.0f, 0.0f, -1.0f),
+    vec3(-1.0f, 0.0f, 1.0f),
+    vec3(1.0f, 0.0f, -1.0f),
+    vec3(-1.0f, 0.0f, 1.0f),
+    vec3(1.0f, 0.0f, 1.0f)
+};
+
+static vec2 rectangleTextures[] = {
+    vec2(0.0f, 0.0f),
+    vec2(1.0f, 0.0f),
+    vec2(0.0f, 1.0f),
+    vec2(1.0f, 0.0f),
+    vec2(0.0f, 1.0f),
+    vec2(1.0f, 1.0f)
+};
+
+Rectangle::Rectangle(Shader *shader, const RenderData *data):
+shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(vec3(0.0f)), size(vec3(1.0f)), tex(""), data(data) {
+    glGenVertexArrays(1, &this->VAO);
+    glBindVertexArray(this->VAO);
+    
+    vertex.activate();
+    texCoord.activate();
+    
+    glBindVertexArray(0);
+}
+
+Rectangle::~Rectangle() {
+    glDeleteVertexArrays(1, &this->VAO);
+}
+
+void Rectangle::render() {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex.getData());
+    shader->sendInt(0, tex.getTextureName());
+    
+    glBindVertexArray(VAO);
+    shader->sendMat4(*data->projection, "projection");
+    shader->sendMat4(data->viewMat, "view");
+    shader->sendMat4(model, "model");
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+
+void Rectangle::setTexture(Texture texture) {
+    tex = texture;
+}
+
+void Rectangle::setPosition(vec3 position) {
+    translate = glm::translate(mat4(1), position);
+    model = translate * rotate * scale;
+    this->position = position;
+}
+
+void Rectangle::setRotation(quat rotation) {
+    rotate = toMat4(rotation);
+    model = translate * rotate * scale;
+    this->rotation = rotation;
+}
+
+void Rectangle::addRotation(quat rotation) {
+    this->rotation = rotation * this->rotation;
+    setRotation(this->rotation);
+}
+
+void Rectangle::setSize(vec3 size) {
+    scale = glm::scale(mat4(1), size);
+    model = translate * rotate * scale;
+    this->size = size;
+}
+
+vec3 Rectangle::getPosition() {
+    return position;
+}
+
+quat Rectangle::getRotation() {
+    return rotation;
+}
+
+vec3 Rectangle::getSize() {
+    return size;
+}
+
+Shader* Rectangle::getShaderPointer() {
+    return shader;
+}
