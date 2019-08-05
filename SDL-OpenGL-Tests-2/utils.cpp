@@ -67,13 +67,3 @@ vec2 UIRectToPixelPos(vec2 rectSize) {
 vec2 UIRectToPixelSize(vec2 size) {
     return vec2(size * vec2(1000.0f));
 }
-
-
-vec3 btVec3ToGLM(btVector3 vec) {
-    return vec3(vec.x(), vec.y(), vec.z());
-}
-
-btVector3 GLMVec3ToBt(vec3 vec) {
-    return btVector3(vec.x, vec.y, vec.z);
-}
-

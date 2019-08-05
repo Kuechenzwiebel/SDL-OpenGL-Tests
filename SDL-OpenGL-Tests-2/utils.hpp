@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <glm/glm.hpp>
-#include <bullet/BulletDynamics/btBulletDynamicsCommon.h>
 
 #define PRINTF_RED "\033[0;31m"
 #define PRINTF_BLUE "\033[0;34m"
@@ -45,8 +44,5 @@ vec2 pixelPosToUIRect(vec2 pixel, vec2 rectSize);
 vec2 pixelSizeToUIRect(vec2 size);
 vec2 UIRectToPixelPos(vec2 rectSize);
 vec2 UIRectToPixelSize(vec2 size);
-
-vec3 btVec3ToGLM(btVector3 vec);
-btVector3 GLMVec3ToBt(vec3 vec);
 
 #endif /* utils_hpp */

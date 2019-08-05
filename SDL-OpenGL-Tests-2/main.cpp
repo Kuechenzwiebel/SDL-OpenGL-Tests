@@ -30,9 +30,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <bullet/BulletDynamics/btBulletDynamicsCommon.h>
-
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -42,18 +39,18 @@ using namespace glm;
 #include "file.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
+#include "object.hpp"
 #include "triangle.hpp"
 #include "utils.hpp"
 #include "camera.hpp"
 #include "rectangle.hpp"
+#include "ui/uiObject.hpp"
 #include "ui/uiRectangle.hpp"
 #include "ui/uiText.hpp"
 #include "cube.hpp"
 #include "cubemap.hpp"
 #include "items/items.h"
 #include "sphere.hpp"
-#include "physicsObjects/physicsSphere.hpp"
-#include "ui/uiObject.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -63,16 +60,7 @@ bool running = true;
 bool checkMouse = false;
 bool invOpen = false;
 bool opticsOn = false;
-bool stepping = false;
 bool wireframe = false;
-
-
-btDynamicsWorld* world;
-btDispatcher* dispatcher;
-btCollisionConfiguration* collisionConfig;
-btBroadphaseInterface* broadphase;
-btConstraintSolver* solver;
-
 
 int main(int argc, const char * argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -115,13 +103,6 @@ int main(int argc, const char * argv[]) {
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
-    
-    collisionConfig = new btDefaultCollisionConfiguration();
-    dispatcher = new btCollisionDispatcher(collisionConfig);
-    broadphase = new btDbvtBroadphase();
-    solver = new btSequentialImpulseConstraintSolver(); 
-    world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-    world->setGravity(btVector3(0.0f, -9.82f, 0.0f));
     
     mat4 projection = perspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.1f, 100.0f);
     mat4 uiProjection = ortho(-1.0f * float(windowWidth) / 1000.0f, 1.0f * float(windowWidth) / 1000.0f, -1.0f * float(windowHeight) / 1000.0f, 1.0f * float(windowHeight) / 1000.0f);
@@ -192,6 +173,9 @@ int main(int argc, const char * argv[]) {
     Texture compassSelectorTex("resources/textures/compassSelector.png");
     Texture declinationMeterTex("resources/textures/declinationMeter2.png");
     Texture declinationMeterSelectorTex("resources/textures/declinationMeterSelector.png");
+    Texture jupiterTexture("resources/textures/jupiter.jpg");
+    Texture jupiterTextureDecomp("resources/textures/jupiter.png");
+    Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
     
     
     Triangle tri(&noTexShader, &renderData);
@@ -284,40 +268,10 @@ int main(int argc, const char * argv[]) {
     
     objects.push_back(std::make_pair(0.0f, &farCube));
     
-//    Sphere sphere(&basicShader, &renderData);
-//    sphere.setPosition(vec3(4.0f, 2.0f, 3.0f));
-//    objects.push_back(std::make_pair(0.0f, &sphere));
-    
-    Rectangle plane(&basicShader, &renderData);
-    plane.setTexture(debugTexture);
-    plane.setRotation(angleAxis(radians(180.0f), vec3(1.0f, 0.0f, 0.0f)));
-    plane.setSize(vec3(10.0f, 10.0f, 10.0f));
-    plane.setPosition(vec3(-10.0f, -10.0f, 15.0f));
-    
-    btTransform t;
-    t.setIdentity();
-    t.setOrigin(btVector3(4.0f, -10.0f, 3.0f));
-    
-    btStaticPlaneShape* planeShape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.2f), btScalar(0.0f));
-    btMotionState* planeMotion = new btDefaultMotionState(t);
-    btRigidBody* planeBody = new btRigidBody(0.0f, planeMotion, planeShape);
-    world->addRigidBody(planeBody);
-    
-
-    btTransform ts;
-    ts.setIdentity();
-    ts.setOrigin(btVector3(0.5f, 0.7f, 0.0f));
-    btSphereShape* sphereShape = new btSphereShape(1.0f);
-    btVector3 sphereInertia;
-    sphereShape->calculateLocalInertia(1.0f, sphereInertia);
-    
-    btMotionState* sphereMotion = new btDefaultMotionState(ts);
-    btRigidBody* sphereBody = new btRigidBody(100.0f, sphereMotion, sphereShape);
-    world->addRigidBody(sphereBody);
-    
-    btTransform bt;
-    bt.setIdentity();
- 
+    Sphere sphere(&basicShader, &renderData);
+    sphere.setPosition(vec3(4.0f, 2.0f, 3.0f));
+    sphere.setTexture(gradientTexture);
+    objects.push_back(std::make_pair(0.0f, &sphere));
     
     UIText text("Pi = 3.141592f\nTest", &uiShader, &uiData);
     text.setSize(vec2(0.5f));
@@ -327,25 +281,7 @@ int main(int argc, const char * argv[]) {
     fpsText.setSize(vec2(0.25f));
     uiObjects.push_back(&fpsText);
     
-    PhysicsSphere nSphere(&basicShader, &renderData, world, 3.0f);
-    objects.push_back(std::make_pair(0.0f, &nSphere));
-    nSphere.setPosition(vec3(0.5f, 0.0f, 0.0f));
-    nSphere.setRadius(4.0f);
-    nSphere.setTexture(atlasTexture);
-    
-    std::vector<PhysicsSphere*> spheres;
-    
-    Sphere sphere(&basicShader, &renderData);
-    PhysicsSphere s2(&basicShader, &renderData, world, 3.0f);
-    sphere.setTexture(atlasTexture);
-    sphere.setPosition(vec3(-0.7f, 0.2f, 0.0f));
-    s2.setTexture(gradientTexture);
-    s2.setPosition(vec3(1.0f));
-    objects.push_back(std::make_pair(0.0f, &sphere));
-    objects.push_back(std::make_pair(0.0f, &s2));
-    
-    
-    
+    /*
     Sphere earth(&basicShader, &renderData);
     earth.setTexture(atlasTexture);
     //6371000.0f
@@ -355,7 +291,22 @@ int main(int argc, const char * argv[]) {
     earth.setPosition(vec3(earthRadius * 1.0f / sqrt(2.0f), earthRadius * 1.0f / sqrt(2.0f), 0.0f));
     earth.setRotation(angleAxis(3.14f, vec3(1.0f, 0.0f, 0.0f)));
     objects.push_back(std::make_pair(0.0f, &earth));
+    */
     
+    Sphere jupiter(&basicShader, &renderData);
+    jupiter.setTexture(jupiterTexture);
+    jupiter.setPosition(vec3(10.0f));
+    objects.push_back(std::make_pair(0.0f, &jupiter));
+    
+    Sphere jupiterDecomp(&basicShader, &renderData);
+    jupiterDecomp.setTexture(jupiterTextureDecomp);
+    jupiterDecomp.setPosition(vec3(12.0f, 10.0f, 10.0f));
+    objects.push_back(std::make_pair(0.0f, &jupiterDecomp));
+    
+    Sphere jupiterDecomp2(&basicShader, &renderData);
+    jupiterDecomp2.setTexture(jupiterTextureDecomp2);
+    jupiterDecomp2.setPosition(vec3(14.0f, 10.0f, 10.0f));
+    objects.push_back(std::make_pair(0.0f, &jupiterDecomp2));
     
     
     for(list<pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
@@ -365,24 +316,6 @@ int main(int argc, const char * argv[]) {
     objects.sort();
     
     vec3 oldCamPos = cam.getPosition();
-    
-//    (&basicShader, &renderData, world, 3.0f);
-//    testSphere.setTexture(atlasTexture);
-    
-    PhysicsSphere otherSphere(&basicShader, &renderData, world, 3.0f);
-    otherSphere.setTexture(gradientTexture);
-    otherSphere.setPosition(vec3(-1.0f, 10.0f, 2.0f));
-    
-    PhysicsSphere testSphere(otherSphere);
-    
-    Sphere sp1(&basicShader, &renderData), sp2(&basicShader, &renderData);
-    sp1.setTexture(gradientTexture);
-    sp2.setTexture(grassTexture);
-    
-    Item i(3);
-    
-    Slot s;
-    s += i;
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -438,20 +371,8 @@ int main(int argc, const char * argv[]) {
                 swapBool(&opticsOn);
             }
             
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_r) {
-                swapBool(&stepping);
-            }
-            
             if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_f) {
                 swapBool(&wireframe);
-            }
-       
-            
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_n) {
-                spheres.push_back(new PhysicsSphere(&basicShader, &renderData, world, 2.0f, GLMVec3ToBt(cam.getFront() + cam.getPosition())));
-                spheres[spheres.size() - 1]->setPosition(cam.getPosition() - vec3(0.0f, 1.4f, 0.0f));
-                spheres[spheres.size() - 1]->setTexture(gradientTexture);
-                objects.push_back(std::make_pair(0.0f, spheres[spheres.size() - 1]));
             }
             
             
@@ -511,25 +432,12 @@ int main(int argc, const char * argv[]) {
         skybox.render();
         glDepthMask(GL_TRUE);
         
-        basicShader.use();
-        planeBody->getMotionState()->getWorldTransform(t);
-        plane.setPosition(vec3(t.getOrigin().x(), t.getOrigin().y(), t.getOrigin().z()));
-        plane.render();
-        testSphere.render();
-        
-        sphereBody->getMotionState()->getWorldTransform(bt);
-        sphere.setPosition(vec3(bt.getOrigin().x(), bt.getOrigin().y(), bt.getOrigin().z()));
-        
-        earth.addRotation(angleAxis(0.001f, vec3(0.0f, 1.0f, 0.0f)));
+//        earth.addRotation(angleAxis(radians(0.001f), vec3(0.0f, 1.0f, 0.0f)));
         
         for(list<pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
             it->second->getShaderPointer()->use();
             it->second->render();
         }
-        
-        
-        basicShader.use();
-        sp1.render();
         
         
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -552,10 +460,6 @@ int main(int argc, const char * argv[]) {
             inv.render();
         }
         
-        if(stepping) {
-            world->stepSimulation(fps);
-        }
-        
         SDL_GL_SwapWindow(window);
         glFlush();
         
@@ -566,18 +470,6 @@ int main(int argc, const char * argv[]) {
             SDL_Delay(16);
         }
     }
-    
-    delete planeShape;
-    delete planeMotion;
-    delete planeBody;
-    delete sphereShape;
-    delete sphereMotion;
-    delete sphereBody;
-    delete world;
-    delete dispatcher;
-    delete collisionConfig;
-    delete solver;
-    delete broadphase;
     
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
