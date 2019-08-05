@@ -51,6 +51,8 @@ using namespace glm;
 #include "cubemap.hpp"
 #include "items/items.h"
 #include "sphere.hpp"
+#include "physicsObjects/collisionInfo.h"
+#include "physicsObjects/physicsSphere.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -316,6 +318,13 @@ int main(int argc, const char * argv[]) {
     objects.sort();
     
     vec3 oldCamPos = cam.getPosition();
+    
+    PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
+    CollisionInfo in = SphereSphereCollision(&s1, &s2);
+    cout << in.collision << "\t" << in.collisionDepth << endl;
+    printVec3(in.collisionPosition);
+    
+    return 0;
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
