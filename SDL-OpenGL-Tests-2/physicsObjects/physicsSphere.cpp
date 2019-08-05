@@ -10,7 +10,7 @@
 
 PhysicsSphere::PhysicsSphere(float radius, vec3 position):
 radius(radius), position(position) {
-    
+    type = SPHERE;
 }
 
 float PhysicsSphere::getRadius() {
@@ -22,7 +22,7 @@ vec3 PhysicsSphere::getPosition() {
 }
 
 
-CollisionInfo SphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
+CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
     CollisionInfo info;
     
     float minDistance = sp1->getRadius() + sp2->getRadius();
@@ -31,7 +31,24 @@ CollisionInfo SphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
     if(centerDistance < minDistance) {
         info.collision = true;
         info.collisionDepth = centerDistance - minDistance;
-        info.collisionPosition = sp2->getPosition() - sp1->getPosition() - (sp2->getRadius() - info.collisionDepth);
+        info.collisionPosition = sp2->getPosition() - 0.41f;
+    }
+    else {
+        info.collision = false;
+    }
+    
+    return info;
+}
+
+CollisionInfo spherePointCollision(PhysicsSphere* sp1, vec3 point) {
+    CollisionInfo info;
+    
+    float centerDistance = length((point - sp1->getPosition()));
+    
+    if(centerDistance < sp1->getRadius()) {
+        info.collision = true;
+//        info.collisionDepth = centerDistance - minDistance;
+//        info.collisionPosition = sp2->getPosition() - 0.41f;
     }
     else {
         info.collision = false;

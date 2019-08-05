@@ -320,9 +320,12 @@ int main(int argc, const char * argv[]) {
     vec3 oldCamPos = cam.getPosition();
     
     PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
-    CollisionInfo in = SphereSphereCollision(&s1, &s2);
+    CollisionInfo in = sphereSphereCollision(&s1, &s2);
     cout << in.collision << "\t" << in.collisionDepth << endl;
     printVec3(in.collisionPosition);
+    
+    in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
+    cout << in.collision << endl;
     
     return 0;
     

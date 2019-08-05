@@ -13,10 +13,11 @@
 #include <stdio.h>
 
 #include "collisionInfo.h"
+#include "physicsObject.hpp"
 
 using namespace glm;
 
-class PhysicsSphere {
+class PhysicsSphere: public PhysicsObject {
 public:
     PhysicsSphere(float radius, vec3 position);
     
@@ -28,8 +29,7 @@ private:
     vec3 position;
 };
 
-
-
-CollisionInfo SphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2);
+CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2);
+CollisionInfo spherePointCollision(PhysicsSphere* sp1, vec3 point);
 
 #endif /* physicsSphere_hpp */
