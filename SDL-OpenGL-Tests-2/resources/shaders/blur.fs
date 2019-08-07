@@ -14,7 +14,7 @@ float linearizeDepth(float depth) {
     return (2.0 * near * far) / (far + near - z * (far - near));
 }
 
-float offset = 1.0 / 300.0f;
+uniform float offset;
 
 vec2 offsets[9] = vec2[] (
     vec2(-offset, offset),

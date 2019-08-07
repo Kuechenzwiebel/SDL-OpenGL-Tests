@@ -183,7 +183,7 @@ int main(int argc, const char * argv[]) {
     Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
     Texture stoneTexture("resources/textures/stone.png");
     
-    PerlinMap map(420, 100, &basicShader, &renderData);
+    PerlinMap map(420, 100, 0.5f, &basicShader, &renderData);
     map.setTexture(stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &map));
@@ -365,14 +365,6 @@ int main(int argc, const char * argv[]) {
                 }
             }
             
-            if(windowEvent.type == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                return 4;
-            }
-            
-            if(windowEvent.type == SDL_WINDOWEVENT_RESIZED) {
-                return 5;
-            }
-            
             if(windowEvent.type == SDL_MOUSEWHEEL) {
                 zoom += float(windowEvent.wheel.y) * 0.025f;
                 
@@ -456,7 +448,11 @@ int main(int argc, const char * argv[]) {
 //        earth.addRotation(angleAxis(radians(0.001f), vec3(0.0f, 1.0f, 0.0f)));
         
         for(list<pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
+            
             it->second->getShaderPointer()->use();
+            if(it->second == &bluredCube) {
+                blurShader.sendFloat(1.0 / 300.0f * zoom, "offset");
+            }
             it->second->render();
         }
         

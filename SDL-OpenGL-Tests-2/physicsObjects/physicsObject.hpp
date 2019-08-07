@@ -23,10 +23,10 @@ class PhysicsObject {
 public:
     PhysicsObject();
     
-//    virtual ObjectTypes getType();
+    virtual ObjectTypes getType();
     
 protected:
-//    ObjectTypes type;
+    ObjectTypes type;
 };
 
 #endif /* physicsObject_hpp */

@@ -30,7 +30,7 @@ CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
     
     if(centerDistance < minDistance) {
         info.collision = true;
-        info.collisionDepth = centerDistance - minDistance;
+        info.collisionDepth = -centerDistance - minDistance;
         info.collisionPosition = sp2->getPosition() - 0.41f;
     }
     else {

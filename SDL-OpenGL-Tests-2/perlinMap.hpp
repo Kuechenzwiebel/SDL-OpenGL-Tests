@@ -26,7 +26,7 @@ using namespace glm;
 
 class PerlinMap: public Object {
 public:
-    PerlinMap(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data);
+    PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data);
     ~PerlinMap();
     
     void setTexture(Texture tex);
@@ -53,6 +53,7 @@ private:
     const RenderData *data;
     
     unsigned int width;
+    float triangleWidth;
     vec3 position;
     mat4 translate, model;
 };

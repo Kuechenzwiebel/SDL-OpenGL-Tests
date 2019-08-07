@@ -11,8 +11,4 @@
 PhysicsObject::PhysicsObject() {
 //    type = NOTHING;
 }*/
-/*
-ObjectTypes PhysicsObject::getType() {
-    return type;
-}
-*/
+
