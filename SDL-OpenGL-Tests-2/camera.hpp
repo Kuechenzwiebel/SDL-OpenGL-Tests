@@ -20,15 +20,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL2/SDL.h>
 
+#include "physicsObjects/physicsObject.cpp"
+#include "physicsObjects/physicsSphere.hpp"
+
+#include "perlin.hpp"
+
 using namespace glm;
-
-
-const float YAW        = -90.0f;
-const float PITCH      =  0.0f;
-const float SPEED      =  8.0f;
-//const float SPEED      =  3000000.0f;
-const float SENSITIVTY =  0.25f;
-const float ZOOM       =  45.0f;
 
 enum CameraMovement {
     FORWARD,
@@ -58,8 +55,10 @@ public:
     void processMouseInput();
     void processInput();
     
+    void setCollisonObjectsPointer(std::vector<PhysicsSphere*> *objects);
+    
 private:
-    vec3 position;
+    vec3 position, theoreticalPosition;
     vec3 front;
     vec3 up;
     vec3 right;
@@ -76,6 +75,9 @@ private:
     float zoom;
     
     void updateCameraVectors();
+    
+    std::vector<PhysicsSphere*> *objects;
+    PerlinNoise noise;
 };
 
 #endif /* camera_hpp */

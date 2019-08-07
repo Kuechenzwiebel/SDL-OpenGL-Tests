@@ -9,37 +9,9 @@
 #include "camera.hpp"
 
 Camera::Camera(vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(vec3(0.0f, 1.0f, 0.0f)), front(vec3(0.0f, 0.0f, -1.0f)), movementSpeed(SPEED), mouseSensitivity(SENSITIVTY), zoom(ZOOM), yaw(YAW), pitch(PITCH),
-position(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse) {
+up(vec3(0.0f, 1.0f, 0.0f)), front(vec3(0.0f, 0.0f, -1.0f)), movementSpeed(8.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), noise(420) {
     this->updateCameraVectors();
-}
-
-mat4 Camera::getViewMatrix() {
-    return lookAt(this->position, this->position + this->front, this->up);
-}
-
-float Camera::getZoom() {
-    return this->zoom;
-}
-
-vec3 Camera::getPosition() {
-    return this->position;
-}
-
-vec3 Camera::getFront() {
-    return this->front;
-}
-
-void Camera::setPosition(vec3 pos) {
-    this->position = pos;
-}
-
-float *Camera::getYawPointer() {
-    return &yaw;
-}
-
-float *Camera::getPitchPointer() {
-    return &pitch;
 }
 
 void Camera::updateCameraVectors() {
@@ -51,8 +23,79 @@ void Camera::updateCameraVectors() {
     this->right = normalize(cross(this->front, this->up));
 }
 
-
 void Camera::processInput() {
+    const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+    float velocity = this->movementSpeed * *deltaTime;
+    
+    if(*checkMouse) {
+        if(keystates[SDL_SCANCODE_W]) {
+            this->theoreticalPosition += this->front * velocity;
+        }
+        if(keystates[SDL_SCANCODE_D]) {
+            this->theoreticalPosition += this->right * velocity;
+        }
+        if(keystates[SDL_SCANCODE_S]) {
+            this->theoreticalPosition -= this->front * velocity;
+        }
+        if(keystates[SDL_SCANCODE_A]) {
+            this->theoreticalPosition -= this->right * velocity;
+        }
+        if(keystates[SDL_SCANCODE_SPACE]) {
+            this->theoreticalPosition.y += velocity;
+        }
+        if(keystates[SDL_SCANCODE_LSHIFT]) {
+            this->theoreticalPosition.y -= velocity;
+        }
+    }
+    
+    if(keystates[SDL_SCANCODE_ESCAPE]) {
+        *checkMouse = false;
+    }
+    
+    bool collisionHappend = false;
+    
+    float freq = 4.0f, multiplier = 2.0f;
+    int octaves = 10;
+    
+    float mapPosition = noise.perl(position.x, position.z, freq, octaves) * multiplier - 2.0f;
+    
+    if(position.y > mapPosition && theoreticalPosition.y < mapPosition) {
+        collisionHappend = true;
+    }
+    
+    if(position.y < mapPosition && theoreticalPosition.y > mapPosition) {
+        collisionHappend = true;
+    }
+    
+    
+    if(!collisionHappend) {
+        for(int i = 0; i < objects->size(); i++) {/*
+                                                   switch ((*objects)[i]->getType()) {
+                                                   case SPHERE:*/
+            if(spherePointCollision((PhysicsSphere *)((*objects)[i]), theoreticalPosition).collision) {
+                collisionHappend = true;
+            }
+            //                break;
+            
+            //            default:
+            //                break;
+            //        }
+            
+            if(collisionHappend) {
+                break;
+            }
+        }
+    }
+   
+    
+    if(collisionHappend) {
+        theoreticalPosition = position;
+    }
+    else {
+        position = theoreticalPosition;
+    }
+    
+    /*
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     float velocity = this->movementSpeed * *deltaTime;
     
@@ -80,6 +123,8 @@ void Camera::processInput() {
     if(keystates[SDL_SCANCODE_ESCAPE]) {
         *checkMouse = false;
     }
+    */
+    
 }
 
 void Camera::processMouseInput() {
@@ -111,4 +156,36 @@ void Camera::setMouseSensitivity(float sensitivity) {
     if(sensitivity > 0.0f) {
         mouseSensitivity = sensitivity;
     }
+}
+
+mat4 Camera::getViewMatrix() {
+    return lookAt(this->theoreticalPosition, this->theoreticalPosition + this->front, this->up);
+}
+
+float Camera::getZoom() {
+    return this->zoom;
+}
+
+vec3 Camera::getPosition() {
+    return this->theoreticalPosition;
+}
+
+vec3 Camera::getFront() {
+    return this->front;
+}
+
+void Camera::setPosition(vec3 pos) {
+    this->theoreticalPosition = pos;
+}
+
+float *Camera::getYawPointer() {
+    return &yaw;
+}
+
+float *Camera::getPitchPointer() {
+    return &pitch;
+}
+
+void Camera::setCollisonObjectsPointer(std::vector<PhysicsSphere*> *objects) {
+    this->objects = objects;
 }

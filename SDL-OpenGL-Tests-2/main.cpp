@@ -52,7 +52,9 @@ using namespace glm;
 #include "items/items.h"
 #include "sphere.hpp"
 #include "physicsObjects/collisionInfo.h"
+#include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
+#include "perlinMap.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -121,6 +123,7 @@ int main(int argc, const char * argv[]) {
     
     std::list<std::pair<float, Object*>> objects;
     std::vector<UIObject*> uiObjects;
+    std::vector<PhysicsSphere*> physicsObjects;
     
     File noTexShaderVertexFile("resources/shaders/noTex.vs"), noTexShaderFragmentFile("resources/shaders/noTex.fs");
     File basicShaderVertexFile("resources/shaders/basic.vs"), basicShaderFragmentFile("resources/shaders/basic.fs");
@@ -143,7 +146,7 @@ int main(int argc, const char * argv[]) {
     Shader uiShader(uiShaderVertexFile.readFile(), uiShaderFragmentFile.readFile());
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
     
-    Camera cam(vec3(0.0f), &deltaTime, &windowEvent, &checkMouse);
+    Camera cam(vec3(0.0f, 2.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
     
     RenderData renderData;
     RenderData uiData;
@@ -178,7 +181,12 @@ int main(int argc, const char * argv[]) {
     Texture jupiterTexture("resources/textures/jupiter.jpg");
     Texture jupiterTextureDecomp("resources/textures/jupiter.png");
     Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
+    Texture stoneTexture("resources/textures/stone.png");
     
+    PerlinMap map(420, 100, &basicShader, &renderData);
+    map.setTexture(stoneTexture);
+    map.setPosition(vec3(0.0f, -2.0f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &map));
     
     Triangle tri(&noTexShader, &renderData);
     tri.setPosition(vec3(0.0f, 0.0f, -1.5f));
@@ -271,13 +279,13 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &farCube));
     
     Sphere sphere(&basicShader, &renderData);
-    sphere.setPosition(vec3(4.0f, 2.0f, 3.0f));
+    sphere.setPosition(vec3(0.0f));
     sphere.setTexture(gradientTexture);
     objects.push_back(std::make_pair(0.0f, &sphere));
     
     UIText text("Pi = 3.141592f\nTest", &uiShader, &uiData);
     text.setSize(vec2(0.5f));
-    uiObjects.push_back(&text);
+//    uiObjects.push_back(&text);
     
     UIText fpsText("", &uiShader, &uiData);
     fpsText.setSize(vec2(0.25f));
@@ -327,7 +335,8 @@ int main(int argc, const char * argv[]) {
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     cout << in.collision << endl;
     
-    return 0;
+    physicsObjects.push_back(&s1);
+    cam.setCollisonObjectsPointer(&physicsObjects);
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -419,7 +428,7 @@ int main(int argc, const char * argv[]) {
         
         glViewport(0, 0, windowWidth, windowHeight);
         if(!opticsOn) {
-            projection = infinitePerspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.1f);
+            projection = infinitePerspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.005f);
             cam.setMouseSensitivity(0.25f);
         }
         else {

@@ -10,7 +10,7 @@
 
 PhysicsSphere::PhysicsSphere(float radius, vec3 position):
 radius(radius), position(position) {
-    type = SPHERE;
+//    type = SPHERE;
 }
 
 float PhysicsSphere::getRadius() {

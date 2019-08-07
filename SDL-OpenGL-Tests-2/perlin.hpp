@@ -188,4 +188,8 @@ public:
     double octaveNoise0_1(double x, double y, double z, std::int32_t octaves) const {
         return octaveNoise(x, y, z, octaves) * 0.5 + 0.5;
     }
+    
+    double perl(double x, double y, double freq, int octaves) {
+        return octaveNoise(x / freq, y / freq, octaves);
+    }
 };

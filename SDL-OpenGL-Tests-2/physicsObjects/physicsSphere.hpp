@@ -17,7 +17,7 @@
 
 using namespace glm;
 
-class PhysicsSphere: public PhysicsObject {
+class PhysicsSphere {
 public:
     PhysicsSphere(float radius, vec3 position);
     

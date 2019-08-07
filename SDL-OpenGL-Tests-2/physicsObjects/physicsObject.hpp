@@ -12,18 +12,21 @@
 #include <glm/glm.hpp>
 #include <stdio.h>
 
+using namespace glm;
+
 enum ObjectTypes {
-    SPHERE = 1
+    NOTHING,
+    SPHERE
 };
 
 class PhysicsObject {
 public:
     PhysicsObject();
     
-    virtual ObjectTypes getType();
+//    virtual ObjectTypes getType();
     
 protected:
-    ObjectTypes type;
+//    ObjectTypes type;
 };
 
 #endif /* physicsObject_hpp */
