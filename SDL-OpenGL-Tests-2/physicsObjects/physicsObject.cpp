@@ -7,8 +7,8 @@
 //
 
 #include "physicsObject.hpp"
-/*
-PhysicsObject::PhysicsObject() {
+
+//PhysicsObject::PhysicsObject() {
 //    type = NOTHING;
-}*/
+//}
 

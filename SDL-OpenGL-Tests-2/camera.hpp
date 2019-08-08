@@ -78,6 +78,7 @@ private:
     
     std::vector<PhysicsSphere*> *objects;
     PerlinNoise noise;
+    bool collisionHappendLastFrame;
 };
 
 #endif /* camera_hpp */

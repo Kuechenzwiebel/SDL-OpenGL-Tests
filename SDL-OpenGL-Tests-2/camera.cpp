@@ -57,7 +57,9 @@ void Camera::processInput() {
     float freq = 4.0f, multiplier = 2.0f;
     int octaves = 10;
     
-    theoreticalPosition.y -= 1.0f * *deltaTime;
+    if(!collisionHappendLastFrame) {
+        theoreticalPosition.y -= 1.0f * *deltaTime;
+    }
     
     float mapPosition = (noise.perl(theoreticalPosition.x, theoreticalPosition.z, freq, octaves) * multiplier) - 2.0f + 0.2f;
     
@@ -86,6 +88,7 @@ void Camera::processInput() {
     else {
         position = theoreticalPosition;
     }
+    collisionHappendLastFrame = collisionHappend;
 //    position = theoreticalPosition;
 //    position.y = mapPosition + 0.2f;
 }

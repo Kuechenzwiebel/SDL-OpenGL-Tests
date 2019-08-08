@@ -149,8 +149,8 @@ int main(int argc, const char * argv[]) {
     Camera cam(vec3(0.0f, 2.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
     
     RenderData renderData;
-    RenderData uiData;
     RenderData skyboxData;
+    RenderData uiData;
     
     renderData.projection = &projection;
     renderData.viewMat = cam.getViewMatrix();
@@ -344,7 +344,7 @@ int main(int argc, const char * argv[]) {
             frame = 0;
             nextMeasure += 1e3;
             
-            fpsText.setText("FPS = " + std::to_string(fps) + "\nFrametime: " + std::to_string(1.0f / fps) + " ms");
+            fpsText.setText(std::to_string(fps) + " FPS" + "\nFrametime: " + std::to_string(1.0f / fps) + " ms");
         }
         
         currentFrame = SDL_GetTicks() / 1000.0f;
@@ -430,7 +430,12 @@ int main(int argc, const char * argv[]) {
         
         if(cam.getPosition() != oldCamPos) {
             for(list<pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
-                it->first = length2(cam.getPosition() - it->second->getPosition());
+                if(it->second == &map) {
+                    it->first = INFINITY;
+                }
+                else {
+                    it->first = length2(cam.getPosition() - it->second->getPosition());
+                }
             }
             
             objects.sort();
