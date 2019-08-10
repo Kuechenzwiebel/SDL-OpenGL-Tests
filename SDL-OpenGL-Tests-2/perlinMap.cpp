@@ -18,8 +18,8 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(vec3(0.0f)), dat
     
     float x = -(width / 2.0f), y = -(width / 2.0f);
     
-    float freq = 4.0f, multiplier = 2.0f;
-    int octaves = 10;
+    freq = 4.0f; multiplier = 2.0f;
+    octaves = 10;
     
     for(long i = 0; i < width * width * 6 * (1.0f / triangleWidth); i += 6) {
         if(x >= width / 2.0f) {
@@ -51,6 +51,18 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(vec3(0.0f)), dat
     texCoord.activate();
     
     glBindVertexArray(0);
+}
+
+PerlinMapInformation PerlinMap::getMapInfo() {
+    PerlinMapInformation info;
+    
+    info.noise = &noise;
+    info.freq = freq;
+    info.multiplier = multiplier;
+    info.octaves = octaves;
+    info.width = width;
+    
+    return info;
 }
 
 PerlinMap::~PerlinMap() {

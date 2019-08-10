@@ -10,7 +10,7 @@
 
 Camera::Camera(vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
 up(vec3(0.0f, 1.0f, 0.0f)), front(vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), noise(420) {
+position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse) {
     this->updateCameraVectors();
 }
 
@@ -52,30 +52,39 @@ void Camera::processInput() {
         *checkMouse = false;
     }
     
-    bool collisionHappend = false;
-    
-    float freq = 4.0f, multiplier = 2.0f;
-    int octaves = 10;
+    collisionHappend = false;
     
     if(!collisionHappendLastFrame) {
         theoreticalPosition.y -= 1.0f * *deltaTime;
     }
     
-    float mapPosition = (noise.perl(theoreticalPosition.x, theoreticalPosition.z, freq, octaves) * multiplier) - 2.0f + 0.2f;
+    float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
     
-    
-    if(theoreticalPosition.y < mapPosition) {
-        theoreticalPosition.y = mapPosition;
-//        collisionHappend = true;
+    if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.y < info.width / 2.0f && theoreticalPosition.y > -(info.width / 2.0f)) {
+        if(theoreticalPosition.y < mapPosition) {
+            theoreticalPosition.y = mapPosition;
+        }
     }
     
-    
     if(!collisionHappend) {
-        for(int i = 0; i < objects->size(); i++) {/*
-                                                   switch ((*objects)[i]->getType()) {
-                                                   case SPHERE:*/
-            if(spherePointCollision((PhysicsSphere *)((*objects)[i]), theoreticalPosition).collision) {
-                collisionHappend = true;
+        for(int i = 0; i < objects->size(); i++) {
+            switch ((*objects)[i]->getObjectType()) {
+                case SPHERE_t:
+                    if(spherePointCollision((PhysicsSphere *)((*objects)[i]), theoreticalPosition).collision) {
+                        collisionHappend = true;
+                    }
+                    break;
+                    
+                case AABB_t:
+                    if(aabbPointCollision((AABB *)((*objects)[i]), theoreticalPosition).collision) {
+                        collisionHappend = true;
+                    }
+                    break;
+                    
+                default:
+                    break;
+            }
+            if(collisionHappend) {
                 break;
             }
         }
@@ -89,8 +98,6 @@ void Camera::processInput() {
         position = theoreticalPosition;
     }
     collisionHappendLastFrame = collisionHappend;
-//    position = theoreticalPosition;
-//    position.y = mapPosition + 0.2f;
 }
 
 void Camera::processMouseInput() {
@@ -152,6 +159,10 @@ float *Camera::getPitchPointer() {
     return &pitch;
 }
 
-void Camera::setCollisonObjectsPointer(std::vector<PhysicsSphere*> *objects) {
+void Camera::setCollisonObjectsPointer(std::vector<PhysicsObject*> *objects) {
     this->objects = objects;
+}
+
+void Camera::setPerlinMapInfo(PerlinMapInformation info) {
+    this->info = info;
 }

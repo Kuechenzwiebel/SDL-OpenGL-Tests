@@ -24,6 +24,14 @@
 
 using namespace glm;
 
+struct PerlinMapInformation {
+    PerlinNoise* noise;
+    float multiplier;
+    float freq;
+    int octaves;
+    unsigned int width;
+};
+
 class PerlinMap: public Object {
 public:
     PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data);
@@ -31,11 +39,13 @@ public:
     
     void setTexture(Texture tex);
     void setPosition(vec3 position);
+    PerlinMapInformation getMapInfo();
     
     vec3 getPosition();
     Shader *getShaderPointer();
     
     void render();
+    
     
 private:
     PerlinNoise noise;
@@ -54,6 +64,9 @@ private:
     
     unsigned int width;
     float triangleWidth;
+    float freq, multiplier;
+    int octaves;
+    
     vec3 position;
     mat4 translate, model;
 };

@@ -17,7 +17,7 @@
 
 using namespace glm;
 
-class PhysicsSphere {
+class PhysicsSphere: public PhysicsObject {
 public:
     PhysicsSphere(float radius, vec3 position);
     
@@ -29,7 +29,7 @@ private:
     vec3 position;
 };
 
-CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2);
-CollisionInfo spherePointCollision(PhysicsSphere* sp1, vec3 point);
+CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2);
+CollisionInfo spherePointCollision(PhysicsSphere *sp1, vec3 point);
 
 #endif /* physicsSphere_hpp */

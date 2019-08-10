@@ -20,10 +20,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL2/SDL.h>
 
-#include "physicsObjects/physicsObject.cpp"
+#include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
+#include "physicsObjects/aabb.hpp"
 
-#include "perlin.hpp"
+#include "perlinMap.hpp"
 
 using namespace glm;
 
@@ -55,7 +56,8 @@ public:
     void processMouseInput();
     void processInput();
     
-    void setCollisonObjectsPointer(std::vector<PhysicsSphere*> *objects);
+    void setCollisonObjectsPointer(std::vector<PhysicsObject*> *objects);
+    void setPerlinMapInfo(PerlinMapInformation info);
     
 private:
     vec3 position, theoreticalPosition;
@@ -76,8 +78,9 @@ private:
     
     void updateCameraVectors();
     
-    std::vector<PhysicsSphere*> *objects;
-    PerlinNoise noise;
+    std::vector<PhysicsObject*> *objects;
+    PerlinMapInformation info;
+    bool collisionHappend;
     bool collisionHappendLastFrame;
 };
 

@@ -10,7 +10,7 @@
 
 PhysicsSphere::PhysicsSphere(float radius, vec3 position):
 radius(radius), position(position) {
-//    type = SPHERE;
+    type = SPHERE_t;
 }
 
 float PhysicsSphere::getRadius() {
@@ -22,7 +22,7 @@ vec3 PhysicsSphere::getPosition() {
 }
 
 
-CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
+CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2) {
     CollisionInfo info;
     
     float minDistance = sp1->getRadius() + sp2->getRadius();
@@ -40,7 +40,7 @@ CollisionInfo sphereSphereCollision(PhysicsSphere* sp1, PhysicsSphere* sp2) {
     return info;
 }
 
-CollisionInfo spherePointCollision(PhysicsSphere* sp1, vec3 point) {
+CollisionInfo spherePointCollision(PhysicsSphere *sp1, vec3 point) {
     CollisionInfo info;
     
     float centerDistance = length((point - sp1->getPosition()));

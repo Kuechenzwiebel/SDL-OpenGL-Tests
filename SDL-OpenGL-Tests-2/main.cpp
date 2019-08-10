@@ -55,6 +55,7 @@ using namespace glm;
 #include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
 #include "perlinMap.hpp"
+#include "physicsObjects/aabb.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -123,7 +124,7 @@ int main(int argc, const char * argv[]) {
     
     std::list<std::pair<float, Object*>> objects;
     std::vector<UIObject*> uiObjects;
-    std::vector<PhysicsSphere*> physicsObjects;
+    std::vector<PhysicsObject*> physicsObjects;
     
     File noTexShaderVertexFile("resources/shaders/noTex.vs"), noTexShaderFragmentFile("resources/shaders/noTex.fs");
     File basicShaderVertexFile("resources/shaders/basic.vs"), basicShaderFragmentFile("resources/shaders/basic.fs");
@@ -186,7 +187,16 @@ int main(int argc, const char * argv[]) {
     PerlinMap map(420, 100, 0.5f, &basicShader, &renderData);
     map.setTexture(stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
+    cam.setPerlinMapInfo(map.getMapInfo());
     objects.push_back(std::make_pair(0.0f, &map));
+    
+    Cube aabbTest(&basicShader, &renderData);
+    aabbTest.setTexture(grassTexture);
+    aabbTest.setPosition(vec3(5.0f, -1.0f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &aabbTest));
+    
+    AABB aabb1(vec3(4.5f, -1.5f, -0.5f), vec3(5.5f, -0.5f, 0.5f));
+    physicsObjects.push_back(&aabb1);
     
     Triangle tri(&noTexShader, &renderData);
     tri.setPosition(vec3(0.0f, 0.0f, -1.5f));
