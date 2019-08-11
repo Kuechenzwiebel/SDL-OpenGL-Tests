@@ -22,7 +22,8 @@
 #include <SDL2/SDL_opengl.h>
 #include <SOIL2/SOIL2.h>
 
-#define  GLM_ENABLE_EXPERIMENTAL
+#define GLM_SWIZZLE
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -56,6 +57,7 @@ using namespace glm;
 #include "physicsObjects/physicsSphere.hpp"
 #include "perlinMap.hpp"
 #include "physicsObjects/aabb.hpp"
+#include "physicsObjects/obb.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -184,7 +186,7 @@ int main(int argc, const char * argv[]) {
     Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
     Texture stoneTexture("resources/textures/stone.png");
     
-    PerlinMap map(420, 100, 0.5f, &basicShader, &renderData);
+    PerlinMap map(420, 100, 1.0f, &basicShader, &renderData);
     map.setTexture(stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setPerlinMapInfo(map.getMapInfo());
@@ -264,34 +266,31 @@ int main(int argc, const char * argv[]) {
     Cube skybox(&skyboxShader, &skyboxData);
     skybox.setCubemap(spaceSkybox);
     
-    
-    
     Cube sharpCube(&basicShader, &renderData);
     sharpCube.setTexture(grassTexture);
-    sharpCube.setPosition(vec3(2.0f, 1.0f, -4.0f));
-    sharpCube.setRotation(angleAxis(radians(45.0f), vec3(1.0f, 0.0f, 0.0f)));
-    sharpCube.addRotation(angleAxis(radians(45.0f), vec3(0.0f, 1.0f, 0.0f)));
-    
+    sharpCube.setPosition(vec3(0.0f));
+    sharpCube.setRotation(angleAxis(radians(45.0f), vec3(0.0f, 0.0f, 1.0f)));
     objects.push_back(std::make_pair(0.0f, &sharpCube));
+    
+    OBB obb1(sharpCube.getPosition(), sharpCube.getRotation(), sharpCube.getSize());
+    physicsObjects.push_back(&obb1);
     
     Cube bluredCube(&blurShader, &renderData);
     bluredCube.setTexture(grassTexture);
     bluredCube.setPosition(vec3(2.0f, 1.0f, -3.0f));
-    bluredCube.setRotation(angleAxis(radians(45.0f), vec3(1.0f, 0.0f, 0.0f)));
-    bluredCube.addRotation(angleAxis(radians(45.0f), vec3(0.0f, 1.0f, 0.0f)));
-    
+    bluredCube.setRotation(angleAxis(radians(45.0f), vec3(1.0f, 1.0f, 0.0f)));
     objects.push_back(std::make_pair(0.0f, &bluredCube));
     
     Cube farCube(&basicShader, &renderData);
     farCube.setTexture(grassTexture);
     farCube.setPosition(vec3(0.0f, 0.0f, -110.0f));
-    
     objects.push_back(std::make_pair(0.0f, &farCube));
+    
     
     Sphere sphere(&basicShader, &renderData);
     sphere.setPosition(vec3(0.0f));
     sphere.setTexture(gradientTexture);
-    objects.push_back(std::make_pair(0.0f, &sphere));
+//    objects.push_back(std::make_pair(0.0f, &sphere));
     
     UIText text("Pi = 3.141592f\nTest", &uiShader, &uiData);
     text.setSize(vec2(0.5f));
@@ -345,7 +344,7 @@ int main(int argc, const char * argv[]) {
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     cout << in.collision << endl;
     
-    physicsObjects.push_back(&s1);
+//    physicsObjects.push_back(&s1);
     cam.setCollisonObjectsPointer(&physicsObjects);
     
     while(running) {

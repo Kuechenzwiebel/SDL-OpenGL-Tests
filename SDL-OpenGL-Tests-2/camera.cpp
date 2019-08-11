@@ -55,28 +55,34 @@ void Camera::processInput() {
     collisionHappend = false;
     
     if(!collisionHappendLastFrame) {
-        theoreticalPosition.y -= 1.0f * *deltaTime;
+//        theoreticalPosition.y -= 1.0f * *deltaTime;
     }
     
     float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
-    
+    /*
     if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.y < info.width / 2.0f && theoreticalPosition.y > -(info.width / 2.0f)) {
         if(theoreticalPosition.y < mapPosition) {
             theoreticalPosition.y = mapPosition;
         }
-    }
+    }*/
     
     if(!collisionHappend) {
         for(int i = 0; i < objects->size(); i++) {
             switch ((*objects)[i]->getObjectType()) {
                 case SPHERE_t:
-                    if(spherePointCollision((PhysicsSphere *)((*objects)[i]), theoreticalPosition).collision) {
+                    if(spherePointCollision((PhysicsSphere*)((*objects)[i]), theoreticalPosition).collision) {
                         collisionHappend = true;
                     }
                     break;
                     
                 case AABB_t:
-                    if(aabbPointCollision((AABB *)((*objects)[i]), theoreticalPosition).collision) {
+                    if(aabbPointCollision((AABB*)((*objects)[i]), theoreticalPosition).collision) {
+                        collisionHappend = true;
+                    }
+                    break;
+                    
+                case OBB_t:
+                    if(obbPointCollision((OBB*)((*objects)[i]), theoreticalPosition).collision) {
                         collisionHappend = true;
                     }
                     break;

@@ -23,6 +23,7 @@
 #include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
 #include "physicsObjects/aabb.hpp"
+#include "physicsObjects/obb.hpp"
 
 #include "perlinMap.hpp"
 
