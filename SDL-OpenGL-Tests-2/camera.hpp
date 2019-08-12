@@ -27,8 +27,6 @@
 
 #include "perlinMap.hpp"
 
-using namespace glm;
-
 enum CameraMovement {
     FORWARD,
     BACKWARD,
@@ -40,12 +38,12 @@ enum CameraMovement {
 
 class Camera {
 public:
-    Camera(vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse);
+    Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse);
     
-    mat4 getViewMatrix();
+    glm::mat4 getViewMatrix();
     float getZoom();
-    vec3 getPosition();
-    vec3 getFront();
+    glm::vec3 getPosition();
+    glm::vec3 getFront();
     float getMouseSensitivity();
     
     void setPosition(glm::vec3 position);
@@ -61,10 +59,10 @@ public:
     void setPerlinMapInfo(PerlinMapInformation info);
     
 private:
-    vec3 position, theoreticalPosition;
-    vec3 front;
-    vec3 up;
-    vec3 right;
+    glm::vec3 position, theoreticalPosition;
+    glm::vec3 front;
+    glm::vec3 up;
+    glm::vec3 right;
     
     const float *deltaTime;
     const SDL_Event *windowEvent;

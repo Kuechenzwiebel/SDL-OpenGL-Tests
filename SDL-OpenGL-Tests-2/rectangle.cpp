@@ -8,26 +8,26 @@
 
 #include "rectangle.hpp"
 
-static vec3 rectangleVertices[] = {
-    vec3(-1.0f, 0.0f, -1.0f),
-    vec3(1.0f, 0.0f, -1.0f),
-    vec3(-1.0f, 0.0f, 1.0f),
-    vec3(1.0f, 0.0f, -1.0f),
-    vec3(-1.0f, 0.0f, 1.0f),
-    vec3(1.0f, 0.0f, 1.0f)
+static glm::vec3 rectangleVertices[] = {
+    glm::vec3(-1.0f, 0.0f, -1.0f),
+    glm::vec3(1.0f, 0.0f, -1.0f),
+    glm::vec3(-1.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 0.0f, -1.0f),
+    glm::vec3(-1.0f, 0.0f, 1.0f),
+    glm::vec3(1.0f, 0.0f, 1.0f)
 };
 
-static vec2 rectangleTextures[] = {
-    vec2(0.0f, 0.0f),
-    vec2(1.0f, 0.0f),
-    vec2(0.0f, 1.0f),
-    vec2(1.0f, 0.0f),
-    vec2(0.0f, 1.0f),
-    vec2(1.0f, 1.0f)
+static glm::vec2 rectangleTextures[] = {
+    glm::vec2(0.0f, 0.0f),
+    glm::vec2(1.0f, 0.0f),
+    glm::vec2(0.0f, 1.0f),
+    glm::vec2(1.0f, 0.0f),
+    glm::vec2(0.0f, 1.0f),
+    glm::vec2(1.0f, 1.0f)
 };
 
 Rectangle::Rectangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(vec3(0.0f)), size(vec3(1.0f)), tex(""), data(data) {
+shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), tex(""), data(data) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -59,38 +59,38 @@ void Rectangle::setTexture(Texture texture) {
     tex = texture;
 }
 
-void Rectangle::setPosition(vec3 position) {
-    translate = glm::translate(mat4(1), position);
+void Rectangle::setPosition(glm::vec3 position) {
+    translate = glm::translate(glm::mat4(1), position);
     model = translate * rotate * scale;
     this->position = position;
 }
 
-void Rectangle::setRotation(quat rotation) {
+void Rectangle::setRotation(glm::quat rotation) {
     rotate = toMat4(rotation);
     model = translate * rotate * scale;
     this->rotation = rotation;
 }
 
-void Rectangle::addRotation(quat rotation) {
+void Rectangle::addRotation(glm::quat rotation) {
     this->rotation = rotation * this->rotation;
     setRotation(this->rotation);
 }
 
-void Rectangle::setSize(vec3 size) {
-    scale = glm::scale(mat4(1), size);
+void Rectangle::setSize(glm::vec3 size) {
+    scale = glm::scale(glm::mat4(1), size);
     model = translate * rotate * scale;
     this->size = size;
 }
 
-vec3 Rectangle::getPosition() {
+glm::vec3 Rectangle::getPosition() {
     return position;
 }
 
-quat Rectangle::getRotation() {
+glm::quat Rectangle::getRotation() {
     return rotation;
 }
 
-vec3 Rectangle::getSize() {
+glm::vec3 Rectangle::getSize() {
     return size;
 }
 

@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "uiRectangle.hpp"
-#include "../file.hpp"
 #include "../shader.hpp"
 #include "../utils.hpp"
 #include "../texture.hpp"
@@ -37,13 +36,13 @@ public:
     
     void render();
     
-    void setPosition(vec2 position);
-    void setSize(vec2 size);
-    void setPixelPosition(vec2 position);
-    void setPixelSize(vec2 size);
+    void setPosition(glm::vec2 position);
+    void setSize(glm::vec2 size);
+    void setPixelPosition(glm::vec2 position);
+    void setPixelSize(glm::vec2 size);
     
-    vec2 getPosition();
-    vec2 getSize();
+    glm::vec2 getPosition();
+    glm::vec2 getSize();
     
     Shader *getShaderPointer();
     
@@ -52,12 +51,12 @@ private:
     Shader *shader;
     const RenderData *data;
     
-    vec2 position;
-    vec2 size;
+    glm::vec2 position;
+    glm::vec2 size;
     
     std::string s;
     std::vector<UIRectangle> rects;
-    std::vector<vec2> originalPositions;
+    std::vector<glm::vec2> originalPositions;
 };
 
 

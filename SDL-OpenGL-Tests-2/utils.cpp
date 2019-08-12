@@ -8,14 +8,14 @@
 
 #include "utils.hpp"
 
-void printVec2(vec2 data) {
+void printVec2(glm::vec2 data) {
     printf("X = %f\tY = %f\n", data.x, data.y);
 }
 
-void printVec3(vec3 data) {
+void printVec3(glm::vec3 data) {
     printf("X = %f\tY = %f\tZ = %f\n", data.x, data.y, data.z);
 }
-void printVec4(vec4 data) {
+void printVec4(glm::vec4 data) {
     printf("X = %f\tY = %f\tZ = %f\tW = %f\n", data.x, data.y, data.z, data.w);
 }
 
@@ -28,14 +28,14 @@ void printArray(T *array, int arraySize) {
 }
 
 template <>
-void printArray(vec3 *array, int arraySize) {
+void printArray(glm::vec3 *array, int arraySize) {
     for(int i = 0; i < arraySize; i++) {
         std::cout << i << ". = ";
         printVec3(array[i]);
     }
 }
 
-void printfMat4x4(mat4 m) {
+void printfMat4x4(glm::mat4 m) {
     printf("--------------------------------------------------\n"
            "%f\t%f\t%f\t%f\t\n"
            "%f\t%f\t%f\t%f\t\n"
@@ -52,18 +52,18 @@ void swapBool(bool *b) {
     *b = !(*b);
 }
 
-vec2 pixelPosToUIRect(vec2 pixel, vec2 rectSize) {
-    return vec2(pixel * (vec2(1.0f) / (rectSize * vec2(500.0f))));
+glm::vec2 pixelPosToUIRect(glm::vec2 pixel, glm::vec2 rectSize) {
+    return glm::vec2(pixel * (glm::vec2(1.0f) / (rectSize * glm::vec2(500.0f))));
 }
 
-vec2 pixelSizeToUIRect(vec2 size) {
-    return vec2(size / vec2(1000.0f));
+glm::vec2 pixelSizeToUIRect(glm::vec2 size) {
+    return glm::vec2(size / glm::vec2(1000.0f));
 }
 
-vec2 UIRectToPixelPos(vec2 rectSize) {
-    return vec2(rectSize * vec2(1.0f / 500.0f));
+glm::vec2 UIRectToPixelPos(glm::vec2 rectSize) {
+    return glm::vec2(rectSize * glm::vec2(1.0f / 500.0f));
 }
 
-vec2 UIRectToPixelSize(vec2 size) {
-    return vec2(size * vec2(1000.0f));
+glm::vec2 UIRectToPixelSize(glm::vec2 size) {
+    return glm::vec2(size * glm::vec2(1000.0f));
 }

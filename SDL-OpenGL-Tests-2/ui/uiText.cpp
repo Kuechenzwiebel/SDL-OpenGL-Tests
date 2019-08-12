@@ -8,13 +8,13 @@
 
 #include "uiText.hpp"
 
-static vec2 uiTextUVs[] = {
-    vec2(0.0f, 0.38671875f),
-    vec2(0.01025390625f, 0.38671875f),
-    vec2(0.01025390625f, 0.6328125f),
-    vec2(0.0f, 0.38671875f),
-    vec2(0.0f, 0.6328125f),
-    vec2(0.01025390625f, 0.6328125f)
+static glm::vec2 uiTextUVs[] = {
+    glm::vec2(0.0f, 0.38671875f),
+    glm::vec2(0.01025390625f, 0.38671875f),
+    glm::vec2(0.01025390625f, 0.6328125f),
+    glm::vec2(0.0f, 0.38671875f),
+    glm::vec2(0.0f, 0.6328125f),
+    glm::vec2(0.01025390625f, 0.6328125f)
 };
 
 UIText::UIText(std::string s, Shader *shader, const RenderData *data):
@@ -34,8 +34,8 @@ s(s), data(data), shader(shader), position(0.0f), size(1.0f), charSet("resources
             rects[i].set(shader, data, uiTextUVs);
             rects[i].setXTexOffset(0.0f);
             rects[i].setTexture(charSet);
-            rects[i].setSize(vec2(0.0f, 0.0f));
-            rects[i].setPosition(vec2(-100.0f, -100.0f));
+            rects[i].setSize(glm::vec2(0.0f, 0.0f));
+            rects[i].setPosition(glm::vec2(-100.0f, -100.0f));
             continue;
         }
         
@@ -43,8 +43,8 @@ s(s), data(data), shader(shader), position(0.0f), size(1.0f), charSet("resources
         rects[i].set(shader, data, uiTextUVs);
         rects[i].setXTexOffset(texOffset);
         rects[i].setTexture(charSet);
-        rects[i].setSize(pixelSizeToUIRect(vec2(charWidth, charHeight)));
-        rects[i].setPosition(pixelPosToUIRect(vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
+        rects[i].setSize(pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
+        rects[i].setPosition(pixelPosToUIRect(glm::vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
         
         originalPositions[i] = rects[i].getPosition();
         
@@ -75,8 +75,8 @@ void UIText::setText(std::string s) {
                 rects[i].set(shader, data, uiTextUVs);
                 rects[i].setXTexOffset(0.0f);
                 rects[i].setTexture(charSet);
-                rects[i].setSize(vec2(0.0f, 0.0f));
-                rects[i].setPosition(vec2(-100.0f, -100.0f));
+                rects[i].setSize(glm::vec2(0.0f, 0.0f));
+                rects[i].setPosition(glm::vec2(-100.0f, -100.0f));
                 continue;
             }
             
@@ -84,8 +84,8 @@ void UIText::setText(std::string s) {
             rects[i].set(shader, data, uiTextUVs);
             rects[i].setXTexOffset(texOffset);
             rects[i].setTexture(charSet);
-            rects[i].setSize(pixelSizeToUIRect(vec2(charWidth, charHeight)));
-            rects[i].setPosition(pixelPosToUIRect(vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
+            rects[i].setSize(pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
+            rects[i].setPosition(pixelPosToUIRect(glm::vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
             
             originalPositions[i] = rects[i].getPosition();
             
@@ -103,35 +103,35 @@ void UIText::render() {
     }
 }
 
-void UIText::setPosition(vec2 position) {
+void UIText::setPosition(glm::vec2 position) {
     for(int i = 0; i < rects.size(); i++) {
         rects[i].setPosition(position + originalPositions[i]);
     }
     this->position = position;
 }
 
-void UIText::setSize(vec2 size) {
+void UIText::setSize(glm::vec2 size) {
     for(int i = 0; i < rects.size(); i++) {
-        rects[i].setSize(size * pixelSizeToUIRect(vec2(charWidth, charHeight)));
+        rects[i].setSize(size * pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
     }
     this->size = size;
 }
 
-void UIText::setPixelPosition(vec2 position) {
-    this->position = pixelPosToUIRect(position, size * pixelSizeToUIRect(vec2(charWidth, charHeight)));
+void UIText::setPixelPosition(glm::vec2 position) {
+    this->position = pixelPosToUIRect(position, size * pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
     setPosition(this->position);
 }
 
-void UIText::setPixelSize(vec2 size) {
+void UIText::setPixelSize(glm::vec2 size) {
     this->size = pixelSizeToUIRect(size);
     setSize(this->size);
 }
 
-vec2 UIText::getPosition() {
+glm::vec2 UIText::getPosition() {
     return position;
 }
 
-vec2 UIText::getSize() {
+glm::vec2 UIText::getSize() {
     return size;
 }
 

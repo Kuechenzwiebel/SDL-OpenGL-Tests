@@ -8,21 +8,21 @@
 
 #include "triangle.hpp"
 
-vec3 triangleVertices[] = {
-    vec3(-0.5f, -0.5f, 0.0f),
-    vec3(0.5f, -0.5f, 0.0f),
-    vec3(0.0f,  0.5f, 0.0f)
+glm::vec3 triangleVertices[] = {
+    glm::vec3(-0.5f, -0.5f, 0.0f),
+    glm::vec3(0.5f, -0.5f, 0.0f),
+    glm::vec3(0.0f,  0.5f, 0.0f)
 };
 
-vec4 triangleColors[] = {
-    vec4(1.0f, 0.0f, 0.0f, 0.0f),
-    vec4(0.0f, 1.0f, 0.0f, 1.0f),
-    vec4(0.0f, 0.0f, 1.0f, 1.0f)
+glm::vec4 triangleColors[] = {
+    glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
+    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+    glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
 };
 
 Triangle::Triangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(triangleVertices, sizeof(triangleVertices), 0), texCoord(triangleColors, sizeof(triangleColors), 1), model(1), position(vec3(0.0f)),
-angle(0.0f), rotationAxis(vec3(1.0f)), size(vec3(1.0f)), data(data) {
+shader(shader), vertex(triangleVertices, sizeof(triangleVertices), 0), texCoord(triangleColors, sizeof(triangleColors), 1), model(1), position(glm::vec3(0.0f)),
+angle(0.0f), rotationAxis(glm::vec3(1.0f)), size(glm::vec3(1.0f)), data(data) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -47,13 +47,13 @@ void Triangle::render() {
 }
 
 void Triangle::calculateModelMat() {
-    model = mat4(1);
+    model = glm::mat4(1);
     model = translate(model, position);
     model = rotate(model, angle, rotationAxis);
     model = scale(model, size);
 }
 
-void Triangle::setPosition(vec3 position) {
+void Triangle::setPosition(glm::vec3 position) {
     this->position = position;
 }
 
@@ -61,15 +61,15 @@ void Triangle::setAngle(float angle) {
     this->angle = angle;
 }
 
-void Triangle::setRotationAxis(vec3 rotationAxis) {
+void Triangle::setRotationAxis(glm::vec3 rotationAxis) {
     this->rotationAxis = rotationAxis;
 }
 
-void Triangle::setSize(vec3 size) {
+void Triangle::setSize(glm::vec3 size) {
     this->size = size;
 }
 
-vec3 Triangle::getPosition() {
+glm::vec3 Triangle::getPosition() {
     return position;
 }
 
@@ -77,11 +77,11 @@ float Triangle::getAngle() {
     return angle;
 }
 
-vec3 Triangle::getRotationAxis() {
+glm::vec3 Triangle::getRotationAxis() {
     return rotationAxis;
 }
 
-vec3 Triangle::getSize() {
+glm::vec3 Triangle::getSize() {
     return size;
 }
 

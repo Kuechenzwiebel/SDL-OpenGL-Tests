@@ -15,19 +15,17 @@
 #include "collisionInfo.h"
 #include "physicsObject.hpp"
 
-using namespace glm;
-
 class AABB: public PhysicsObject {
 public:
-    AABB(vec3 p1, vec3 p2);
+    AABB(glm::vec3 p1, glm::vec3 p2);
     
-    vec3 getP1();
-    vec3 getP2();
+    glm::vec3 getP1();
+    glm::vec3 getP2();
     
 private:
-    vec3 p1, p2;
+    glm::vec3 p1, p2;
 };
 
-CollisionInfo aabbPointCollision(AABB* aabb1, vec3 point);
+CollisionInfo aabbPointCollision(AABB* aabb1, glm::vec3 point);
 
 #endif /* aabb_hpp */

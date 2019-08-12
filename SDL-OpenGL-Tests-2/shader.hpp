@@ -21,29 +21,27 @@
 
 #include "utils.hpp"
 
-using namespace std;
-
 class Shader {
 public:
-    Shader(string vertexCode, string fragmentCode);
+    Shader(std::string vertexCode, std::string fragmentCode);
     
     void use();
     
-    void sendVec2(glm::vec2 data, string name);
-    void sendVec3(glm::vec3 data, string name);
-    void sendVec4(glm::vec4 data, string name);
-    void sendMat4(glm::mat4 data, string name);
-    void sendInt(int data, string name);
-    void sendFloat(float data, string name);
+    void sendVec2(glm::vec2 data, std::string name);
+    void sendVec3(glm::vec3 data, std::string name);
+    void sendVec4(glm::vec4 data, std::string name);
+    void sendMat4(glm::mat4 data, std::string name);
+    void sendInt(int data, std::string name);
+    void sendFloat(float data, std::string name);
     
-    GLint getLoc(string name);
+    GLint getLoc(std::string name);
     
     GLuint program;
     
 private:
     void compileShader(const char* vertexCode, const char* fragmentCode);
     
-    string _vertexCode, _fragmentCode;
+    std::string _vertexCode, _fragmentCode;
 };
 
 #endif /* shader_hpp */

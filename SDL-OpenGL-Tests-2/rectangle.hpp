@@ -24,8 +24,6 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-using namespace glm;
-
 class Rectangle: public Object {
 public:
     Rectangle(Shader *shader, const RenderData *data);
@@ -33,15 +31,15 @@ public:
     
     void render();
     
-    void setPosition(vec3 position);
-    void setSize(vec3 size);
+    void setPosition(glm::vec3 position);
+    void setSize(glm::vec3 size);
     void setTexture(Texture texture);
-    void setRotation(quat rotation);
-    void addRotation(quat rotation);
+    void setRotation(glm::quat rotation);
+    void addRotation(glm::quat rotation);
     
-    vec3 getPosition();
-    vec3 getSize();
-    quat getRotation();
+    glm::vec3 getPosition();
+    glm::vec3 getSize();
+    glm::quat getRotation();
     
     Shader *getShaderPointer();
     
@@ -54,11 +52,11 @@ private:
     Shader *shader;
     const RenderData *data;
     
-    vec3 position;
-    vec3 size;
-    quat rotation;
+    glm::vec3 position;
+    glm::vec3 size;
+    glm::quat rotation;
     
-    mat4 translate, rotate, scale, model;
+    glm::mat4 translate, rotate, scale, model;
 };
 
 #endif /* rectangle_hpp */

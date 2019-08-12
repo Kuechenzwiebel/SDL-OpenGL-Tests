@@ -14,22 +14,20 @@
 #include <GL/glew.h>
 #include "arrayBuffer.hpp"
 
-using namespace glm;
-
 class DynamicArrayBuffer {
 public:
     DynamicArrayBuffer(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type);
-    DynamicArrayBuffer(const vec3 *data, int dataSize, int _shaderPos);
-    DynamicArrayBuffer(const vec2 *data, int dataSize, int _shaderPos);
+    DynamicArrayBuffer(const glm::vec3 *data, int dataSize, int _shaderPos);
+    DynamicArrayBuffer(const glm::vec2 *data, int dataSize, int _shaderPos);
     DynamicArrayBuffer(const GLint *data, int dataSize, int _shaderPos);
     DynamicArrayBuffer();
     
-    void setData(const vec3 *data, int dataSize, int _shaderPos);
-    void setData(const vec2 *data, int dataSize, int _shaderPos);
+    void setData(const glm::vec3 *data, int dataSize, int _shaderPos);
+    void setData(const glm::vec2 *data, int dataSize, int _shaderPos);
     void setData(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type);
     
-    void changeData(const vec3 *data, int dataSize, int _shaderPos);
-    void changeData(const vec2 *data, int dataSize, int _shaderPos);
+    void changeData(const glm::vec3 *data, int dataSize, int _shaderPos);
+    void changeData(const glm::vec2 *data, int dataSize, int _shaderPos);
     void changeData(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type);
     
     ~DynamicArrayBuffer();

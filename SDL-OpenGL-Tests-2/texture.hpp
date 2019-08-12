@@ -17,24 +17,21 @@
 #include <SOIL2/SOIL2.h>
 #include <glm/glm.hpp>
 
-using namespace std;
-
-
 class Texture {
 public:
-    Texture(string fileName);
+    Texture(std::string fileName);
     
     GLuint getData();
     
-    void setTextureName(string name);
-    string getTextureName();
+    void setTextureName(std::string name);
+    std::string getTextureName();
     
     glm::vec2 getTextureSize();
     
 private:
     GLuint tex;    
     int texWidth, texHeight;
-    string textureName;
+    std::string textureName;
 };
 
 #endif /* texture_hpp */

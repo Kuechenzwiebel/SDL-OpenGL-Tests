@@ -8,7 +8,7 @@
 
 #include "shader.hpp"
 
-Shader::Shader(string vertexCode, string fragmentCode):
+Shader::Shader(std::string vertexCode, std::string fragmentCode):
 _vertexCode(vertexCode), _fragmentCode(fragmentCode) {
     compileShader(_vertexCode.c_str(), _fragmentCode.c_str());
 }
@@ -19,31 +19,31 @@ void Shader::use() {
     }
 }
 
-void Shader::sendVec2(glm::vec2 data, string name) {
+void Shader::sendVec2(glm::vec2 data, std::string name) {
     glUniform2f(getLoc(name), data.x, data.y);
 }
 
-void Shader::sendVec3(glm::vec3 data, string name) {
+void Shader::sendVec3(glm::vec3 data, std::string name) {
     glUniform3f(getLoc(name), data.x, data.y, data.z);
 }
 
-void Shader::sendVec4(glm::vec4 data, string name) {
+void Shader::sendVec4(glm::vec4 data, std::string name) {
     glUniform4f(getLoc(name), data.x, data.y, data.z, data.w);
 }
 
-void Shader::sendMat4(glm::mat4 data, string name) {
+void Shader::sendMat4(glm::mat4 data, std::string name) {
     glUniformMatrix4fv(getLoc(name), 1, GL_FALSE, value_ptr(data));
 }
 
-void Shader::sendInt(int data, string name) {
+void Shader::sendInt(int data, std::string name) {
     glUniform1i(getLoc(name), data);
 }
 
-void Shader::sendFloat(float data, string name) {
+void Shader::sendFloat(float data, std::string name) {
     glUniform1f(getLoc(name), data);
 }
 
-GLint Shader::getLoc(string name) {
+GLint Shader::getLoc(std::string name) {
     return glGetUniformLocation(program, name.c_str());
 }
 

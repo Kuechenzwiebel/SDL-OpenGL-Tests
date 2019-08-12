@@ -9,12 +9,12 @@
 #include "perlinMap.hpp"
 
 PerlinMap::PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data):
-tex(""), model(1), translate(1), vertex(), texCoord(), position(vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth) {
+tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
-    vertices = new vec3[6 * width * width * (1.0f / triangleWidth)];
-    texCoords = new vec2[6 * width * width * (1.0f / triangleWidth)];
+    vertices = new glm::vec3[6 * width * width * (1.0f / triangleWidth)];
+    texCoords = new glm::vec2[6 * width * width * (1.0f / triangleWidth)];
     
     float x = -(width / 2.0f), y = -(width / 2.0f);
     
@@ -27,25 +27,25 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(vec3(0.0f)), dat
             y += 1.0f;
         }
         
-        vertices[i + 0] = vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
-        vertices[i + 1] = vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
-        vertices[i + 2] = vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
-        vertices[i + 3] = vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
-        vertices[i + 4] = vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
-        vertices[i + 5] = vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
+        vertices[i + 0] = glm::vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
+        vertices[i + 1] = glm::vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
+        vertices[i + 2] = glm::vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
+        vertices[i + 3] = glm::vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
+        vertices[i + 4] = glm::vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
+        vertices[i + 5] = glm::vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
         
-        texCoords[i + 0] = vec2(0.0f, 0.0f);
-        texCoords[i + 1] = vec2(1.0f, 0.0f);
-        texCoords[i + 2] = vec2(0.0f, 1.0f);
-        texCoords[i + 3] = vec2(1.0f, 1.0f);
-        texCoords[i + 4] = vec2(1.0f, 0.0f);
-        texCoords[i + 5] = vec2(0.0f, 1.0f);
+        texCoords[i + 0] = glm::vec2(0.0f, 0.0f);
+        texCoords[i + 1] = glm::vec2(1.0f, 0.0f);
+        texCoords[i + 2] = glm::vec2(0.0f, 1.0f);
+        texCoords[i + 3] = glm::vec2(1.0f, 1.0f);
+        texCoords[i + 4] = glm::vec2(1.0f, 0.0f);
+        texCoords[i + 5] = glm::vec2(0.0f, 1.0f);
            
         x += 1.0f;
     }
     
-    vertex.setData(vertices, sizeof(vec3) * 6 * width * width * (1.0f / triangleWidth), 0);
-    texCoord.setData(texCoords, sizeof(vec2) * 6 * width * width * (1.0f / triangleWidth), 1);
+    vertex.setData(vertices, sizeof(glm::vec3) * 6 * width * width * (1.0f / triangleWidth), 0);
+    texCoord.setData(texCoords, sizeof(glm::vec2) * 6 * width * width * (1.0f / triangleWidth), 1);
     
     vertex.activate();
     texCoord.activate();
@@ -90,12 +90,12 @@ void PerlinMap::setTexture(Texture tex) {
     this->tex = tex;
 }
 
-void PerlinMap::setPosition(vec3 position) {
-    model = glm::translate(mat4(1), position);
+void PerlinMap::setPosition(glm::vec3 position) {
+    model = glm::translate(glm::mat4(1), position);
     this->position = position;
 }
 
-vec3 PerlinMap::getPosition() {
+glm::vec3 PerlinMap::getPosition() {
     return position;
 }
 

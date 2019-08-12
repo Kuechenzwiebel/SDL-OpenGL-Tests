@@ -15,21 +15,19 @@
 #include "collisionInfo.h"
 #include "physicsObject.hpp"
 
-using namespace glm;
-
 class PhysicsSphere: public PhysicsObject {
 public:
-    PhysicsSphere(float radius, vec3 position);
+    PhysicsSphere(float radius, glm::vec3 position);
     
     float getRadius();
-    vec3 getPosition();
+    glm::vec3 getPosition();
     
 private:
     float radius;
-    vec3 position;
+    glm::vec3 position;
 };
 
 CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2);
-CollisionInfo spherePointCollision(PhysicsSphere *sp1, vec3 point);
+CollisionInfo spherePointCollision(PhysicsSphere *sp1, glm::vec3 point);
 
 #endif /* physicsSphere_hpp */

@@ -23,8 +23,6 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-using namespace glm;
-
 class Triangle: public Object {
 public:
     Triangle(Shader *shader, const RenderData *data);
@@ -33,15 +31,15 @@ public:
     void render();
     void calculateModelMat();
     
-    void setPosition(vec3 position);
+    void setPosition(glm::vec3 position);
     void setAngle(float angle);
-    void setRotationAxis(vec3 rotationAxis);
-    void setSize(vec3 size);
+    void setRotationAxis(glm::vec3 rotationAxis);
+    void setSize(glm::vec3 size);
     
-    vec3 getPosition();
+    glm::vec3 getPosition();
     float getAngle();
-    vec3 getRotationAxis();
-    vec3 getSize();
+    glm::vec3 getRotationAxis();
+    glm::vec3 getSize();
     
     Shader *getShaderPointer();
     
@@ -53,12 +51,12 @@ private:
     const RenderData *data;
     
     
-    vec3 position = vec3(0.0f);
+    glm::vec3 position = glm::vec3(0.0f);
     float angle = 0.0f;
-    vec3 rotationAxis = vec3(0.0f);
-    vec3 size = vec3(1.0f);
+    glm::vec3 rotationAxis = glm::vec3(0.0f);
+    glm::vec3 size = glm::vec3(1.0f);
     
-    mat4 model;
+    glm::mat4 model;
 };
 
 #endif /* triangle_hpp */

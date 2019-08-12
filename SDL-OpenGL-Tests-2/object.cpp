@@ -16,15 +16,15 @@ void Object::render() {
     
 }
 
-vec3 Object::getPosition() {
-    return vec3(0.0f);
+glm::vec3 Object::getPosition() {
+    return glm::vec3(0.0f);
 }
 
-vec3 Object::getSize() {
-    return vec3(0.0f);
+glm::vec3 Object::getSize() {
+    return glm::vec3(0.0f);
 }
 
-void Object::setPosition(vec3 position) {
+void Object::setPosition(glm::vec3 position) {
 
 }
 

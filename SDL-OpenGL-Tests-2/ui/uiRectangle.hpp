@@ -27,42 +27,40 @@
 
 #include "uiObject.hpp"
 
-using namespace glm;
-
 class UIRectangle: public UIObject {
 public:
     UIRectangle();
     UIRectangle(Shader *shader, const RenderData *data);
-    UIRectangle(Shader *shader, const RenderData *data, const vec2 *customUVs);
+    UIRectangle(Shader *shader, const RenderData *data, const glm::vec2 *customUVs);
     
     void set(Shader *shader, const RenderData *data);
-    void set(Shader *shader, const RenderData *data, const vec2 *customUVs);
+    void set(Shader *shader, const RenderData *data, const glm::vec2 *customUVs);
     
     ~UIRectangle();
     
     void render();
     
     void setTexture(Texture texture);
-    void setPosition(vec2 position);
-    void setSize(vec2 size);
-    void setPixelPosition(vec2 position);
-    void setPixelSize(vec2 size);
+    void setPosition(glm::vec2 position);
+    void setSize(glm::vec2 size);
+    void setPixelPosition(glm::vec2 position);
+    void setPixelSize(glm::vec2 size);
     void setXTexOffset(float x);
     void setYTexOffset(float y);
     void setXTexOffset(float *x);
     void setYTexOffset(float *y);
     void setXTexMultiplier(float x);
     void setYTexMultiplier(float y);
-    void setRotation(quat rotation);
-    void addRotation(quat rotation);
+    void setRotation(glm::quat rotation);
+    void addRotation(glm::quat rotation);
     
-    void changeUVs(const vec2 *UVs);
+    void changeUVs(const glm::vec2 *UVs);
     
     Texture getTexture();
-    vec2 getPosition();
-    vec2 getSize();
-    quat getRotation();
-    mat4 getModelMat();
+    glm::vec2 getPosition();
+    glm::vec2 getSize();
+    glm::quat getRotation();
+    glm::mat4 getModelMat();
     
     float getXTexOffset();
     float getYTexOffset();
@@ -75,14 +73,14 @@ private:
     DynamicArrayBuffer texCoord;
     Texture tex;
     
-    vec2 position;
-    vec2 size;
-    quat rotation;
+    glm::vec2 position;
+    glm::vec2 size;
+    glm::quat rotation;
     
-    vec2 texOffset;
-    vec2 texMultiplier;
+    glm::vec2 texOffset;
+    glm::vec2 texMultiplier;
     
-    mat4 rotate, translate, scale, model;
+    glm::mat4 rotate, translate, scale, model;
     
     Shader *shader;
     const RenderData *data;

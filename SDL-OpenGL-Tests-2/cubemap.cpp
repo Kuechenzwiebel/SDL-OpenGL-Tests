@@ -8,7 +8,7 @@
 
 #include "cubemap.hpp"
 
-Cubemap::Cubemap(string* fileNames) {
+Cubemap::Cubemap(std::string* fileNames) {
     if(fileNames != NULL) {
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_CUBE_MAP, tex);
@@ -32,10 +32,10 @@ GLuint Cubemap::getData() {
     return tex;
 }
 
-void Cubemap::setTextureName(string name) {
+void Cubemap::setTextureName(std::string name) {
     textureName = name;
 }
 
-string Cubemap::getTextureName() {
+std::string Cubemap::getTextureName() {
     return textureName;
 }

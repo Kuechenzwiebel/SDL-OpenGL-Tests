@@ -8,26 +8,26 @@
 
 #include "uiRectangle.hpp"
 
-static vec3 uiRectangleVertices[] = {
-    vec3(-1.0f, -1.0f, 0.0f),
-    vec3(1.0f,  -1.0f, 0.0f),
-    vec3(1.0f,   1.0f, 0.0f),
-    vec3(-1.0f, -1.0f, 0.0f),
-    vec3(-1.0f,  1.0f, 0.0f),
-    vec3(1.0f,   1.0f, 0.0f)
+static glm::vec3 uiRectangleVertices[] = {
+    glm::vec3(-1.0f, -1.0f, 0.0f),
+    glm::vec3(1.0f,  -1.0f, 0.0f),
+    glm::vec3(1.0f,   1.0f, 0.0f),
+    glm::vec3(-1.0f, -1.0f, 0.0f),
+    glm::vec3(-1.0f,  1.0f, 0.0f),
+    glm::vec3(1.0f,   1.0f, 0.0f)
 };
 
-static vec2 uiRectangleTextures[] = {
-    vec2(0.0f, 0.0f),
-    vec2(1.0f, 0.0f),
-    vec2(1.0f, 1.0f),
-    vec2(0.0f, 0.0f),
-    vec2(0.0f, 1.0f),
-    vec2(1.0f, 1.0f)
+static glm::vec2 uiRectangleTextures[] = {
+    glm::vec2(0.0f, 0.0f),
+    glm::vec2(1.0f, 0.0f),
+    glm::vec2(1.0f, 1.0f),
+    glm::vec2(0.0f, 0.0f),
+    glm::vec2(0.0f, 1.0f),
+    glm::vec2(1.0f, 1.0f)
 };
 
 UIRectangle::UIRectangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(uiRectangleTextures, 6 * sizeof(vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(vec2(1.0f)),  noXTexOffset(true), noYTexOffset(true) {
+shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(uiRectangleTextures, 6 * sizeof(glm::vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(glm::vec2(1.0f)),  noXTexOffset(true), noYTexOffset(true) {
     
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
@@ -38,8 +38,8 @@ shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), tex
     glBindVertexArray(0);
 }
 
-UIRectangle::UIRectangle(Shader *shader, const RenderData *data, const vec2 *customUVs):
-shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(customUVs, 6 * sizeof(vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
+UIRectangle::UIRectangle(Shader *shader, const RenderData *data, const glm::vec2 *customUVs):
+shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(customUVs, 6 * sizeof(glm::vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
     
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
@@ -51,14 +51,14 @@ shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), tex
 }
 
 UIRectangle::UIRectangle():
-shader(nullptr), tex(""), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
+shader(nullptr), tex(""), position(0.0f), size(1.0f), model(1), translate(1), scale(1), rotate(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
     
 }
 
 void UIRectangle::set(Shader *shader, const RenderData *data) {
     this->shader = shader;
     this->vertex.setData(uiRectangleVertices, sizeof(uiRectangleVertices), 0);
-    this->texCoord.setData(uiRectangleTextures, 6 * sizeof(vec2), 1);
+    this->texCoord.setData(uiRectangleTextures, 6 * sizeof(glm::vec2), 1);
     this->data = data;
     
     
@@ -71,10 +71,10 @@ void UIRectangle::set(Shader *shader, const RenderData *data) {
     glBindVertexArray(0);
 }
 
-void UIRectangle::set(Shader *shader, const RenderData *data, const vec2 *customUVs) {
+void UIRectangle::set(Shader *shader, const RenderData *data, const glm::vec2 *customUVs) {
     this->shader = shader;
     this->vertex.setData(uiRectangleVertices, sizeof(uiRectangleVertices), 0);
-    this->texCoord.setData(customUVs, 6 * sizeof(vec2), 1);
+    this->texCoord.setData(customUVs, 6 * sizeof(glm::vec2), 1);
     this->data = data;
     
     
@@ -121,8 +121,8 @@ void UIRectangle::render() {
     glBindVertexArray(0);
 }
 
-void UIRectangle::changeUVs(const vec2 *UVs) {
-    texCoord.changeData(UVs, 6 * sizeof(vec2), 1);
+void UIRectangle::changeUVs(const glm::vec2 *UVs) {
+    texCoord.changeData(UVs, 6 * sizeof(glm::vec2), 1);
     texCoord.activate();
 }
 
@@ -174,48 +174,48 @@ Texture UIRectangle::getTexture() {
     return tex;
 }
 
-void UIRectangle::setPixelPosition(vec2 position) {
+void UIRectangle::setPixelPosition(glm::vec2 position) {
     this->position = pixelPosToUIRect(position, size);
     setPosition(this->position);
 }
 
-void UIRectangle::setPixelSize(vec2 size) {
+void UIRectangle::setPixelSize(glm::vec2 size) {
     this->size = pixelSizeToUIRect(size);
     setSize(this->size);
 }
 
-void UIRectangle::setPosition(vec2 position) {
-    translate = glm::translate(mat4(1), vec3(position, 0.0f));
+void UIRectangle::setPosition(glm::vec2 position) {
+    translate = glm::translate(glm::mat4(1), glm::vec3(position, 0.0f));
     model = rotate * scale * translate;
     this->position = position;
 }
 
-void UIRectangle::setSize(vec2 size) {
-    scale = glm::scale(mat4(1), vec3(size, 1.0f));
+void UIRectangle::setSize(glm::vec2 size) {
+    scale = glm::scale(glm::mat4(1), glm::vec3(size, 1.0f));
     model = rotate * scale * translate;
     this->size = size;
 }
 
-void UIRectangle::setRotation(quat rotation) {
+void UIRectangle::setRotation(glm::quat rotation) {
     rotate = toMat4(rotation);
     model = rotate * scale * translate;
     this->rotation = rotation;
 }
 
-void UIRectangle::addRotation(quat rotation) {
+void UIRectangle::addRotation(glm::quat rotation) {
     this->rotation = rotation * this->rotation;
     setRotation(this->rotation);
 }
 
-vec2 UIRectangle::getPosition() {
+glm::vec2 UIRectangle::getPosition() {
     return position;
 }
 
-quat UIRectangle::getRotation() {
+glm::quat UIRectangle::getRotation() {
     return rotation;
 }
 
-vec2 UIRectangle::getSize() {
+glm::vec2 UIRectangle::getSize() {
     return size;
 }
 
@@ -227,7 +227,7 @@ float UIRectangle::getYTexOffset() {
     return texOffset.y;
 }
 
-mat4 UIRectangle::getModelMat() {
+glm::mat4 UIRectangle::getModelMat() {
     return model;
 }
 

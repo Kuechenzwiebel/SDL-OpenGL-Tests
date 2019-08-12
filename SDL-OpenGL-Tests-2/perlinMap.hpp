@@ -22,8 +22,6 @@
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
-using namespace glm;
-
 struct PerlinMapInformation {
     PerlinNoise* noise;
     float multiplier;
@@ -38,10 +36,10 @@ public:
     ~PerlinMap();
     
     void setTexture(Texture tex);
-    void setPosition(vec3 position);
+    void setPosition(glm::vec3 position);
     PerlinMapInformation getMapInfo();
     
-    vec3 getPosition();
+    glm::vec3 getPosition();
     Shader *getShaderPointer();
     
     void render();
@@ -50,8 +48,8 @@ public:
 private:
     PerlinNoise noise;
     
-    vec3 *vertices;
-    vec2 *texCoords;
+    glm::vec3 *vertices;
+    glm::vec2 *texCoords;
     
     GLuint VAO;
     ArrayBuffer vertex;
@@ -67,8 +65,8 @@ private:
     float freq, multiplier;
     int octaves;
     
-    vec3 position;
-    mat4 translate, model;
+    glm::vec3 position;
+    glm::mat4 translate, model;
 };
 
 

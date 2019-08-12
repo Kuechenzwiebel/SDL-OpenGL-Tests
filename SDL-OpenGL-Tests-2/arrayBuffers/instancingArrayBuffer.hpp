@@ -14,15 +14,13 @@
 #include <GL/glew.h>
 #include "arrayBuffer.hpp"
 
-using namespace glm;
-
 class InstancedArrayBuffer {
 public:
-    InstancedArrayBuffer(const vec3 *data, int _amount, int _shaderPos);
+    InstancedArrayBuffer(const glm::vec3 *data, int _amount, int _shaderPos);
     InstancedArrayBuffer();
     ~InstancedArrayBuffer();
     
-    void setData(const vec3 *data, int _amount, int _shaderPos);
+    void setData(const glm::vec3 *data, int _amount, int _shaderPos);
     
     void activate();
     

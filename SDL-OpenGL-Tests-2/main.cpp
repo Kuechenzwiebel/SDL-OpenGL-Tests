@@ -35,9 +35,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <HG_List/HG_List.h>
+
 using namespace glm;
 
-#include "file.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
 #include "object.hpp"
@@ -128,13 +129,13 @@ int main(int argc, const char * argv[]) {
     std::vector<UIObject*> uiObjects;
     std::vector<PhysicsObject*> physicsObjects;
     
-    File noTexShaderVertexFile("resources/shaders/noTex.vs"), noTexShaderFragmentFile("resources/shaders/noTex.fs");
-    File basicShaderVertexFile("resources/shaders/basic.vs"), basicShaderFragmentFile("resources/shaders/basic.fs");
-    File blurShaderVertexFile("resources/shaders/blur.vs"), blurShaderFragmentFile("resources/shaders/blur.fs");
-    File uiShaderVertexFile("resources/shaders/ui.vs"), uiShaderFragmentFile("resources/shaders/ui.fs");
-    File skyboxShaderVertexFile("resources/shaders/skybox.vs"), skyboxShaderFragmentFile("resources/shaders/skybox.fs");
+    hg::File noTexShaderVertexFile("resources/shaders/noTex.vs"), noTexShaderFragmentFile("resources/shaders/noTex.fs");
+    hg::File basicShaderVertexFile("resources/shaders/basic.vs"), basicShaderFragmentFile("resources/shaders/basic.fs");
+    hg::File blurShaderVertexFile("resources/shaders/blur.vs"), blurShaderFragmentFile("resources/shaders/blur.fs");
+    hg::File uiShaderVertexFile("resources/shaders/ui.vs"), uiShaderFragmentFile("resources/shaders/ui.fs");
+    hg::File skyboxShaderVertexFile("resources/shaders/skybox.vs"), skyboxShaderFragmentFile("resources/shaders/skybox.fs");
     
-    string spaceSkyboxLocation[6] = {
+    std::string spaceSkyboxLocation[6] = {
         "resources/textures/skyboxes/skybox2RT.png",
         "resources/textures/skyboxes/skybox2LF.png",
         "resources/textures/skyboxes/skybox2UP.png",
@@ -261,15 +262,13 @@ int main(int argc, const char * argv[]) {
     inv.setTexture(Texture("resources/textures/inv.png"));
     inv.setPixelSize(vec2(512.0f, 256.0f));
     
-    
-    
     Cube skybox(&skyboxShader, &skyboxData);
     skybox.setCubemap(spaceSkybox);
     
     Cube sharpCube(&basicShader, &renderData);
     sharpCube.setTexture(grassTexture);
     sharpCube.setPosition(vec3(0.0f));
-    sharpCube.setRotation(angleAxis(radians(45.0f), vec3(0.0f, 0.0f, 1.0f)));
+    sharpCube.setRotation(angleAxis(radians(45.0f), vec3(0.0f, 1.0f, 1.0f)));
     objects.push_back(std::make_pair(0.0f, &sharpCube));
     
     OBB obb1(sharpCube.getPosition(), sharpCube.getRotation(), sharpCube.getSize());
@@ -328,7 +327,7 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &jupiterDecomp2));
     
     
-    for(list<pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
+    for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
         it->first = length2(cam.getPosition() - it->second->getPosition());
     }
     
@@ -338,11 +337,9 @@ int main(int argc, const char * argv[]) {
     
     PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
     CollisionInfo in = sphereSphereCollision(&s1, &s2);
-    cout << in.collision << "\t" << in.collisionDepth << endl;
     printVec3(in.collisionPosition);
-    
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
-    cout << in.collision << endl;
+    
     
 //    physicsObjects.push_back(&s1);
     cam.setCollisonObjectsPointer(&physicsObjects);
@@ -438,7 +435,7 @@ int main(int argc, const char * argv[]) {
         }
         
         if(cam.getPosition() != oldCamPos) {
-            for(list<pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
+            for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
                 if(it->second == &map) {
                     it->first = INFINITY;
                 }
@@ -459,9 +456,7 @@ int main(int argc, const char * argv[]) {
         skybox.render();
         glDepthMask(GL_TRUE);
         
-//        earth.addRotation(angleAxis(radians(0.001f), vec3(0.0f, 1.0f, 0.0f)));
-        
-        for(list<pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
+        for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
             
             it->second->getShaderPointer()->use();
             if(it->second == &bluredCube) {

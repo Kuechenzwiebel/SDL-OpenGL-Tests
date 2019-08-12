@@ -8,16 +8,16 @@
 
 #include "camera.hpp"
 
-Camera::Camera(vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(vec3(0.0f, 1.0f, 0.0f)), front(vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
 position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse) {
     this->updateCameraVectors();
 }
 
 void Camera::updateCameraVectors() {
-    front.x = cos(radians(this->yaw)) * cos(radians(this->pitch));
-    front.y = sin(radians(this->pitch));
-    front.z = sin(radians(this->yaw)) * cos(radians(this->pitch));
+    front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+    front.y = sin(glm::radians(this->pitch));
+    front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     
     this->front = normalize(front);
     this->right = normalize(cross(this->front, this->up));
@@ -59,12 +59,12 @@ void Camera::processInput() {
     }
     
     float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
-    /*
+    
     if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.y < info.width / 2.0f && theoreticalPosition.y > -(info.width / 2.0f)) {
         if(theoreticalPosition.y < mapPosition) {
             theoreticalPosition.y = mapPosition;
         }
-    }*/
+    }
     
     if(!collisionHappend) {
         for(int i = 0; i < objects->size(); i++) {
@@ -137,23 +137,23 @@ void Camera::setMouseSensitivity(float sensitivity) {
     }
 }
 
-mat4 Camera::getViewMatrix() {
-    return lookAt(this->position, this->position + this->front, this->up);
+glm::mat4 Camera::getViewMatrix() {
+    return glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
 float Camera::getZoom() {
     return this->zoom;
 }
 
-vec3 Camera::getPosition() {
+glm::vec3 Camera::getPosition() {
     return this->position;
 }
 
-vec3 Camera::getFront() {
+glm::vec3 Camera::getFront() {
     return this->front;
 }
 
-void Camera::setPosition(vec3 pos) {
+void Camera::setPosition(glm::vec3 pos) {
     this->position = pos;
 }
 

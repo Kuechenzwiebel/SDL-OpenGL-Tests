@@ -22,22 +22,20 @@
 
 #include "../utils.hpp"
 
-using namespace glm;
-
 class OBB: public PhysicsObject {
 public:
-    OBB(vec3 middlePosition, quat rotation, vec3 size);
+    OBB(glm::vec3 middlePosition, glm::quat rotation, glm::vec3 size);
     
-    vec3 getMiddlePosition();
-    quat getRotation();
-    vec3 getSize();
+    glm::vec3 getMiddlePosition();
+    glm::quat getRotation();
+    glm::vec3 getSize();
     
 private:
-    vec3 middlePosition;
-    quat rotation;
-    vec3 size;
+    glm::vec3 middlePosition;
+    glm::quat rotation;
+    glm::vec3 size;
 };
 
-CollisionInfo obbPointCollision(OBB* obb1, vec3 point);
+CollisionInfo obbPointCollision(OBB* obb1, glm::vec3 point);
 
 #endif /* obb_hpp */

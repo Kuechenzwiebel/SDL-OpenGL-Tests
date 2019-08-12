@@ -20,15 +20,15 @@ void PointLightSource::render() {
     }
 }
 
-void PointLightSource::setPosition(vec3 position) {
+void PointLightSource::setPosition(glm::vec3 position) {
     this->position = position;
     
     if(renderObject != nullptr) {
-        renderObject->setPosition(position - renderObject->getSize() * vec3(0.5f));
+        renderObject->setPosition(position - renderObject->getSize() * glm::vec3(0.5f));
     }
 }
 
-vec3 PointLightSource::getPosition() {
+glm::vec3 PointLightSource::getPosition() {
     return position;
 }
 

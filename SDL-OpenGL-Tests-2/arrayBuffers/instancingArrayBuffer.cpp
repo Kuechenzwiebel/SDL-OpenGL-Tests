@@ -8,7 +8,7 @@
 
 #include "instancingArrayBuffer.hpp"
 
-InstancedArrayBuffer::InstancedArrayBuffer(const vec3 *data, int _amount, int _shaderPos):
+InstancedArrayBuffer::InstancedArrayBuffer(const glm::vec3 *data, int _amount, int _shaderPos):
 shaderPos(_shaderPos), amount(_amount) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -25,7 +25,7 @@ InstancedArrayBuffer::~InstancedArrayBuffer() {
     glDeleteBuffers(1, &buffer);
 }
 
-void InstancedArrayBuffer::setData(const vec3 *data, int _amount, int _shaderPos) {
+void InstancedArrayBuffer::setData(const glm::vec3 *data, int _amount, int _shaderPos) {
     if(dataSet == false) {
         amount = _amount;
         shaderPos = _shaderPos;

@@ -26,8 +26,6 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-using namespace glm;
-
 class Cube: public Object {
 public:
     Cube(Shader *shader, const RenderData *data);
@@ -38,14 +36,14 @@ public:
     void setTexture(Texture texture);
     void setCubemap(Cubemap texture);
     
-    void setPosition(vec3 position);
-    void setSize(vec3 size);
-    void setRotation(quat rotation);
-    void addRotation(quat rotation);
+    void setPosition(glm::vec3 position);
+    void setSize(glm::vec3 size);
+    void setRotation(glm::quat rotation);
+    void addRotation(glm::quat rotation);
     
-    vec3 getPosition();
-    quat getRotation();
-    vec3 getSize();
+    glm::vec3 getPosition();
+    glm::quat getRotation();
+    glm::vec3 getSize();
     
     Shader *getShaderPointer();
     
@@ -58,11 +56,11 @@ private:
     Shader *shader;
     const RenderData *data;
     
-    vec3 position;
-    quat rotation;
-    vec3 size;
+    glm::vec3 position;
+    glm::quat rotation;
+    glm::vec3 size;
     
-    mat4 translate, rotate, scale, model;
+    glm::mat4 translate, rotate, scale, model;
 };
 
 #endif /* cube_hpp */

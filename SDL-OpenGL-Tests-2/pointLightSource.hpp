@@ -26,23 +26,21 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-using namespace glm;
-
 class PointLightSource: public Object {
 public:
     PointLightSource(Object *renderObject, Shader *shaders, int shaderAmount);
     
     void render();
     
-    void setPosition(vec3 position);
-    vec3 getPosition();
+    void setPosition(glm::vec3 position);
+    glm::vec3 getPosition();
     
 private:
     Object *renderObject;
     Shader *shaders;
     int shaderAmount;
     
-    vec3 position;
+    glm::vec3 position;
 };
 
 #endif /* pointLightSource_hpp */

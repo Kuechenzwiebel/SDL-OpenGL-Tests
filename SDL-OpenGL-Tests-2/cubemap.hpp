@@ -15,21 +15,19 @@
 #include <SOIL2/SOIL2.h>
 #include <iostream>
 
-using namespace std;
-
 class Cubemap {
 public:
-    Cubemap(string* fileNames);
+    Cubemap(std::string* fileNames);
     
     GLuint getData();
     
-    void setTextureName(string name);
-    string getTextureName();
+    void setTextureName(std::string name);
+    std::string getTextureName();
     
 private:
     GLuint tex;
     int texWidth, texHeight;
-    string textureName;
+    std::string textureName;
 };
 
 #endif /* cubemap_hpp */

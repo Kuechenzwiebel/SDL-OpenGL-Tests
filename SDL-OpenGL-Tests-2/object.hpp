@@ -15,16 +15,14 @@
 
 #include "shader.hpp"
 
-using namespace glm;
-
 class Object {
 public:
     Object();
     
     virtual void render();
-    virtual vec3 getPosition();
-    virtual vec3 getSize();
-    virtual void setPosition(vec3 position);
+    virtual glm::vec3 getPosition();
+    virtual glm::vec3 getSize();
+    virtual void setPosition(glm::vec3 position);
     virtual Shader* getShaderPointer();
 };
 

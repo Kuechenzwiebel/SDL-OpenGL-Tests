@@ -8,7 +8,7 @@
 
 #include "texture.hpp"
 
-Texture::Texture(string fileName):
+Texture::Texture(std::string fileName):
 textureName("tex") {
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
@@ -30,11 +30,11 @@ GLuint Texture::getData() {
     return tex;
 }
 
-void Texture::setTextureName(string name) {
+void Texture::setTextureName(std::string name) {
     textureName = name;
 }
 
-string Texture::getTextureName() {
+std::string Texture::getTextureName() {
     return textureName;
 }
 

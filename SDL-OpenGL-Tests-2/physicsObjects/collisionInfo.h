@@ -11,12 +11,10 @@
 
 #include <glm/glm.hpp>
 
-using namespace glm;
-
 struct CollisionInfo {
     bool collision;
     float collisionDepth;
-    vec3 collisionPosition;
+    glm::vec3 collisionPosition;
 };
 
 #endif /* collisionInfo_h */

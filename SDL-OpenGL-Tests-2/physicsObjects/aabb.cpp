@@ -8,20 +8,20 @@
 
 #include "aabb.hpp"
 
-AABB::AABB(vec3 p1, vec3 p2):
+AABB::AABB(glm::vec3 p1, glm::vec3 p2):
 p1(min(p1, p2)), p2(max(p1, p2)) {
     type = AABB_t;
 }
 
-vec3 AABB::getP1() {
+glm::vec3 AABB::getP1() {
     return p1;
 }
 
-vec3 AABB::getP2() {
+glm::vec3 AABB::getP2() {
     return p2;
 }
 
-CollisionInfo aabbPointCollision(AABB* aabb1, vec3 point) {
+CollisionInfo aabbPointCollision(AABB* aabb1, glm::vec3 point) {
     CollisionInfo info;
     if(point.x >= aabb1->getP1().x && point.x <= aabb1->getP2().x &&
        point.y >= aabb1->getP1().y && point.y <= aabb1->getP2().y &&

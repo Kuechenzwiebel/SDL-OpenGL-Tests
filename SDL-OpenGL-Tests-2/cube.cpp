@@ -8,140 +8,140 @@
 
 #include "cube.hpp"
 
-vec3 cubeVertices[] = {
-    vec3(-0.5f, -0.5f, -0.5f),
-    vec3(0.5f, -0.5f, -0.5f),
-    vec3(0.5f,  0.5f, -0.5f),
-    vec3(0.5f,  0.5f, -0.5f),
-    vec3(-0.5f,  0.5f, -0.5f),
-    vec3(-0.5f, -0.5f, -0.5f),
+glm::vec3 cubeVertices[] = {
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(-0.5f,  0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f, -0.5f),
     
-    vec3(-0.5f, -0.5f,  0.5f),
-    vec3(0.5f, -0.5f,  0.5f),
-    vec3(0.5f,  0.5f,  0.5f),
-    vec3(0.5f,  0.5f,  0.5f),
-    vec3(-0.5f,  0.5f,  0.5f),
-    vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f),
     
-    vec3(-0.5f,  0.5f,  0.5f),
-    vec3(-0.5f,  0.5f, -0.5f),
-    vec3(-0.5f, -0.5f, -0.5f),
-    vec3(-0.5f, -0.5f, -0.5f),
-    vec3(-0.5f, -0.5f,  0.5f),
-    vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
     
-    vec3(0.5f,  0.5f,  0.5f),
-    vec3(0.5f,  0.5f, -0.5f),
-    vec3(0.5f, -0.5f, -0.5f),
-    vec3(0.5f, -0.5f, -0.5f),
-    vec3(0.5f, -0.5f,  0.5f),
-    vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
     
-    vec3(-0.5f, -0.5f, -0.5f),
-    vec3(0.5f, -0.5f, -0.5f),
-    vec3(0.5f, -0.5f,  0.5f),
-    vec3(0.5f, -0.5f,  0.5f),
-    vec3(-0.5f, -0.5f,  0.5f),
-    vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(-0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f, -0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f, -0.5f,  0.5f),
+    glm::vec3(-0.5f, -0.5f, -0.5f),
     
-    vec3(-0.5f,  0.5f, -0.5f),
-    vec3(0.5f,  0.5f, -0.5f),
-    vec3(0.5f,  0.5f,  0.5f),
-    vec3(0.5f,  0.5f,  0.5f),
-    vec3(-0.5f,  0.5f,  0.5f),
-    vec3(-0.5f,  0.5f, -0.5f)
+    glm::vec3(-0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f, -0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f,  0.5f),
+    glm::vec3(-0.5f,  0.5f, -0.5f)
 };
 
-vec3 cubeNormals[] = {
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f, -0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f, -0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f, -0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
+glm::vec3 cubeNormals[] = {
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
     
-    triangleNormal(vec3(-0.5f, -0.5f,  0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f,  0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f,  0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f)),
     
-    triangleNormal(vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f)),
     
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f), vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
     
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f, -0.5f), vec3(0.5f, -0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f,  0.5f), vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-0.5f, -0.5f, -0.5f)),
     
-    triangleNormal(vec3(-0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(-0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f, -0.5f), vec3(0.5f,  0.5f,  0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f)),
-    triangleNormal(vec3(0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f,  0.5f), vec3(-0.5f,  0.5f, -0.5f))
+    triangleNormal(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.5f,  0.5f,  0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f)),
+    triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f))
 };
 
-vec2 cubeTexCoords[] = {
-    vec2(0.0f,  0.0f),
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  1.0f),
-    vec2(1.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  0.0f),
+glm::vec2 cubeTexCoords[] = {
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  0.0f),
 
-    vec2(0.0f,  0.0f),
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  1.0f),
-    vec2(1.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  0.0f),
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  0.0f),
     
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  0.0f),
-    vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
  
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  1.0f),
-    vec2(0.0f,  0.0f),
-    vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
    
-    vec2(0.0f,  1.0f),
-    vec2(1.0f,  1.0f),
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  0.0f),
-    vec2(0.0f,  0.0f),
-    vec2(0.0f,  1.0f),
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(0.0f,  1.0f),
    
-    vec2(0.0f,  1.0f),
-    vec2(1.0f,  1.0f),
-    vec2(1.0f,  0.0f),
-    vec2(1.0f,  0.0f),
-    vec2(0.0f,  0.0f),
-    vec2(0.0f,  1.0f)
+    glm::vec2(0.0f,  1.0f),
+    glm::vec2(1.0f,  1.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(1.0f,  0.0f),
+    glm::vec2(0.0f,  0.0f),
+    glm::vec2(0.0f,  1.0f)
 };
 
 Cube::Cube(Shader *shader, const RenderData *data):
-shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(vec3(0.0f)), size(vec3(1.0f)), data(data), tex(""), map(NULL) {
+shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), data(data), tex(""), map(NULL) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -187,38 +187,39 @@ void Cube::setCubemap(Cubemap texture) {
 }
 
 
-void Cube::setPosition(vec3 position) {
-    translate = glm::translate(mat4(1), position);
+void Cube::setPosition(glm::vec3 position) {
+    translate = glm::translate(glm::mat4(1), position);
     model = translate * rotate * scale;
     this->position = position;
 }
 
-void Cube::setRotation(quat rotation) {
-    rotate = toMat4(rotation);
+void Cube::setRotation(glm::quat rotation) {
+//    rotate = toMat4(rotation);
+    rotate = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 1.0f));
     model = translate * rotate * scale;
     this->rotation = rotation;
 }
 
-void Cube::addRotation(quat rotation) {
+void Cube::addRotation(glm::quat rotation) {
     this->rotation = rotation * this->rotation;
     setRotation(this->rotation);
 }
 
-void Cube::setSize(vec3 size) {
-    scale = glm::scale(mat4(1), size);
+void Cube::setSize(glm::vec3 size) {
+    scale = glm::scale(glm::mat4(1), size);
     model = translate * rotate * scale;
     this->size = size;
 }
 
-vec3 Cube::getPosition() {
+glm::vec3 Cube::getPosition() {
     return position;
 }
 
-quat Cube::getRotation() {
+glm::quat Cube::getRotation() {
     return rotation;
 }
 
-vec3 Cube::getSize() {
+glm::vec3 Cube::getSize() {
     return size;
 }
 

@@ -24,8 +24,6 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-using namespace glm;
-
 class Sphere: public Object {
 public:
     Sphere(Shader *shader, const RenderData *data);
@@ -39,16 +37,16 @@ public:
     
     void render();
     
-    void setPosition(vec3 position);
+    void setPosition(glm::vec3 position);
     void setRadius(float radius);
-    void setRotation(quat rotation);
-    void addRotation(quat rotation);
-    void setModelMat(mat4 model);
+    void setRotation(glm::quat rotation);
+    void addRotation(glm::quat rotation);
+    void setModelMat(glm::mat4 model);
     
     void setTexture(Texture texture);
     
-    vec3 getPosition();
-    quat getRotation();
+    glm::vec3 getPosition();
+    glm::quat getRotation();
     float getRadius();
     
     Shader *getShaderPointer();
@@ -56,18 +54,18 @@ public:
 protected:
     Texture tex;
     
-    vec3 position;
-    quat rotation;
+    glm::vec3 position;
+    glm::quat rotation;
     float radius;
     
-    mat4 translate, rotate, scale, model;
+    glm::mat4 translate, rotate, scale, model;
     
     GLuint VAO;
     ArrayBuffer vertex, colorBuffer;
     
     
-    vec3 *sphereVertices;
-    vec2 *sphereUVs;
+    glm::vec3 *sphereVertices;
+    glm::vec2 *sphereUVs;
     
     float resolution;
     

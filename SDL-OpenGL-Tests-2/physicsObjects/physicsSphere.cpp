@@ -8,7 +8,7 @@
 
 #include "physicsSphere.hpp"
 
-PhysicsSphere::PhysicsSphere(float radius, vec3 position):
+PhysicsSphere::PhysicsSphere(float radius, glm::vec3 position):
 radius(radius), position(position) {
     type = SPHERE_t;
 }
@@ -17,7 +17,7 @@ float PhysicsSphere::getRadius() {
     return radius;
 }
 
-vec3 PhysicsSphere::getPosition() {
+glm::vec3 PhysicsSphere::getPosition() {
     return position;
 }
 
@@ -40,7 +40,7 @@ CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2) {
     return info;
 }
 
-CollisionInfo spherePointCollision(PhysicsSphere *sp1, vec3 point) {
+CollisionInfo spherePointCollision(PhysicsSphere *sp1, glm::vec3 point) {
     CollisionInfo info;
     
     float centerDistance = length((point - sp1->getPosition()));

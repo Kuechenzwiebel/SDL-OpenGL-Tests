@@ -26,7 +26,7 @@ shaderPos(_shaderPos), shaderSize(1), varType(GL_INT) {
     dataSet = true;
 }
 
-DynamicArrayBuffer::DynamicArrayBuffer(const vec3 *data, int dataSize, int _shaderPos):
+DynamicArrayBuffer::DynamicArrayBuffer(const glm::vec3 *data, int dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(Vector3D), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -35,7 +35,7 @@ shaderPos(_shaderPos), shaderSize(Vector3D), varType(GL_FLOAT) {
     dataSet = true;
 }
 
-DynamicArrayBuffer::DynamicArrayBuffer(const vec2 *data, int dataSize, int _shaderPos):
+DynamicArrayBuffer::DynamicArrayBuffer(const glm::vec2 *data, int dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(Vector2D), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -48,7 +48,7 @@ DynamicArrayBuffer::DynamicArrayBuffer() {
     
 }
 
-void DynamicArrayBuffer::setData(const vec3 *data, int dataSize, int _shaderPos) {
+void DynamicArrayBuffer::setData(const glm::vec3 *data, int dataSize, int _shaderPos) {
     varType = GL_FLOAT;
     shaderPos = _shaderPos;
     shaderSize = Vector3D;
@@ -59,7 +59,7 @@ void DynamicArrayBuffer::setData(const vec3 *data, int dataSize, int _shaderPos)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void DynamicArrayBuffer::setData(const vec2 *data, int dataSize, int _shaderPos) {
+void DynamicArrayBuffer::setData(const glm::vec2 *data, int dataSize, int _shaderPos) {
     varType = GL_FLOAT;
     shaderPos = _shaderPos;
     shaderSize = Vector2D;
@@ -83,13 +83,13 @@ void DynamicArrayBuffer::setData(const GLfloat *data, int dataSize, int _shaderP
     dataSet = true;
 }
 
-void DynamicArrayBuffer::changeData(const vec3 *data, int dataSize, int _shaderPos) {
+void DynamicArrayBuffer::changeData(const glm::vec3 *data, int dataSize, int _shaderPos) {
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void DynamicArrayBuffer::changeData(const vec2 *data, int dataSize, int _shaderPos) {
+void DynamicArrayBuffer::changeData(const glm::vec2 *data, int dataSize, int _shaderPos) {
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
