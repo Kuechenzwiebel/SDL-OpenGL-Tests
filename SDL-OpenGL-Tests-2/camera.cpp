@@ -54,7 +54,7 @@ void Camera::processInput() {
     
     collisionHappend = false;
     
-    if(!collisionHappendLastFrame) {
+    if(!collisionHappend) {
 //        theoreticalPosition.y -= 1.0f * *deltaTime;
     }
     

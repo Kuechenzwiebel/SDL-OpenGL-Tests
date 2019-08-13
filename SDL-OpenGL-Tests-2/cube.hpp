@@ -9,13 +9,13 @@
 #ifndef cube_hpp
 #define cube_hpp
 
+#define GLM_SWIZZLE
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <SDL2/SDL.h>
 
@@ -38,11 +38,10 @@ public:
     
     void setPosition(glm::vec3 position);
     void setSize(glm::vec3 size);
-    void setRotation(glm::quat rotation);
-    void addRotation(glm::quat rotation);
+    void setRotation(glm::vec4 rotation);
     
     glm::vec3 getPosition();
-    glm::quat getRotation();
+    glm::vec4 getRotation();
     glm::vec3 getSize();
     
     Shader *getShaderPointer();
@@ -57,7 +56,7 @@ private:
     const RenderData *data;
     
     glm::vec3 position;
-    glm::quat rotation;
+    glm::vec4 rotation;
     glm::vec3 size;
     
     glm::mat4 translate, rotate, scale, model;

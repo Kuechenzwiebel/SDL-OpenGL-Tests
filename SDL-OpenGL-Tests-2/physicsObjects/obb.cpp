@@ -8,7 +8,7 @@
 
 #include "obb.hpp"
 
-OBB::OBB(glm::vec3 middlePosition, glm::quat rotation, glm::vec3 size):
+OBB::OBB(glm::vec3 middlePosition, glm::vec4 rotation, glm::vec3 size):
 middlePosition(middlePosition), rotation(rotation), size(size) {
     type = OBB_t;
 }
@@ -17,7 +17,7 @@ glm::vec3 OBB::getMiddlePosition() {
     return middlePosition;
 }
 
-glm::quat OBB::getRotation() {
+glm::vec4 OBB::getRotation() {
     return rotation;
 }
 
@@ -29,29 +29,23 @@ glm::vec3 OBB::getSize() {
 CollisionInfo obbPointCollision(OBB* obb1, glm::vec3 point) {
     CollisionInfo info;
     AABB aabb(obb1->getMiddlePosition() - obb1->getSize() / 2.0f, obb1->getMiddlePosition() + obb1->getSize() / 2.0f);
-    glm::quat newRotation = obb1->getRotation();
-    newRotation.w = -newRotation.w;
-    glm::mat4 rotate(1), scale(1), translate(1), model(1);
-    rotate = glm::rotate(glm::mat4(1), glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 1.0f));;
-    scale = glm::scale(glm::mat4(1), obb1->getSize());
-    translate = glm::translate(glm::mat4(1), obb1->getMiddlePosition());
-    model = translate * rotate * scale;
     
-    glm::vec3 newPoint = model * glm::vec4(point, 1.0f);
-    /*
-    printf("Min: ");
-    printVec3(aabb.getP1());
-    printf("Max: ");
-    printVec3(aabb.getP2());
-    printf("Point: ");
-    printVec3(newPoint);
-    printf("\n");
-    */
+    glm::mat4 rotate(1), translate(1);
+    rotate = glm::rotate(glm::mat4(1), -obb1->getRotation().w, obb1->getRotation().xyz());
+//    translate = glm::translate(glm::mat4(1), point);
     
-//    glm::vec3 eulerAngle =
-    printVec3(degrees(eulerAngles(newRotation)));
+    glm::vec3 newPoint = translate * rotate * glm::vec4(point, 1.0f);
+//    newPoint = newPoint + point;
     
     info.collision = aabbPointCollision(&aabb, newPoint).collision;
+    
+    printf("P1: ");
+    printVec3(aabb.getP1());
+    printf("P2: ");
+    printVec3(aabb.getP2());
+    printf("P0: ");
+    printVec3(newPoint);
+    printf("\n");
     
     return info;
 }

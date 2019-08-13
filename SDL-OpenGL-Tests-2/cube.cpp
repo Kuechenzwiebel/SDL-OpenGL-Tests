@@ -193,16 +193,10 @@ void Cube::setPosition(glm::vec3 position) {
     this->position = position;
 }
 
-void Cube::setRotation(glm::quat rotation) {
-//    rotate = toMat4(rotation);
-    rotate = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+void Cube::setRotation(glm::vec4 rotation) {
+    rotate = glm::rotate(glm::mat4(1), rotation.w, rotation.xyz());
     model = translate * rotate * scale;
     this->rotation = rotation;
-}
-
-void Cube::addRotation(glm::quat rotation) {
-    this->rotation = rotation * this->rotation;
-    setRotation(this->rotation);
 }
 
 void Cube::setSize(glm::vec3 size) {
@@ -215,7 +209,7 @@ glm::vec3 Cube::getPosition() {
     return position;
 }
 
-glm::quat Cube::getRotation() {
+glm::vec4 Cube::getRotation() {
     return rotation;
 }
 

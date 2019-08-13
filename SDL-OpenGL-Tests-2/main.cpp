@@ -267,18 +267,21 @@ int main(int argc, const char * argv[]) {
     
     Cube sharpCube(&basicShader, &renderData);
     sharpCube.setTexture(grassTexture);
-    sharpCube.setPosition(vec3(0.0f));
-    sharpCube.setRotation(angleAxis(radians(45.0f), vec3(0.0f, 1.0f, 1.0f)));
+//    sharpCube.setPosition(vec3(5.0f));
+    sharpCube.setSize(vec3(2.0f));
+    sharpCube.setRotation(vec4(0.0f, 1.0f, 1.0f, radians(45.0f)));
     objects.push_back(std::make_pair(0.0f, &sharpCube));
     
-    OBB obb1(sharpCube.getPosition(), sharpCube.getRotation(), sharpCube.getSize());
-    physicsObjects.push_back(&obb1);
+    
     
     Cube bluredCube(&blurShader, &renderData);
     bluredCube.setTexture(grassTexture);
     bluredCube.setPosition(vec3(2.0f, 1.0f, -3.0f));
-    bluredCube.setRotation(angleAxis(radians(45.0f), vec3(1.0f, 1.0f, 0.0f)));
+    bluredCube.setRotation(vec4(1.0f, 1.0f, 1.0f, radians(45.0f)));
     objects.push_back(std::make_pair(0.0f, &bluredCube));
+    
+    OBB obb1(sharpCube.getPosition(), sharpCube.getRotation(), sharpCube.getSize());
+    physicsObjects.push_back(&obb1);
     
     Cube farCube(&basicShader, &renderData);
     farCube.setTexture(grassTexture);

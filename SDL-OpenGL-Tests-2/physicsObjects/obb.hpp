@@ -24,15 +24,15 @@
 
 class OBB: public PhysicsObject {
 public:
-    OBB(glm::vec3 middlePosition, glm::quat rotation, glm::vec3 size);
+    OBB(glm::vec3 middlePosition, glm::vec4 rotation, glm::vec3 size);
     
     glm::vec3 getMiddlePosition();
-    glm::quat getRotation();
+    glm::vec4 getRotation();
     glm::vec3 getSize();
     
 private:
     glm::vec3 middlePosition;
-    glm::quat rotation;
+    glm::vec4 rotation;
     glm::vec3 size;
 };
 
