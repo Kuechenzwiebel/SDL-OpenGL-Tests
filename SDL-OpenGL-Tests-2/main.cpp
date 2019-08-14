@@ -267,7 +267,7 @@ int main(int argc, const char * argv[]) {
     
     Cube sharpCube(&basicShader, &renderData);
     sharpCube.setTexture(grassTexture);
-//    sharpCube.setPosition(vec3(5.0f));
+    sharpCube.setPosition(vec3(5.0f));
     sharpCube.setSize(vec3(2.0f));
     sharpCube.setRotation(vec4(0.0f, 1.0f, 1.0f, radians(45.0f)));
     objects.push_back(std::make_pair(0.0f, &sharpCube));

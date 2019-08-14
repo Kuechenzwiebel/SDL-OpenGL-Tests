@@ -32,12 +32,12 @@ CollisionInfo obbPointCollision(OBB* obb1, glm::vec3 point) {
     
     glm::mat4 rotate(1), translate(1);
     rotate = glm::rotate(glm::mat4(1), -obb1->getRotation().w, obb1->getRotation().xyz());
-//    translate = glm::translate(glm::mat4(1), point);
+    translate = glm::translate(glm::mat4(1), obb1->getMiddlePosition());
     
-    glm::vec3 newPoint = translate * rotate * glm::vec4(point, 1.0f);
+    glm::vec3 newPoint = translate * rotate * glm::vec4(point - obb1->getMiddlePosition(), 1.0f);
 //    newPoint = newPoint + point;
     
-    info.collision = aabbPointCollision(&aabb, newPoint).collision;
+    info = aabbPointCollision(&aabb, newPoint);
     
     printf("P1: ");
     printVec3(aabb.getP1());
