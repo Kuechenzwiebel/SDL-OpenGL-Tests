@@ -9,13 +9,13 @@
 #ifndef pointLightSource_hpp
 #define pointLightSource_hpp
 
+#define GLM_SWIZZLE
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/normal.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <SDL2/SDL.h>
 

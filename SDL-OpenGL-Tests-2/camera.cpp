@@ -55,7 +55,7 @@ void Camera::processInput() {
     collisionHappend = false;
     
     if(!collisionHappend) {
-//        theoreticalPosition.y -= 1.0f * *deltaTime;
+        theoreticalPosition.y -= 1.0f * *deltaTime;
     }
     
     float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;

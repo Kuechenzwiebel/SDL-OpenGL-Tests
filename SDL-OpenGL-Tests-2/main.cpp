@@ -28,8 +28,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/normal.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -69,6 +67,7 @@ bool checkMouse = false;
 bool invOpen = false;
 bool opticsOn = false;
 bool wireframe = false;
+bool render = true;
 
 int main(int argc, const char * argv[]) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -86,7 +85,7 @@ int main(int argc, const char * argv[]) {
     
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
     
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
@@ -150,7 +149,7 @@ int main(int argc, const char * argv[]) {
     Shader uiShader(uiShaderVertexFile.readFile(), uiShaderFragmentFile.readFile());
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
     
-    Camera cam(vec3(0.0f, 2.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
+    Camera cam(vec3(0.0f, 20.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
     
     RenderData renderData;
     RenderData skyboxData;
@@ -292,11 +291,7 @@ int main(int argc, const char * argv[]) {
     Sphere sphere(&basicShader, &renderData);
     sphere.setPosition(vec3(0.0f));
     sphere.setTexture(gradientTexture);
-//    objects.push_back(std::make_pair(0.0f, &sphere));
-    
-    UIText text("Pi = 3.141592f\nTest", &uiShader, &uiData);
-    text.setSize(vec2(0.5f));
-//    uiObjects.push_back(&text);
+    objects.push_back(std::make_pair(0.0f, &sphere));
     
     UIText fpsText("", &uiShader, &uiData);
     fpsText.setSize(vec2(0.25f));
@@ -343,9 +338,14 @@ int main(int argc, const char * argv[]) {
     printVec3(in.collisionPosition);
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     
-    
-//    physicsObjects.push_back(&s1);
+    physicsObjects.push_back(&s1);
     cam.setCollisonObjectsPointer(&physicsObjects);
+    
+    compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+    declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+    compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+    declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+    fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -361,7 +361,6 @@ int main(int argc, const char * argv[]) {
         lastFrame = currentFrame;
         
         SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1.0f / fps) + "    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
-        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
         
         while(SDL_PollEvent(&windowEvent) != 0) {
             if(windowEvent.type == SDL_QUIT) {
@@ -372,6 +371,24 @@ int main(int argc, const char * argv[]) {
                 if(windowEvent.button.button == SDL_BUTTON_LEFT) {
                     checkMouse = true;
                 }
+            }
+            
+            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+                declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+                compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+                declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+                fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+                
+                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+            }
+            
+            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+                render = true;
+            }
+            
+            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+                render = false;
             }
             
             if(windowEvent.type == SDL_MOUSEWHEEL) {
@@ -397,106 +414,98 @@ int main(int argc, const char * argv[]) {
                 swapBool(&wireframe);
             }
             
+            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_ESCAPE) {
+                swapBool(&render);
+            }
+            
             
             if(!invOpen) {
                 cam.processMouseInput();
             }
         }
         
-        if(!invOpen) {
-            cam.processInput();
-        }
-        
-        
-        if(checkMouse) {
-            SDL_SetRelativeMouseMode(SDL_TRUE);
-        }
-        else {
-            SDL_SetRelativeMouseMode(SDL_FALSE);
-        }
-        
-        if(wireframe == true) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
-        
-        
-        
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glViewport(0, 0, windowWidth, windowHeight);
-        if(!opticsOn) {
-            projection = infinitePerspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.005f);
-            cam.setMouseSensitivity(0.25f);
-        }
-        else {
-            projection = perspective(radians(zoom), float(windowWidth) / float(windowHeight), 0.5f, 1000.0f);
-            cam.setMouseSensitivity(0.0025f);
-        }
-        
-        if(cam.getPosition() != oldCamPos) {
-            for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
-                if(it->second == &map) {
-                    it->first = INFINITY;
-                }
-                else {
-                    it->first = length2(cam.getPosition() - it->second->getPosition());
-                }
+        if(render) {
+            if(!invOpen) {
+                cam.processInput();
             }
             
-            objects.sort();
-        }
-        
-        uiProjection = ortho(-1.0f * float(windowWidth) / 1000.0f, 1.0f * float(windowWidth) / 1000.0f, -1.0f * float(windowHeight) / 1000.0f, 1.0f * float(windowHeight) / 1000.0f);
-        renderData.viewMat = cam.getViewMatrix();
-        skyboxData.viewMat = mat4(mat3(cam.getViewMatrix()));
-        
-        glDepthMask(GL_FALSE);
-        skyboxShader.use();
-        skybox.render();
-        glDepthMask(GL_TRUE);
-        
-        for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
             
-            it->second->getShaderPointer()->use();
-            if(it->second == &bluredCube) {
-                blurShader.sendFloat(1.0 / 300.0f * zoom, "offset");
+            if(checkMouse) {
+                SDL_SetRelativeMouseMode(SDL_TRUE);
             }
-            it->second->render();
-        }
-        
-        
-        glClear(GL_DEPTH_BUFFER_BIT);
-        
-        uiShader.use();
-        
-       
-        compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
-        declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
-        compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
-        declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
-        fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
-        
-        
-        for(int i = 0; i < uiObjects.size(); i++) {
-            uiObjects[i]->render();
-        }
-        
-        if(invOpen) {
-            inv.render();
-        }
-        
-        SDL_GL_SwapWindow(window);
-        glFlush();
-        
-        frame ++;
-        oldCamPos = cam.getPosition();
-        
-        if(fps > 70) {
-            SDL_Delay(16);
+            else {
+                SDL_SetRelativeMouseMode(SDL_FALSE);
+            }
+            
+            if(wireframe == true) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            }
+            else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            
+            
+            
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            glViewport(0, 0, windowWidth, windowHeight);
+            if(!opticsOn) {
+                projection = infinitePerspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.005f);
+                cam.setMouseSensitivity(0.25f);
+            }
+            else {
+                projection = perspective(radians(zoom), float(windowWidth) / float(windowHeight), 0.5f, 1000.0f);
+                cam.setMouseSensitivity(0.0025f);
+            }
+            
+            if(cam.getPosition() != oldCamPos) {
+                for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
+                    if(it->second == &map) {
+                        it->first = INFINITY;
+                    }
+                    else {
+                        it->first = length2(cam.getPosition() - it->second->getPosition());
+                    }
+                }
+                
+                objects.sort();
+            }
+            
+            uiProjection = ortho(-1.0f * float(windowWidth) / 1000.0f, 1.0f * float(windowWidth) / 1000.0f, -1.0f * float(windowHeight) / 1000.0f, 1.0f * float(windowHeight) / 1000.0f);
+            renderData.viewMat = cam.getViewMatrix();
+            skyboxData.viewMat = mat4(mat3(cam.getViewMatrix()));
+            
+            
+            glDepthMask(GL_FALSE);
+            skyboxShader.use();
+            skybox.render();
+            glDepthMask(GL_TRUE);
+            
+            
+            for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
+                it->second->getShaderPointer()->use();
+                it->second->render();
+            }
+            
+            
+            
+            glClear(GL_DEPTH_BUFFER_BIT);
+            
+            uiShader.use();
+            for(int i = 0; i < uiObjects.size(); i++) {
+                uiObjects[i]->render();
+            }
+            
+            if(invOpen) {
+                inv.render();
+            }
+            
+            frame ++;
+            oldCamPos = cam.getPosition();
+            
+            SDL_GL_SwapWindow(window);
+            glFlush();
         }
     }
     

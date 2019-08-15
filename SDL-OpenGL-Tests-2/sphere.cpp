@@ -155,15 +155,10 @@ void Sphere::setPosition(glm::vec3 position) {
     this->position = position;
 }
 
-void Sphere::setRotation(glm::quat rotation) {
-    rotate = toMat4(rotation);
+void Sphere::setRotation(glm::vec4 rotation) {
+    rotate = glm::translate(glm::mat4(1), position);
     model = translate * rotate * scale;
     this->rotation = rotation;
-}
-
-void Sphere::addRotation(glm::quat rotation) {
-    this->rotation = rotation * this->rotation;
-    setRotation(this->rotation);
 }
 
 void Sphere::setRadius(float radius) {
@@ -180,7 +175,7 @@ glm::vec3 Sphere::getPosition() {
     return position;
 }
 
-glm::quat Sphere::getRotation() {
+glm::vec4 Sphere::getRotation() {
     return rotation;
 }
 

@@ -26,11 +26,11 @@ CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2) {
     CollisionInfo info;
     
     float minDistance = sp1->getRadius() + sp2->getRadius();
-    float centerDistance = length((sp2->getPosition() - sp1->getPosition()));
+    float centerDistance = glm::length((sp2->getPosition() - sp1->getPosition()));
     
-    if(centerDistance < minDistance) {
+    if(centerDistance < minDistance * minDistance) {
         info.collision = true;
-        info.collisionDepth = -centerDistance - minDistance;
+        info.collisionDepth = -centerDistance - minDistance * minDistance;
         info.collisionPosition = sp2->getPosition() - 0.41f;
     }
     else {
@@ -43,7 +43,7 @@ CollisionInfo sphereSphereCollision(PhysicsSphere *sp1, PhysicsSphere *sp2) {
 CollisionInfo spherePointCollision(PhysicsSphere *sp1, glm::vec3 point) {
     CollisionInfo info;
     
-    float centerDistance = length((point - sp1->getPosition()));
+    float centerDistance = glm::length((point - sp1->getPosition()));
     
     if(centerDistance < sp1->getRadius()) {
         info.collision = true;

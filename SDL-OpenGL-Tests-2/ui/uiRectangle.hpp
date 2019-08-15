@@ -9,12 +9,12 @@
 #ifndef ui_rectangle_hpp
 #define ui_rectangle_hpp
 
+#define GLM_SWIZZLE
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <iostream>
 
@@ -51,15 +51,12 @@ public:
     void setYTexOffset(float *y);
     void setXTexMultiplier(float x);
     void setYTexMultiplier(float y);
-    void setRotation(glm::quat rotation);
-    void addRotation(glm::quat rotation);
     
     void changeUVs(const glm::vec2 *UVs);
     
     Texture getTexture();
     glm::vec2 getPosition();
     glm::vec2 getSize();
-    glm::quat getRotation();
     glm::mat4 getModelMat();
     
     float getXTexOffset();
@@ -75,12 +72,11 @@ private:
     
     glm::vec2 position;
     glm::vec2 size;
-    glm::quat rotation;
     
     glm::vec2 texOffset;
     glm::vec2 texMultiplier;
     
-    glm::mat4 rotate, translate, scale, model;
+    glm::mat4 translate, scale, model;
     
     Shader *shader;
     const RenderData *data;

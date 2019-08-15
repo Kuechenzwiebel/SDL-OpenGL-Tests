@@ -9,12 +9,12 @@
 #ifndef sphere_hpp
 #define sphere_hpp
 
+#define GLM_SWIZZLE
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <string>
 #include <SDL2/SDL.h>
 
@@ -39,14 +39,14 @@ public:
     
     void setPosition(glm::vec3 position);
     void setRadius(float radius);
-    void setRotation(glm::quat rotation);
-    void addRotation(glm::quat rotation);
+    void setRotation(glm::vec4 rotation);
+    void addRotation(glm::vec4 rotation);
     void setModelMat(glm::mat4 model);
     
     void setTexture(Texture texture);
     
     glm::vec3 getPosition();
-    glm::quat getRotation();
+    glm::vec4 getRotation();
     float getRadius();
     
     Shader *getShaderPointer();
@@ -55,7 +55,7 @@ protected:
     Texture tex;
     
     glm::vec3 position;
-    glm::quat rotation;
+    glm::vec4 rotation;
     float radius;
     
     glm::mat4 translate, rotate, scale, model;

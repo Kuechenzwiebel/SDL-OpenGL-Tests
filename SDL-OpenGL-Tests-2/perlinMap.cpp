@@ -19,7 +19,7 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f))
     float x = -(width / 2.0f), y = -(width / 2.0f);
     
     freq = 4.0f; multiplier = 2.0f;
-    octaves = 10;
+    octaves = 7;
     
     for(long i = 0; i < width * width * 6 * (1.0f / triangleWidth); i += 6) {
         if(x >= width / 2.0f) {

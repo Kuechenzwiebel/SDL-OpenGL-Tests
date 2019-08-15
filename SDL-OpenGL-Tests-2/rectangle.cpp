@@ -65,15 +65,10 @@ void Rectangle::setPosition(glm::vec3 position) {
     this->position = position;
 }
 
-void Rectangle::setRotation(glm::quat rotation) {
-    rotate = toMat4(rotation);
+void Rectangle::setRotation(glm::vec4 rotation) {
+    rotate = glm::rotate(glm::mat4(1), rotation.w, rotation.xyz());
     model = translate * rotate * scale;
     this->rotation = rotation;
-}
-
-void Rectangle::addRotation(glm::quat rotation) {
-    this->rotation = rotation * this->rotation;
-    setRotation(this->rotation);
 }
 
 void Rectangle::setSize(glm::vec3 size) {
@@ -86,7 +81,7 @@ glm::vec3 Rectangle::getPosition() {
     return position;
 }
 
-glm::quat Rectangle::getRotation() {
+glm::vec4 Rectangle::getRotation() {
     return rotation;
 }
 
