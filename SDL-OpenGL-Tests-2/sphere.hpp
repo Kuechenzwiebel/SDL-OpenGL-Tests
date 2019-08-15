@@ -24,23 +24,21 @@
 #include "utils.hpp"
 #include "object.hpp"
 
+const float sphereResolution = 10.0f;
+///sphereArraySize can be calculated using this formula: round((360.0f / sphereResolution) * (360.0f / sphereResolution) * 6 * 0.5)
+const int sphereArraySize = 3888;
+
+
 class Sphere: public Object {
 public:
     Sphere(Shader *shader, const RenderData *data);
     ~Sphere();
-    
-    Sphere(const Sphere& other);
-    Sphere& operator=(Sphere other);
-    Sphere(Sphere &&other);
-    
-    friend void swap(Sphere &first, Sphere &second);
     
     void render();
     
     void setPosition(glm::vec3 position);
     void setRadius(float radius);
     void setRotation(glm::vec4 rotation);
-    void addRotation(glm::vec4 rotation);
     void setModelMat(glm::mat4 model);
     
     void setTexture(Texture texture);
@@ -63,11 +61,8 @@ protected:
     GLuint VAO;
     ArrayBuffer vertex, colorBuffer;
     
-    
-    glm::vec3 *sphereVertices;
-    glm::vec2 *sphereUVs;
-    
-    float resolution;
+    glm::vec3 sphereVertices[sphereArraySize];
+    glm::vec2 sphereUVs[sphereArraySize];
     
     Shader *shader;
     const RenderData *data;
