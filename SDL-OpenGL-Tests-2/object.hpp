@@ -18,6 +18,7 @@
 class Object {
 public:
     Object();
+    virtual ~Object();
     
     virtual void render();
     virtual glm::vec3 getPosition();

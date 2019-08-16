@@ -9,7 +9,7 @@
 #include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
 position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse) {
     this->updateCameraVectors();
 }
@@ -48,10 +48,6 @@ void Camera::processInput() {
         }
     }
     
-    if(keystates[SDL_SCANCODE_ESCAPE]) {
-        *checkMouse = false;
-    }
-    
     collisionHappend = false;
     
     if(!collisionHappend) {
@@ -60,7 +56,7 @@ void Camera::processInput() {
     
     float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
     
-    if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.y < info.width / 2.0f && theoreticalPosition.y > -(info.width / 2.0f)) {
+    if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
         if(theoreticalPosition.y < mapPosition) {
             theoreticalPosition.y = mapPosition;
         }
@@ -108,9 +104,9 @@ void Camera::processInput() {
 
 void Camera::processMouseInput() {
     if(*checkMouse) {
-        if((*windowEvent).type == SDL_MOUSEMOTION) {
-            this->yaw += (*windowEvent).motion.xrel * this->mouseSensitivity;
-            this->pitch -= (*windowEvent).motion.yrel * this->mouseSensitivity;
+        if(windowEvent->type == SDL_MOUSEMOTION) {
+            this->yaw += windowEvent->motion.xrel * this->mouseSensitivity;
+            this->pitch -= windowEvent->motion.yrel * this->mouseSensitivity;
             
             if (this->pitch > 89.0f) {
                 this->pitch = 89.0f;

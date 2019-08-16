@@ -73,10 +73,7 @@ void UIText::setText(std::string s) {
                 rows++;
                 
                 rects[i].set(shader, data, uiTextUVs);
-                rects[i].setXTexOffset(0.0f);
-                rects[i].setTexture(charSet);
                 rects[i].setSize(glm::vec2(0.0f, 0.0f));
-                rects[i].setPosition(glm::vec2(-100.0f, -100.0f));
                 continue;
             }
             
@@ -99,7 +96,9 @@ void UIText::setText(std::string s) {
 
 void UIText::render() {
     for(int i = 0; i < rects.size(); i++) {
-        rects[i].render();
+        if(rects[i].getSize() != glm::vec2(0.0f, 0.0f)) {
+            rects[i].render();
+        }
     }
 }
 

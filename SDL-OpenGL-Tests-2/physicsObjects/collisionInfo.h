@@ -9,6 +9,7 @@
 #ifndef collisionInfo_h
 #define collisionInfo_h
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 
 struct CollisionInfo {

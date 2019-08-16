@@ -12,6 +12,10 @@ Object::Object() {
     
 }
 
+Object::~Object() {
+    
+}
+
 void Object::render() {
     
 }

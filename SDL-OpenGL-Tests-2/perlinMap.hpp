@@ -10,6 +10,7 @@
 #define perlinMap_hpp
 
 #include <stdio.h>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -48,8 +49,8 @@ public:
 private:
     PerlinNoise noise;
     
-    glm::vec3 *vertices;
-    glm::vec2 *texCoords;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> texCoords;
     
     GLuint VAO;
     ArrayBuffer vertex;

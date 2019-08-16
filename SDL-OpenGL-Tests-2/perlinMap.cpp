@@ -9,17 +9,16 @@
 #include "perlinMap.hpp"
 
 PerlinMap::PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data):
-tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth) {
+tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth), vertices(6 * width * width * (1.0f / triangleWidth)), texCoords(6 * width * width * (1.0f / triangleWidth)) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
-    vertices = new glm::vec3[6 * width * width * (1.0f / triangleWidth)];
-    texCoords = new glm::vec2[6 * width * width * (1.0f / triangleWidth)];
-    
     float x = -(width / 2.0f), y = -(width / 2.0f);
     
-    freq = 4.0f; multiplier = 2.0f;
-    octaves = 7;
+    freq = 5.0f; multiplier = 2.0f;
+    octaves = 2;
+    
+    printf("%lu\n", vertices.capacity());
     
     for(long i = 0; i < width * width * 6 * (1.0f / triangleWidth); i += 6) {
         if(x >= width / 2.0f) {
@@ -44,8 +43,11 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f))
         x += 1.0f;
     }
     
-    vertex.setData(vertices, sizeof(glm::vec3) * 6 * width * width * (1.0f / triangleWidth), 0);
-    texCoord.setData(texCoords, sizeof(glm::vec2) * 6 * width * width * (1.0f / triangleWidth), 1);
+    vertices.shrink_to_fit();
+    texCoords.shrink_to_fit();
+    
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * 6 * width * width * (1.0f / triangleWidth), 0);
+    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 6 * width * width * (1.0f / triangleWidth), 1);
     
     vertex.activate();
     texCoord.activate();
@@ -67,9 +69,6 @@ PerlinMapInformation PerlinMap::getMapInfo() {
 
 PerlinMap::~PerlinMap() {
     glDeleteVertexArrays(1, &this->VAO);
-    
-    delete [] vertices;
-    delete [] texCoords;
 }
 
 void PerlinMap::render() {

@@ -28,6 +28,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/normal.hpp>
+#include <glm/gtx/norm.hpp>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -57,11 +58,11 @@ using namespace glm;
 #include "perlinMap.hpp"
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
+#include "physicsObjects/ray.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
 
-bool antiAliasing = false;
 bool running = true;
 bool checkMouse = false;
 bool invOpen = false;
@@ -70,7 +71,7 @@ bool wireframe = false;
 bool render = true;
 
 int main(int argc, const char * argv[]) {
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Failed to initialize SDL2");
         return EXIT_FAILURE;
     }
@@ -79,13 +80,10 @@ int main(int argc, const char * argv[]) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    if(antiAliasing) {
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 64);
-    }
     
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     
-    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
     
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
@@ -124,6 +122,8 @@ int main(int argc, const char * argv[]) {
     
     float zoom = 1.0f;
     
+    float runTime = 0.0f;
+    
     std::list<std::pair<float, Object*>> objects;
     std::vector<UIObject*> uiObjects;
     std::vector<PhysicsObject*> physicsObjects;
@@ -150,6 +150,7 @@ int main(int argc, const char * argv[]) {
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
     
     Camera cam(vec3(0.0f, 20.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
+    cam.setCollisonObjectsPointer(&physicsObjects);
     
     RenderData renderData;
     RenderData skyboxData;
@@ -186,7 +187,7 @@ int main(int argc, const char * argv[]) {
     Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
     Texture stoneTexture("resources/textures/stone.png");
     
-    PerlinMap map(420, 100, 1.0f, &basicShader, &renderData);
+    PerlinMap map(420, 50, 1.0f, &basicShader, &renderData);
     map.setTexture(stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setPerlinMapInfo(map.getMapInfo());
@@ -293,9 +294,19 @@ int main(int argc, const char * argv[]) {
     sphere.setTexture(gradientTexture);
     objects.push_back(std::make_pair(0.0f, &sphere));
     
+    UIRectangle crosshair(&uiShader, &uiData);
+    crosshair.setTexture(Texture("resources/textures/crosshair.png"));
+    crosshair.setPixelSize(vec2(25.0f));
+    uiObjects.push_back(&crosshair);
+    
     UIText fpsText("", &uiShader, &uiData);
     fpsText.setSize(vec2(0.25f));
     uiObjects.push_back(&fpsText);
+    
+    UIText rayText("Ray hit:", &uiShader, &uiData);
+    rayText.setSize(vec2(0.25f));
+    rayText.setPixelPosition(vec2(100.0f));
+    uiObjects.push_back(&rayText);
     
     /*
     Sphere earth(&basicShader, &renderData);
@@ -334,18 +345,18 @@ int main(int argc, const char * argv[]) {
     vec3 oldCamPos = cam.getPosition();
     
     PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
-    CollisionInfo in = sphereSphereCollision(&s1, &s2);
-    printVec3(in.collisionPosition);
+    CollisionInfo in = spherePointCollision(&s1, vec3(0.5f, 0.5f, 0.0f));
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     
     physicsObjects.push_back(&s1);
-    cam.setCollisonObjectsPointer(&physicsObjects);
     
     compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
     declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
     compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
     declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+    
+    Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -370,17 +381,18 @@ int main(int argc, const char * argv[]) {
             if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
                 if(windowEvent.button.button == SDL_BUTTON_LEFT) {
                     checkMouse = true;
+                    render = true;
                 }
             }
             
             if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+                
                 compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
                 declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
                 compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
                 declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
                 fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
-                
-                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
             }
             
             if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
@@ -415,7 +427,8 @@ int main(int argc, const char * argv[]) {
             }
             
             if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_ESCAPE) {
-                swapBool(&render);
+                render = false;
+                checkMouse = false;
             }
             
             
@@ -424,17 +437,16 @@ int main(int argc, const char * argv[]) {
             }
         }
         
+        if(checkMouse) {
+            SDL_SetRelativeMouseMode(SDL_TRUE);
+        }
+        else {
+            SDL_SetRelativeMouseMode(SDL_FALSE);
+        }
+        
         if(render) {
             if(!invOpen) {
                 cam.processInput();
-            }
-            
-            
-            if(checkMouse) {
-                SDL_SetRelativeMouseMode(SDL_TRUE);
-            }
-            else {
-                SDL_SetRelativeMouseMode(SDL_FALSE);
             }
             
             if(wireframe == true) {
@@ -462,7 +474,7 @@ int main(int argc, const char * argv[]) {
             if(cam.getPosition() != oldCamPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
                     if(it->second == &map) {
-                        it->first = INFINITY;
+                        it->first = 1000.0f;
                     }
                     else {
                         it->first = length2(cam.getPosition() - it->second->getPosition());
@@ -488,7 +500,30 @@ int main(int argc, const char * argv[]) {
                 it->second->render();
             }
             
+            crosshairRay.setRayStartPosition(cam.getPosition());
+            crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
+            crosshairRay.reset();
             
+            
+            bool rayCollisionHappend = false;
+            
+            for(int i = 0; i < 10; i++) {
+                crosshairRay.step();
+                if(spherePointCollision(&s1, crosshairRay.getRayPosition()).collision) {
+                    rayCollisionHappend = true;
+                    break;
+                }
+//                printVec3(crosshairRay.getRayPosition());
+            }
+            
+            printf("\n");
+            
+            if(rayCollisionHappend) {
+                rayText.setText("Ray hit!");
+            }
+            else {
+                rayText.setText("No ray hit!");
+            }
             
             glClear(GL_DEPTH_BUFFER_BIT);
             
@@ -506,6 +541,8 @@ int main(int argc, const char * argv[]) {
             
             SDL_GL_SwapWindow(window);
             glFlush();
+            
+            runTime += deltaTime;
         }
     }
     

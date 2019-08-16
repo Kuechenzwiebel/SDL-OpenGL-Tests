@@ -9,6 +9,7 @@
 #ifndef aabb_hpp
 #define aabb_hpp
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <stdio.h>
 
