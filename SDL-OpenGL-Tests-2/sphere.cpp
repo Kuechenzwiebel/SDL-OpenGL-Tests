@@ -17,7 +17,7 @@ glm::vec3 sphereSurface(float angleXZ, float angleXY) {
 }
 
 Sphere::Sphere(Shader *shader, const RenderData *data):
-shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), radius(1.0f), rotation(), data(data), tex("") {
+shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), radius(1.0f), rotation(), data(data), tex(nullptr) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -56,14 +56,17 @@ Sphere::~Sphere() {
     glDeleteVertexArrays(1, &this->VAO);
 }
 
-void Sphere::setTexture(Texture texture) {
+void Sphere::setTexture(Texture *texture) {
     this->tex = texture;
 }
 
 void Sphere::render() {
+    vertex.activate();
+    colorBuffer.activate();
+    
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex.getData());
-    shader->sendInt(0, tex.getTextureName());
+    glBindTexture(GL_TEXTURE_2D, tex->getData());
+    shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
     shader->sendMat4(*data->projection, "projection");

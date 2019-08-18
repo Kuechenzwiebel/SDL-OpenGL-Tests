@@ -33,8 +33,8 @@ public:
     
     void render();
     
-    void setTexture(Texture texture);
-    void setCubemap(Cubemap texture);
+    void setTexture(Texture *texture);
+    void setCubemap(Cubemap *texture);
     
     void setPosition(glm::vec3 position);
     void setSize(glm::vec3 size);
@@ -49,8 +49,8 @@ public:
 private:
     GLuint VAO;
     ArrayBuffer vertex, texCoord, normals;
-    Texture tex;
-    Cubemap map;
+    Texture *tex;
+    Cubemap *map;
     
     Shader *shader;
     const RenderData *data;

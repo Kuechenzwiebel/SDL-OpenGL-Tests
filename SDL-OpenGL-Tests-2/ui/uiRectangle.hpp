@@ -40,7 +40,7 @@ public:
     
     void render();
     
-    void setTexture(Texture texture);
+    void setTexture(Texture *texture);
     void setPosition(glm::vec2 position);
     void setSize(glm::vec2 size);
     void setPixelPosition(glm::vec2 position);
@@ -54,7 +54,7 @@ public:
     
     void changeUVs(const glm::vec2 *UVs);
     
-    Texture getTexture();
+    Texture *getTexture();
     glm::vec2 getPosition();
     glm::vec2 getSize();
     glm::mat4 getModelMat();
@@ -68,7 +68,7 @@ private:
     GLuint VAO;
     ArrayBuffer vertex;
     DynamicArrayBuffer texCoord;
-    Texture tex;
+    Texture *tex;
     
     glm::vec2 position;
     glm::vec2 size;

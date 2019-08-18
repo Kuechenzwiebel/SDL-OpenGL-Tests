@@ -9,12 +9,12 @@
 #include "uiText.hpp"
 
 static glm::vec2 uiTextUVs[] = {
-    glm::vec2(0.0f, 0.38671875f),
-    glm::vec2(0.01025390625f, 0.38671875f),
-    glm::vec2(0.01025390625f, 0.6328125f),
-    glm::vec2(0.0f, 0.38671875f),
-    glm::vec2(0.0f, 0.6328125f),
-    glm::vec2(0.01025390625f, 0.6328125f)
+    glm::vec2(0.0f, 0.234375f),
+    glm::vec2(0.01025390625f, 0.234375f),
+    glm::vec2(0.01025390625f, 0.765625f),
+    glm::vec2(0.0f, 0.234375f),
+    glm::vec2(0.0f, 0.765625f),
+    glm::vec2(0.01025390625f, 0.765625f)
 };
 
 UIText::UIText(std::string s, Shader *shader, const RenderData *data):
@@ -32,17 +32,14 @@ s(s), data(data), shader(shader), position(0.0f), size(1.0f), charSet("resources
             rows++;
             
             rects[i].set(shader, data, uiTextUVs);
-            rects[i].setXTexOffset(0.0f);
-            rects[i].setTexture(charSet);
             rects[i].setSize(glm::vec2(0.0f, 0.0f));
-            rects[i].setPosition(glm::vec2(-100.0f, -100.0f));
             continue;
         }
         
         texOffset = (char(s[i]) - 32) * 0.01025390625f;
         rects[i].set(shader, data, uiTextUVs);
         rects[i].setXTexOffset(texOffset);
-        rects[i].setTexture(charSet);
+        rects[i].setTexture(&charSet);
         rects[i].setSize(pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
         rects[i].setPosition(pixelPosToUIRect(glm::vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
         
@@ -80,7 +77,7 @@ void UIText::setText(std::string s) {
             texOffset = (char(s[i]) - 32) * 0.01025390625f;
             rects[i].set(shader, data, uiTextUVs);
             rects[i].setXTexOffset(texOffset);
-            rects[i].setTexture(charSet);
+            rects[i].setTexture(&charSet);
             rects[i].setSize(pixelSizeToUIRect(glm::vec2(charWidth, charHeight)));
             rects[i].setPosition(pixelPosToUIRect(glm::vec2(cols * charWidth, -rows * charHeight), rects[i].getSize()));
             

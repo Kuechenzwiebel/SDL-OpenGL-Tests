@@ -27,7 +27,7 @@ static glm::vec2 rectangleTextures[] = {
 };
 
 Rectangle::Rectangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), tex(""), data(data) {
+shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), tex(nullptr), data(data) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -42,9 +42,12 @@ Rectangle::~Rectangle() {
 }
 
 void Rectangle::render() {
+    vertex.activate();
+    texCoord.activate();
+    
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex.getData());
-    shader->sendInt(0, tex.getTextureName());
+    glBindTexture(GL_TEXTURE_2D, tex->getData());
+    shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
     shader->sendMat4(*data->projection, "projection");
@@ -55,7 +58,7 @@ void Rectangle::render() {
     glBindVertexArray(0);
 }
 
-void Rectangle::setTexture(Texture texture) {
+void Rectangle::setTexture(Texture *texture) {
     tex = texture;
 }
 

@@ -27,7 +27,7 @@ static glm::vec2 uiRectangleTextures[] = {
 };
 
 UIRectangle::UIRectangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(uiRectangleTextures, 6 * sizeof(glm::vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)),  noXTexOffset(true), noYTexOffset(true) {
+shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(uiRectangleTextures, 6 * sizeof(glm::vec2), 1), tex(nullptr), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)),  noXTexOffset(true), noYTexOffset(true) {
     
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
@@ -39,7 +39,7 @@ shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), tex
 }
 
 UIRectangle::UIRectangle(Shader *shader, const RenderData *data, const glm::vec2 *customUVs):
-shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(customUVs, 6 * sizeof(glm::vec2), 1), tex(""), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
+shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), texCoord(customUVs, 6 * sizeof(glm::vec2), 1), tex(nullptr), data(data), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
     
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
@@ -51,7 +51,7 @@ shader(shader), vertex(uiRectangleVertices, sizeof(uiRectangleVertices), 0), tex
 }
 
 UIRectangle::UIRectangle():
-shader(nullptr), tex(""), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
+shader(nullptr), tex(nullptr), position(0.0f), size(1.0f), model(1), translate(1), scale(1), texMultiplier(glm::vec2(1.0f)), noXTexOffset(true), noYTexOffset(true) {
     
 }
 
@@ -92,9 +92,14 @@ UIRectangle::~UIRectangle() {
 }
 
 void UIRectangle::render() {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex.getData());
-    shader->sendInt(0, tex.getTextureName());
+    vertex.activate();
+    texCoord.activate();
+    
+    if(tex != nullptr) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, tex->getData());
+        shader->sendInt(0, tex->getTextureName());
+    }
     
     glBindVertexArray(VAO);
     
@@ -166,11 +171,11 @@ void UIRectangle::setYTexOffset(float y) {
     noYTexOffset = false;
 }
 
-void UIRectangle::setTexture(Texture texture) {
+void UIRectangle::setTexture(Texture *texture) {
     this->tex = texture;
 }
 
-Texture UIRectangle::getTexture() {
+Texture* UIRectangle::getTexture() {
     return tex;
 }
 

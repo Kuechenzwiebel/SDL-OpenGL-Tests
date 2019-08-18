@@ -141,7 +141,7 @@ glm::vec2 cubeTexCoords[] = {
 };
 
 Cube::Cube(Shader *shader, const RenderData *data):
-shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), data(data), tex(""), map(NULL) {
+shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), data(data), tex(nullptr), map(nullptr) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -157,15 +157,20 @@ Cube::~Cube() {
 }
 
 void Cube::render() {
-    if(tex.getData()) {
+    vertex.activate();
+    texCoord.activate();
+    normals.activate();
+    
+    if(this->tex != nullptr) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, tex.getData());
-        shader->sendInt(0, tex.getTextureName());
+        glBindTexture(GL_TEXTURE_2D, tex->getData());
+        shader->sendInt(0, tex->getTextureName());
     }
-    else if(map.getData()) {
+
+    if(this->map != nullptr) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, tex.getData());
-        shader->sendInt(0, tex.getTextureName());
+        glBindTexture(GL_TEXTURE_CUBE_MAP, map->getData());
+        shader->sendInt(0, map->getTextureName());
     }
     
     
@@ -178,11 +183,11 @@ void Cube::render() {
     glBindVertexArray(0);
 }
 
-void Cube::setTexture(Texture texture) {
+void Cube::setTexture(Texture *texture) {
     this->tex = texture;
 }
 
-void Cube::setCubemap(Cubemap texture) {
+void Cube::setCubemap(Cubemap *texture) {
     this->map = texture;
 }
 

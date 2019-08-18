@@ -17,9 +17,14 @@
 #include <SOIL2/SOIL2.h>
 #include <glm/glm.hpp>
 
+enum TextureType {
+    TEXTURE_GENERATE_MIPMAP,
+    TEXTURE_NO_MIP_MAP
+};
+
 class Texture {
 public:
-    Texture(std::string fileName);
+    Texture(std::string fileName, TextureType type = TEXTURE_GENERATE_MIPMAP);
     
     GLuint getData();
     

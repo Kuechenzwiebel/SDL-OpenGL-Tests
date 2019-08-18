@@ -41,7 +41,7 @@ public:
     void setRotation(glm::vec4 rotation);
     void setModelMat(glm::mat4 model);
     
-    void setTexture(Texture texture);
+    void setTexture(Texture *texture);
     
     glm::vec3 getPosition();
     glm::vec4 getRotation();
@@ -50,7 +50,7 @@ public:
     Shader *getShaderPointer();
     
 protected:
-    Texture tex;
+    Texture *tex;
     
     glm::vec3 position;
     glm::vec4 rotation;

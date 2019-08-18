@@ -59,6 +59,7 @@ using namespace glm;
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
 #include "physicsObjects/ray.hpp"
+#include "perlin.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -82,11 +83,10 @@ int main(int argc, const char * argv[]) {
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    
-    SDL_GL_SetSwapInterval(1);
-    
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
+    
+    SDL_GL_SetSwapInterval(1);
 
     if (window == NULL) {
         printf("Failed to open Window");
@@ -115,6 +115,7 @@ int main(int argc, const char * argv[]) {
     int frame = 0;
     long nextMeasure = SDL_GetTicks() + 1e3;
     int fps = 0;
+    unsigned long long totalFrames = 0;
     
     float lastFrame = 0.0f;
     float currentFrame = 0.0f;
@@ -174,27 +175,27 @@ int main(int argc, const char * argv[]) {
     
     Cubemap spaceSkybox(spaceSkyboxLocation);
     
-    Texture debugTexture("resources/textures/debug2.png");
-    Texture atlasTexture("resources/textures/atlas.gif");
-    Texture gradientTexture("resources/textures/grad.png");
-    Texture grassTexture("resources/textures/nebel.jpg");
+    Texture gradientTexture("resources/textures/grad.png", TEXTURE_NO_MIP_MAP);
+    Texture nebulaTexture("resources/textures/nebel.jpg");
     Texture compassHeadbarTex("resources/textures/compassBar2.png");
-    Texture compassSelectorTex("resources/textures/compassSelector.png");
+    Texture compassSelectorTex("resources/textures/compassSelector.png", TEXTURE_NO_MIP_MAP);
     Texture declinationMeterTex("resources/textures/declinationMeter2.png");
-    Texture declinationMeterSelectorTex("resources/textures/declinationMeterSelector.png");
+    Texture declinationMeterSelectorTex("resources/textures/declinationMeterSelector.png", TEXTURE_NO_MIP_MAP);
     Texture jupiterTexture("resources/textures/jupiter.jpg");
-    Texture jupiterTextureDecomp("resources/textures/jupiter.png");
-    Texture jupiterTextureDecomp2("resources/textures/jupiter2.png");
     Texture stoneTexture("resources/textures/stone.png");
+    Texture invTexture("resources/textures/inv.png", TEXTURE_NO_MIP_MAP);
+    Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
+    
     
     PerlinMap map(420, 50, 1.0f, &basicShader, &renderData);
-    map.setTexture(stoneTexture);
+    map.setTexture(&stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setPerlinMapInfo(map.getMapInfo());
     objects.push_back(std::make_pair(0.0f, &map));
     
+    
     Cube aabbTest(&basicShader, &renderData);
-    aabbTest.setTexture(grassTexture);
+    aabbTest.setTexture(&nebulaTexture);
     aabbTest.setPosition(vec3(5.0f, -1.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &aabbTest));
     
@@ -230,43 +231,47 @@ int main(int argc, const char * argv[]) {
         vec2(1.0f, 0.5f + 0.088975694444444f)
     };
     
-    UIRectangle debug(&uiShader, &uiData);
-    debug.setTexture(debugTexture);
-    
     UIRectangle compassBar(&uiShader, &uiData, compassUVs);
-    compassBar.setTexture(compassHeadbarTex);
+    compassBar.setTexture(&compassHeadbarTex);
     compassBar.setXTexOffset(cam.getYawPointer());
     compassBar.setXTexMultiplier(0.00093f * 2.0f);
     compassBar.setPixelSize(vec2(682.0f, 128.0f) / vec2(4.0f));
     uiObjects.push_back(&compassBar);
     
     UIRectangle declinationMeterBar(&uiShader, &uiData, pitchUVs);
-    declinationMeterBar.setTexture(declinationMeterTex);
+    declinationMeterBar.setTexture(&declinationMeterTex);
     declinationMeterBar.setYTexOffset(cam.getPitchPointer());
     declinationMeterBar.setYTexMultiplier(-0.004448784722222f);
     declinationMeterBar.setPixelSize(vec2(128.0f, 410.0f) / vec2(4.0f));
     uiObjects.push_back(&declinationMeterBar);
     
     UIRectangle compassSelector(&uiShader, &uiData);
-    compassSelector.setTexture(compassSelectorTex);
+    compassSelector.setTexture(&compassSelectorTex);
     compassSelector.setPixelSize(vec2(256.0f / 4.0f));
     uiObjects.push_back(&compassSelector);
     
     UIRectangle declinationMeterSelector(&uiShader, &uiData);
-    declinationMeterSelector.setTexture(declinationMeterSelectorTex);
+    declinationMeterSelector.setTexture(&declinationMeterSelectorTex);
     declinationMeterSelector.setPixelSize(vec2(256.0f / 4.0f));
     uiObjects.push_back(&declinationMeterSelector);
     
     
     UIRectangle inv(&uiShader, &uiData);
-    inv.setTexture(Texture("resources/textures/inv.png"));
+    inv.setTexture(&invTexture);
     inv.setPixelSize(vec2(512.0f, 256.0f));
     
+    
+    UIRectangle crosshair(&uiShader, &uiData);
+    crosshair.setTexture(&crosshairTexture);
+    crosshair.setPixelSize(vec2(25.0f));
+    uiObjects.push_back(&crosshair);
+    
+    
     Cube skybox(&skyboxShader, &skyboxData);
-    skybox.setCubemap(spaceSkybox);
+    skybox.setCubemap(&spaceSkybox);
     
     Cube sharpCube(&basicShader, &renderData);
-    sharpCube.setTexture(grassTexture);
+    sharpCube.setTexture(&nebulaTexture);
     sharpCube.setPosition(vec3(5.0f));
     sharpCube.setSize(vec3(2.0f));
     sharpCube.setRotation(vec4(0.0f, 1.0f, 1.0f, radians(45.0f)));
@@ -275,7 +280,7 @@ int main(int argc, const char * argv[]) {
     
     
     Cube bluredCube(&blurShader, &renderData);
-    bluredCube.setTexture(grassTexture);
+    bluredCube.setTexture(&nebulaTexture);
     bluredCube.setPosition(vec3(2.0f, 1.0f, -3.0f));
     bluredCube.setRotation(vec4(1.0f, 1.0f, 1.0f, radians(45.0f)));
     objects.push_back(std::make_pair(0.0f, &bluredCube));
@@ -284,20 +289,17 @@ int main(int argc, const char * argv[]) {
     physicsObjects.push_back(&obb1);
     
     Cube farCube(&basicShader, &renderData);
-    farCube.setTexture(grassTexture);
+    farCube.setTexture(&nebulaTexture);
     farCube.setPosition(vec3(0.0f, 0.0f, -110.0f));
     objects.push_back(std::make_pair(0.0f, &farCube));
     
     
     Sphere sphere(&basicShader, &renderData);
     sphere.setPosition(vec3(0.0f));
-    sphere.setTexture(gradientTexture);
+    sphere.setTexture(&gradientTexture);
     objects.push_back(std::make_pair(0.0f, &sphere));
     
-    UIRectangle crosshair(&uiShader, &uiData);
-    crosshair.setTexture(Texture("resources/textures/crosshair.png"));
-    crosshair.setPixelSize(vec2(25.0f));
-    uiObjects.push_back(&crosshair);
+    
     
     UIText fpsText("", &uiShader, &uiData);
     fpsText.setSize(vec2(0.25f));
@@ -308,32 +310,11 @@ int main(int argc, const char * argv[]) {
     rayText.setPixelPosition(vec2(100.0f));
     uiObjects.push_back(&rayText);
     
-    /*
-    Sphere earth(&basicShader, &renderData);
-    earth.setTexture(atlasTexture);
-    //6371000.0f
-    float earthRadius = 63710.0f;
-    earth.setRadius(earthRadius);
-//    earth.setPosition(vec3(earthRadius, earthRadius, 0.0f));
-    earth.setPosition(vec3(earthRadius * 1.0f / sqrt(2.0f), earthRadius * 1.0f / sqrt(2.0f), 0.0f));
-    earth.setRotation(angleAxis(3.14f, vec3(1.0f, 0.0f, 0.0f)));
-    objects.push_back(std::make_pair(0.0f, &earth));
-    */
     
     Sphere jupiter(&basicShader, &renderData);
-    jupiter.setTexture(jupiterTexture);
+    jupiter.setTexture(&jupiterTexture);
     jupiter.setPosition(vec3(10.0f));
     objects.push_back(std::make_pair(0.0f, &jupiter));
-    
-    Sphere jupiterDecomp(&basicShader, &renderData);
-    jupiterDecomp.setTexture(jupiterTextureDecomp);
-    jupiterDecomp.setPosition(vec3(12.0f, 10.0f, 10.0f));
-    objects.push_back(std::make_pair(0.0f, &jupiterDecomp));
-    
-    Sphere jupiterDecomp2(&basicShader, &renderData);
-    jupiterDecomp2.setTexture(jupiterTextureDecomp2);
-    jupiterDecomp2.setPosition(vec3(14.0f, 10.0f, 10.0f));
-    objects.push_back(std::make_pair(0.0f, &jupiterDecomp2));
     
     
     for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
@@ -372,7 +353,7 @@ int main(int argc, const char * argv[]) {
         lastFrame = currentFrame;
         
         SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1.0f / fps) + "    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
-        
+     
         while(SDL_PollEvent(&windowEvent) != 0) {
             if(windowEvent.type == SDL_QUIT) {
                 running = false;
@@ -387,7 +368,7 @@ int main(int argc, const char * argv[]) {
             
             if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-                
+        
                 compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
                 declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
                 compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
@@ -504,19 +485,15 @@ int main(int argc, const char * argv[]) {
             crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
             crosshairRay.reset();
             
-            
             bool rayCollisionHappend = false;
             
-            for(int i = 0; i < 10; i++) {
+            for(int i = 0; i < 50; i++) {
                 crosshairRay.step();
                 if(spherePointCollision(&s1, crosshairRay.getRayPosition()).collision) {
                     rayCollisionHappend = true;
                     break;
                 }
-//                printVec3(crosshairRay.getRayPosition());
             }
-            
-            printf("\n");
             
             if(rayCollisionHappend) {
                 rayText.setText("Ray hit!");
@@ -543,6 +520,55 @@ int main(int argc, const char * argv[]) {
             glFlush();
             
             runTime += deltaTime;
+            
+            if(totalFrames % 1000 == 0) {
+                printf("SDL errors: %s\n", SDL_GetError());
+                printf("OpenGL error: %u\n", glGetError());
+                
+                switch (glGetError()) {
+                    case GL_NO_ERROR:
+                        printf("No GL error\n");
+                        break;
+                        
+                    case GL_INVALID_ENUM:
+                        printf("Invald GL enum\n");
+                        break;
+                        
+                    case GL_INVALID_VALUE:
+                        printf("Invald GL value\n");
+                        break;
+                        
+                    case GL_INVALID_OPERATION:
+                        printf("Invald GL operation\n");
+                        break;
+                        
+                    case GL_INVALID_FRAMEBUFFER_OPERATION:
+                        printf("Invald GL framebuffer operation\n");
+                        break;
+                        
+                    case GL_OUT_OF_MEMORY:
+                        printf("GL out of memory\n");
+                        break;
+                        
+                    case GL_STACK_UNDERFLOW:
+                        printf("GL stack underflow\n");
+                        break;
+                        
+                    case GL_STACK_OVERFLOW:
+                        printf("GL stack overflow\n");
+                        break;
+                        
+                    default:
+                        printf("Unknown OpenGL error. ID: %u\n", glGetError());
+                        break;
+                }
+                printf("\n\n");
+            }
+            
+            totalFrames++;
+        }
+        else {
+            SDL_Delay(33);
         }
     }
     

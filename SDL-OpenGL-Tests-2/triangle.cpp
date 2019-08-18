@@ -37,6 +37,9 @@ Triangle::~Triangle() {
 }
 
 void Triangle::render() {
+    vertex.activate();
+    texCoord.activate();
+    
     glBindVertexArray(VAO);
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");

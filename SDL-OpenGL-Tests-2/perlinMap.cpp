@@ -9,7 +9,7 @@
 #include "perlinMap.hpp"
 
 PerlinMap::PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data):
-tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth), vertices(6 * width * width * (1.0f / triangleWidth)), texCoords(6 * width * width * (1.0f / triangleWidth)) {
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth), vertices(6 * width * width * (1.0f / triangleWidth)), texCoords(6 * width * width * (1.0f / triangleWidth)) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -17,8 +17,6 @@ tex(""), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f))
     
     freq = 5.0f; multiplier = 2.0f;
     octaves = 2;
-    
-    printf("%lu\n", vertices.capacity());
     
     for(long i = 0; i < width * width * 6 * (1.0f / triangleWidth); i += 6) {
         if(x >= width / 2.0f) {
@@ -72,9 +70,12 @@ PerlinMap::~PerlinMap() {
 }
 
 void PerlinMap::render() {
+    vertex.activate();
+    texCoord.activate();
+    
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex.getData());
-    shader->sendInt(0, tex.getTextureName());
+    glBindTexture(GL_TEXTURE_2D, tex->getData());
+    shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
     shader->sendMat4(*data->projection, "projection");
@@ -85,7 +86,7 @@ void PerlinMap::render() {
     glBindVertexArray(0);
 }
 
-void PerlinMap::setTexture(Texture tex) {
+void PerlinMap::setTexture(Texture *tex) {
     this->tex = tex;
 }
 

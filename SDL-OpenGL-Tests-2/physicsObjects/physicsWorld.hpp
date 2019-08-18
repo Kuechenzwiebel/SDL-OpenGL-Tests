@@ -13,14 +13,15 @@
 #include <vector>
 
 #include "physicsObject.hpp"
+#include "collisionInfo.h"
 
 class PhysicsWorld {
 public:
     PhysicsWorld();
     
     std::vector<PhysicsObject *> objects;
-    
-    
 };
+
+bool worldPointCollision(PhysicsWorld *world, glm::vec3 point);
 
 #endif /* physicsWorld_hpp */

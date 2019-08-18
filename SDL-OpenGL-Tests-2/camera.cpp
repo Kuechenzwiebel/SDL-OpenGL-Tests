@@ -54,7 +54,10 @@ void Camera::processInput() {
         theoreticalPosition.y -= 1.0f * *deltaTime;
     }
     
-    float mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
+    float mapPosition = 0.0f;
+    if(info.noise != nullptr) {
+        mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
+    }
     
     if(theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
         if(theoreticalPosition.y < mapPosition) {
@@ -99,7 +102,6 @@ void Camera::processInput() {
     else {
         position = theoreticalPosition;
     }
-    collisionHappendLastFrame = collisionHappend;
 }
 
 void Camera::processMouseInput() {
@@ -108,12 +110,12 @@ void Camera::processMouseInput() {
             this->yaw += windowEvent->motion.xrel * this->mouseSensitivity;
             this->pitch -= windowEvent->motion.yrel * this->mouseSensitivity;
             
-            if (this->pitch > 89.0f) {
-                this->pitch = 89.0f;
+            if (this->pitch >= 90.0f) {
+                this->pitch = 89.99f;
             }
             
-            if (this->pitch < -89.0f) {
-                this->pitch = -89.0f;
+            if (this->pitch <= -90.0f) {
+                this->pitch = -89.99f;
             }
             
             this->updateCameraVectors();

@@ -33,7 +33,7 @@ public:
     
     void setPosition(glm::vec3 position);
     void setSize(glm::vec3 size);
-    void setTexture(Texture texture);
+    void setTexture(Texture *texture);
     void setRotation(glm::vec4 rotation);
     
     glm::vec3 getPosition();
@@ -46,7 +46,7 @@ private:
     GLuint VAO;
     ArrayBuffer vertex;
     ArrayBuffer texCoord;
-    Texture tex;
+    Texture *tex;
     
     Shader *shader;
     const RenderData *data;

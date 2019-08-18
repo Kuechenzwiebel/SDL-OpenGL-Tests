@@ -36,7 +36,7 @@ public:
     PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data);
     ~PerlinMap();
     
-    void setTexture(Texture tex);
+    void setTexture(Texture *tex);
     void setPosition(glm::vec3 position);
     PerlinMapInformation getMapInfo();
     
@@ -56,7 +56,7 @@ private:
     ArrayBuffer vertex;
     ArrayBuffer texCoord;
     
-    Texture tex;
+    Texture *tex;
     
     Shader *shader;
     const RenderData *data;

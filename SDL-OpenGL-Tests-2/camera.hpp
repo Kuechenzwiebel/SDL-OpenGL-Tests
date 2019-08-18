@@ -26,6 +26,7 @@
 #include "physicsObjects/obb.hpp"
 
 #include "perlinMap.hpp"
+#include "perlin.hpp"
 
 enum CameraMovement {
     FORWARD,
@@ -80,7 +81,6 @@ private:
     std::vector<PhysicsObject*> *objects;
     PerlinMapInformation info;
     bool collisionHappend;
-    bool collisionHappendLastFrame;
 };
 
 #endif /* camera_hpp */
