@@ -60,6 +60,7 @@ using namespace glm;
 #include "physicsObjects/obb.hpp"
 #include "physicsObjects/ray.hpp"
 #include "perlin.hpp"
+#include "physicsObjects/physicsWorld.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -127,7 +128,7 @@ int main(int argc, const char * argv[]) {
     
     std::list<std::pair<float, Object*>> objects;
     std::vector<UIObject*> uiObjects;
-    std::vector<PhysicsObject*> physicsObjects;
+    PhysicsWorld physicsWorld;
     
     hg::File noTexShaderVertexFile("resources/shaders/noTex.vs"), noTexShaderFragmentFile("resources/shaders/noTex.fs");
     hg::File basicShaderVertexFile("resources/shaders/basic.vs"), basicShaderFragmentFile("resources/shaders/basic.fs");
@@ -151,7 +152,7 @@ int main(int argc, const char * argv[]) {
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
     
     Camera cam(vec3(0.0f, 20.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
-    cam.setCollisonObjectsPointer(&physicsObjects);
+    cam.objects = &physicsWorld;
     
     RenderData renderData;
     RenderData skyboxData;
@@ -200,7 +201,7 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &aabbTest));
     
     AABB aabb1(vec3(4.5f, -1.5f, -0.5f), vec3(5.5f, -0.5f, 0.5f));
-    physicsObjects.push_back(&aabb1);
+    physicsWorld.objects.push_back(&aabb1);
     
     Triangle tri(&noTexShader, &renderData);
     tri.setPosition(vec3(0.0f, 0.0f, -1.5f));
@@ -286,12 +287,17 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &bluredCube));
     
     OBB obb1(sharpCube.getPosition(), sharpCube.getRotation(), sharpCube.getSize());
-    physicsObjects.push_back(&obb1);
+    physicsWorld.objects.push_back(&obb1);
+    
+    OBB obb2(bluredCube.getPosition(), bluredCube.getRotation(), bluredCube.getSize());
+    physicsWorld.objects.push_back(&obb2);
+    
     
     Cube farCube(&basicShader, &renderData);
     farCube.setTexture(&nebulaTexture);
     farCube.setPosition(vec3(0.0f, 0.0f, -110.0f));
     objects.push_back(std::make_pair(0.0f, &farCube));
+    
     
     
     Sphere sphere(&basicShader, &renderData);
@@ -329,7 +335,7 @@ int main(int argc, const char * argv[]) {
     CollisionInfo in = spherePointCollision(&s1, vec3(0.5f, 0.5f, 0.0f));
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     
-    physicsObjects.push_back(&s1);
+    physicsWorld.objects.push_back(&s1);
     
     compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
     declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
@@ -338,6 +344,7 @@ int main(int argc, const char * argv[]) {
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
+    ReducedCollisionInfo crosshairRayInfo;
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -485,17 +492,18 @@ int main(int argc, const char * argv[]) {
             crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
             crosshairRay.reset();
             
-            bool rayCollisionHappend = false;
+            crosshairRayInfo.collision = false;
+            crosshairRayInfo.index = 0;
             
             for(int i = 0; i < 50; i++) {
                 crosshairRay.step();
-                if(spherePointCollision(&s1, crosshairRay.getRayPosition()).collision) {
-                    rayCollisionHappend = true;
+                crosshairRayInfo = worldPointCollision(&physicsWorld, crosshairRay.getRayPosition());
+                if(crosshairRayInfo.collision) {
                     break;
                 }
             }
             
-            if(rayCollisionHappend) {
+            if(crosshairRayInfo.collision) {
                 rayText.setText("Ray hit!");
             }
             else {

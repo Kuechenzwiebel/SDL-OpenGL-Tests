@@ -20,6 +20,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SDL2/SDL.h>
 
+#include "physicsObjects/physicsWorld.hpp"
 #include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
 #include "physicsObjects/aabb.hpp"
@@ -56,8 +57,9 @@ public:
     void processMouseInput();
     void processInput();
     
-    void setCollisonObjectsPointer(std::vector<PhysicsObject*> *objects);
     void setPerlinMapInfo(PerlinMapInformation info);
+    
+    PhysicsWorld *objects;
     
 private:
     glm::vec3 position, theoreticalPosition;
@@ -78,7 +80,6 @@ private:
     
     void updateCameraVectors();
     
-    std::vector<PhysicsObject*> *objects;
     PerlinMapInformation info;
     bool collisionHappend;
 };

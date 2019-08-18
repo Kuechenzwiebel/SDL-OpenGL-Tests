@@ -66,33 +66,7 @@ void Camera::processInput() {
     }
     
     if(!collisionHappend) {
-        for(int i = 0; i < objects->size(); i++) {
-            switch ((*objects)[i]->getObjectType()) {
-                case SPHERE_t:
-                    if(spherePointCollision((PhysicsSphere*)((*objects)[i]), theoreticalPosition).collision) {
-                        collisionHappend = true;
-                    }
-                    break;
-                    
-                case AABB_t:
-                    if(aabbPointCollision((AABB*)((*objects)[i]), theoreticalPosition).collision) {
-                        collisionHappend = true;
-                    }
-                    break;
-                    
-                case OBB_t:
-                    if(obbPointCollision((OBB*)((*objects)[i]), theoreticalPosition).collision) {
-                        collisionHappend = true;
-                    }
-                    break;
-                    
-                default:
-                    break;
-            }
-            if(collisionHappend) {
-                break;
-            }
-        }
+        collisionHappend = worldPointCollision(objects, theoreticalPosition).collision;
     }
    
     
@@ -161,10 +135,6 @@ float *Camera::getYawPointer() {
 
 float *Camera::getPitchPointer() {
     return &pitch;
-}
-
-void Camera::setCollisonObjectsPointer(std::vector<PhysicsObject*> *objects) {
-    this->objects = objects;
 }
 
 void Camera::setPerlinMapInfo(PerlinMapInformation info) {

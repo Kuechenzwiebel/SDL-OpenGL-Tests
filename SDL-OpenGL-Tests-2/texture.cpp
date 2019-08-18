@@ -12,7 +12,7 @@ Texture::Texture(std::string fileName, TextureType type):
 textureName("tex") {
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
-    
+
     unsigned char *image = SOIL_load_image(fileName.c_str(), &texWidth, &texHeight, 0, SOIL_LOAD_RGBA);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
     
