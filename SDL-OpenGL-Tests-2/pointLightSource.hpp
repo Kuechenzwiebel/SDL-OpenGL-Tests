@@ -9,7 +9,7 @@
 #ifndef pointLightSource_hpp
 #define pointLightSource_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>

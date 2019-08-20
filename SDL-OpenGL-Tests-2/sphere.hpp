@@ -9,14 +9,13 @@
 #ifndef sphere_hpp
 #define sphere_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
-#include <SDL2/SDL.h>
 
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "shader.hpp"
@@ -49,7 +48,7 @@ public:
     
     Shader *getShaderPointer();
     
-protected:
+private:
     Texture *tex;
     
     glm::vec3 position;
@@ -61,8 +60,8 @@ protected:
     GLuint VAO;
     ArrayBuffer vertex, colorBuffer;
     
-    glm::vec3 sphereVertices[sphereArraySize];
-    glm::vec2 sphereUVs[sphereArraySize];
+    static glm::vec3 sphereVertices[sphereArraySize];
+    static glm::vec2 sphereUVs[sphereArraySize];
     
     Shader *shader;
     const RenderData *data;

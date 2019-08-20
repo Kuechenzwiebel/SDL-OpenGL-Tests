@@ -18,11 +18,6 @@
 #include "obb.hpp"
 #include "collisionInfo.h"
 
-struct ReducedCollisionInfo {
-    bool collision;
-    unsigned int index;
-};
-
 class PhysicsWorld {
 public:
     PhysicsWorld();
@@ -30,6 +25,6 @@ public:
     std::vector<PhysicsObject *> objects;
 };
 
-ReducedCollisionInfo worldPointCollision(PhysicsWorld *world, glm::vec3 point);
+bool worldPointCollision(PhysicsWorld *world, glm::vec3 point);
 
 #endif /* physicsWorld_hpp */

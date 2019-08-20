@@ -66,7 +66,7 @@ void Camera::processInput() {
     }
     
     if(!collisionHappend) {
-        collisionHappend = worldPointCollision(objects, theoreticalPosition).collision;
+        collisionHappend = worldPointCollision(objects, theoreticalPosition);
     }
    
     

@@ -8,7 +8,10 @@
 
 #include "sphere.hpp"
 
-glm::vec3 sphereSurface(float angleXZ, float angleXY) {
+glm::vec3 Sphere::sphereVertices[sphereArraySize];
+glm::vec2 Sphere::sphereUVs[sphereArraySize];
+
+static glm::vec3 sphereSurface(float angleXZ, float angleXY) {
     glm::vec3 pos;
     pos.x = sin(glm::radians(angleXY)) * cos(glm::radians(angleXZ));
     pos.z = sin(glm::radians(angleXY)) * sin(glm::radians(angleXZ));

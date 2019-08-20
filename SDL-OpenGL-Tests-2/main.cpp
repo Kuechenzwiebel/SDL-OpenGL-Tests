@@ -22,7 +22,7 @@
 #include <SDL2/SDL_opengl.h>
 #include <SOIL2/SOIL2.h>
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -88,7 +88,7 @@ int main(int argc, const char * argv[]) {
     SDL_Event windowEvent;
     
     SDL_GL_SetSwapInterval(1);
-
+    
     if (window == NULL) {
         printf("Failed to open Window");
         return EXIT_FAILURE;
@@ -344,7 +344,16 @@ int main(int argc, const char * argv[]) {
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
-    ReducedCollisionInfo crosshairRayInfo;
+    bool crosshairRayCollision = false;
+    
+    
+    Item item(1);
+    Item item2(3);
+    Slot slot;
+    slot += item;
+    slot += item2;
+    
+    exit(0);
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -492,18 +501,17 @@ int main(int argc, const char * argv[]) {
             crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
             crosshairRay.reset();
             
-            crosshairRayInfo.collision = false;
-            crosshairRayInfo.index = 0;
+            crosshairRayCollision = false;
             
             for(int i = 0; i < 50; i++) {
-                crosshairRay.step();
-                crosshairRayInfo = worldPointCollision(&physicsWorld, crosshairRay.getRayPosition());
-                if(crosshairRayInfo.collision) {
+                crosshairRayCollision = worldPointCollision(&physicsWorld, crosshairRay.getRayPosition());
+                if(crosshairRayCollision) {
                     break;
                 }
+                crosshairRay.step();
             }
             
-            if(crosshairRayInfo.collision) {
+            if(crosshairRayCollision) {
                 rayText.setText("Ray hit!");
             }
             else {

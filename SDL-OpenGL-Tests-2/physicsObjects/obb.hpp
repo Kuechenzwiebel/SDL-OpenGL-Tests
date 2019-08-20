@@ -9,7 +9,7 @@
 #ifndef obb_hpp
 #define obb_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

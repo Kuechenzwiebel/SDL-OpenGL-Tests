@@ -8,7 +8,7 @@
 
 #include "cube.hpp"
 
-glm::vec3 cubeVertices[] = {
+static glm::vec3 cubeVertices[] = {
     glm::vec3(-0.5f, -0.5f, -0.5f),
     glm::vec3(0.5f, -0.5f, -0.5f),
     glm::vec3(0.5f,  0.5f, -0.5f),
@@ -52,7 +52,7 @@ glm::vec3 cubeVertices[] = {
     glm::vec3(-0.5f,  0.5f, -0.5f)
 };
 
-glm::vec3 cubeNormals[] = {
+static glm::vec3 cubeNormals[] = {
     triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
     triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
     triangleNormal(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.5f,  0.5f, -0.5f)),
@@ -96,7 +96,7 @@ glm::vec3 cubeNormals[] = {
     triangleNormal(glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-0.5f,  0.5f, -0.5f))
 };
 
-glm::vec2 cubeTexCoords[] = {
+static glm::vec2 cubeTexCoords[] = {
     glm::vec2(0.0f,  0.0f),
     glm::vec2(1.0f,  0.0f),
     glm::vec2(1.0f,  1.0f),

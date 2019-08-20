@@ -9,7 +9,7 @@
 #ifndef ray_hpp
 #define ray_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <stdio.h>

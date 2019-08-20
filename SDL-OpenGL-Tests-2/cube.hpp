@@ -9,7 +9,7 @@
 #ifndef cube_hpp
 #define cube_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -17,7 +17,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
-#include <SDL2/SDL.h>
 
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "shader.hpp"

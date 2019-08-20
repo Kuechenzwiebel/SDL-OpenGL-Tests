@@ -9,7 +9,7 @@
 #ifndef ui_rectangle_hpp
 #define ui_rectangle_hpp
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
