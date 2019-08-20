@@ -6,10 +6,10 @@
 //  Copyright © 2019 Tobias Pflüger. All rights reserved.
 //
 
-#ifndef items_h
-#define items_h
+#ifndef items_hpp
+#define items_hpp
 
-#include "item.h"
+#include "item.hpp"
 
 Item nullItem(0);
 Item compass(1);
@@ -17,4 +17,4 @@ Item pitchMeter(2);
 Item binocularsX45(3);
 
 
-#endif /* items_h */
+#endif /* items_hpp */

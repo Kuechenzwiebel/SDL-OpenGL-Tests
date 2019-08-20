@@ -50,7 +50,7 @@ using namespace glm;
 #include "ui/uiText.hpp"
 #include "cube.hpp"
 #include "cubemap.hpp"
-#include "items/items.h"
+#include "items/items.hpp"
 #include "sphere.hpp"
 #include "physicsObjects/collisionInfo.h"
 #include "physicsObjects/physicsObject.hpp"
