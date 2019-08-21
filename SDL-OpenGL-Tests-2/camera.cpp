@@ -19,8 +19,8 @@ void Camera::updateCameraVectors() {
     front.y = sin(glm::radians(this->pitch));
     front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
     
-    this->front = normalize(front);
-    this->right = normalize(cross(this->front, this->up));
+    this->front = glm::normalize(front);
+    this->right = glm::normalize(cross(this->front, this->up));
 }
 
 void Camera::processInput() {

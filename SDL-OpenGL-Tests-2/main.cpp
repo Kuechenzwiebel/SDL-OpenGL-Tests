@@ -347,13 +347,13 @@ int main(int argc, const char * argv[]) {
     bool crosshairRayCollision = false;
     
     
-    Item item(1);
+    Item item(0);
     Item item2(3);
     Slot slot;
+    slot.renderMiddlePos = vec2(0.0f);
     slot += item;
-    slot += item2;
+//    slot += item2;
     
-    exit(0);
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -529,59 +529,15 @@ int main(int argc, const char * argv[]) {
                 inv.render();
             }
             
+            renderSlot(&slot, &uiShader, &uiData);
+            
             frame ++;
+            totalFrames++;
+            runTime += deltaTime;
             oldCamPos = cam.getPosition();
             
             SDL_GL_SwapWindow(window);
             glFlush();
-            
-            runTime += deltaTime;
-            
-            if(totalFrames % 1000 == 0) {
-                printf("SDL errors: %s\n", SDL_GetError());
-                printf("OpenGL error: %u\n", glGetError());
-                
-                switch (glGetError()) {
-                    case GL_NO_ERROR:
-                        printf("No GL error\n");
-                        break;
-                        
-                    case GL_INVALID_ENUM:
-                        printf("Invald GL enum\n");
-                        break;
-                        
-                    case GL_INVALID_VALUE:
-                        printf("Invald GL value\n");
-                        break;
-                        
-                    case GL_INVALID_OPERATION:
-                        printf("Invald GL operation\n");
-                        break;
-                        
-                    case GL_INVALID_FRAMEBUFFER_OPERATION:
-                        printf("Invald GL framebuffer operation\n");
-                        break;
-                        
-                    case GL_OUT_OF_MEMORY:
-                        printf("GL out of memory\n");
-                        break;
-                        
-                    case GL_STACK_UNDERFLOW:
-                        printf("GL stack underflow\n");
-                        break;
-                        
-                    case GL_STACK_OVERFLOW:
-                        printf("GL stack overflow\n");
-                        break;
-                        
-                    default:
-                        printf("Unknown OpenGL error. ID: %u\n", glGetError());
-                        break;
-                }
-                printf("\n\n");
-            }
-            
-            totalFrames++;
         }
         else {
             SDL_Delay(33);

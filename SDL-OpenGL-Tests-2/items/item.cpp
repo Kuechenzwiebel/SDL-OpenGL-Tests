@@ -11,7 +11,7 @@
 #include "item.hpp"
 
 Item::Item(unsigned int itemID):
-itemID(itemID) {
+itemID(itemID), variation(0) {
     
 }
 
@@ -64,4 +64,14 @@ Slot& Slot::operator+=(Item &item) {
         }
     }
     return *this;
+}
+
+
+void renderSlot(Slot *slot, Shader *shader, RenderData *data) {
+    UIRectangle rect(shader, data);
+    Texture tex("resources/textures/items/t-" + std::to_string(slot->storedType.itemID) + "-" + std::to_string(slot->storedType.variation) + ".png");
+    rect.setTexture(&tex);
+    rect.setPixelSize(glm::vec2(32.0f));
+    rect.setPixelPosition(slot->renderMiddlePos);
+    rect.render();
 }

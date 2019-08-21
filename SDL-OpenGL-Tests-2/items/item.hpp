@@ -11,8 +11,12 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <string>
 
 #include "../texture.hpp"
+#include "../shader.hpp"
+#include "../utils.hpp"
+#include "../ui/uiRectangle.hpp"
 
 struct Item;
 struct Slot;
@@ -43,5 +47,7 @@ struct Slot {
     Slot& operator+(Item &item);
     Slot& operator+=(Item &item);
 };
+
+void renderSlot(Slot *slot, Shader *shader, RenderData *data);
 
 #endif /* item_hpp */
