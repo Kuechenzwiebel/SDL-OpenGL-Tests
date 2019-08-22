@@ -31,12 +31,14 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0
         vertices[i + 4] = glm::vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
         vertices[i + 5] = glm::vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
         
-        texCoords[i + 0] = glm::vec2(0.0f, 0.0f);
-        texCoords[i + 1] = glm::vec2(1.0f, 0.0f);
-        texCoords[i + 2] = glm::vec2(0.0f, 1.0f);
-        texCoords[i + 3] = glm::vec2(1.0f, 1.0f);
-        texCoords[i + 4] = glm::vec2(1.0f, 0.0f);
-        texCoords[i + 5] = glm::vec2(0.0f, 1.0f);
+        texCoords[i + 0] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 0.0f);
+        texCoords[i + 1] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 0.0f);
+        texCoords[i + 2] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 1.0f);
+        texCoords[i + 3] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 1.0f);
+        texCoords[i + 4] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 0.0f);
+        texCoords[i + 5] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 1.0f);
+        
+        printf("%f\n", fmod(x, 2.0f) / 2.0f);
            
         x += 1.0f;
     }
