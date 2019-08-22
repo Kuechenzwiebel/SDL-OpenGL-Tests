@@ -9,7 +9,7 @@
 #include "perlinMap.hpp"
 
 PerlinMap::PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth), vertices(6 * width * width * (1.0f / triangleWidth)), texCoords(6 * width * width * (1.0f / triangleWidth)) {
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), triangleWidth(triangleWidth), vertices(pow((width * (1.0f / triangleWidth)), 2.0f) * 6), texCoords(pow((width * (1.0f / triangleWidth)), 2.0f) * 6) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -18,7 +18,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0
     freq = 5.0f; multiplier = 2.0f;
     octaves = 2;
     
-    for(long i = 0; i < width * width * 6 * (1.0f / triangleWidth); i += 6) {
+    for(long i = 0; i < pow((width * (1.0f / triangleWidth)), 2.0f) * 6 ; i += 6) {
         if(x >= width / 2.0f) {
             x = -(width / 2.0f);
             y += 1.0f;
@@ -31,14 +31,12 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0
         vertices[i + 4] = glm::vec3((x + 1.0f) * triangleWidth, noise.perl((x + 1.0f) * triangleWidth, (y + 0.0f) * triangleWidth, freq, octaves) * multiplier, (y + 0.0f) * triangleWidth);
         vertices[i + 5] = glm::vec3((x + 0.0f) * triangleWidth, noise.perl((x + 0.0f) * triangleWidth, (y + 1.0f) * triangleWidth, freq, octaves) * multiplier, (y + 1.0f) * triangleWidth);
         
-        texCoords[i + 0] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 0.0f);
-        texCoords[i + 1] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 0.0f);
-        texCoords[i + 2] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 1.0f);
-        texCoords[i + 3] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 1.0f);
-        texCoords[i + 4] = glm::vec2(0.5f + (fmod(x, 2.0f) / 2.0f), 0.0f);
-        texCoords[i + 5] = glm::vec2(0.0f + (fmod(x, 2.0f) / 2.0f), 1.0f);
-        
-        printf("%f\n", fmod(x, 2.0f) / 2.0f);
+        texCoords[i + 0] = glm::vec2(0.0f +     (fmod(x, 8.0f) / 8.0f), 0.0f +  (fmod(y, 4.0f) / 4.0f));
+        texCoords[i + 1] = glm::vec2(0.125f +   (fmod(x, 8.0f) / 8.0f), 0.0f +  (fmod(y, 4.0f) / 4.0f));
+        texCoords[i + 2] = glm::vec2(0.0f +     (fmod(x, 8.0f) / 8.0f), 0.25f + (fmod(y, 4.0f) / 4.0f));
+        texCoords[i + 3] = glm::vec2(0.125f +   (fmod(x, 8.0f) / 8.0f), 0.25f + (fmod(y, 4.0f) / 4.0f));
+        texCoords[i + 4] = glm::vec2(0.125f +   (fmod(x, 8.0f) / 8.0f), 0.0f +  (fmod(y, 4.0f) / 4.0f));
+        texCoords[i + 5] = glm::vec2(0.0f +     (fmod(x, 8.0f) / 8.0f), 0.25f + (fmod(y, 4.0f) / 4.0f));
            
         x += 1.0f;
     }
@@ -46,8 +44,8 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), position(glm::vec3(0
     vertices.shrink_to_fit();
     texCoords.shrink_to_fit();
     
-    vertex.setData(vertices.data(), sizeof(glm::vec3) * 6 * width * width * (1.0f / triangleWidth), 0);
-    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 6 * width * width * (1.0f / triangleWidth), 1);
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * pow((width * (1.0f / triangleWidth)), 2.0f) * 6, 0);
+    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * pow((width * (1.0f / triangleWidth)), 2.0f) * 6, 1);
     
     vertex.activate();
     texCoord.activate();
@@ -84,7 +82,7 @@ void PerlinMap::render() {
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");
     
-    glDrawArrays(GL_TRIANGLES, 0, 6 * width * width * (1.0f / triangleWidth));
+    glDrawArrays(GL_TRIANGLES, 0, pow((width * (1.0f / triangleWidth)), 2.0f) * 6);
     glBindVertexArray(0);
 }
 
