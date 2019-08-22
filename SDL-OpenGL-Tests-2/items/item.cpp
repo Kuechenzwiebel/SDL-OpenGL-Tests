@@ -10,7 +10,7 @@
 
 #include "item.hpp"
 
-Item::Item(unsigned int itemID):
+Item::Item(int itemID):
 itemID(itemID), variation(0) {
     
 }
@@ -25,16 +25,35 @@ bool Item::operator==(Item &other) {
 }
 
 
-Slot::Slot():
-storedType(Item(0)) {
-    
+
+Slot::Slot(Shader *shader, RenderData *data):
+storedType(Item(-1)), middlePos(glm::vec2(0.0f)), tex("resources/textures/items/t-" + std::to_string(storedType.itemID) + "-" + std::to_string(storedType.variation) + ".png"), rect(shader, data) {
+    rect.setTexture(&tex);
+    rect.setPixelSize(glm::vec2(32.0f));
 }
+
+
+void Slot::render() {
+    rect.render();
+}
+
+glm::vec2 Slot::getRenderPosition() {
+    return middlePos;
+}
+
+void Slot::setRenderPosition(glm::vec2 pos) {
+    middlePos = pos;
+    rect.setPixelPosition(middlePos);
+}
+
 
 Slot& Slot::operator+(Item &item) {
     if(items.size() == 0) {
         storedType = item;
         items.push_back(item);
         item.storedIn = this;
+        
+        tex = Texture("resources/textures/items/t-" + std::to_string(storedType.itemID) + "-" + std::to_string(storedType.variation) + ".png", TEXTURE_NO_MIP_MAP);
     }
     else {
         if(item == storedType) {
@@ -53,6 +72,8 @@ Slot& Slot::operator+=(Item &item) {
         storedType = item;
         items.push_back(item);
         item.storedIn = this;
+        
+        tex = Texture("resources/textures/items/t-" + std::to_string(storedType.itemID) + "-" + std::to_string(storedType.variation) + ".png", TEXTURE_NO_MIP_MAP);
     }
     else {
         if(item == storedType) {
@@ -64,14 +85,4 @@ Slot& Slot::operator+=(Item &item) {
         }
     }
     return *this;
-}
-
-
-void renderSlot(Slot *slot, Shader *shader, RenderData *data) {
-    UIRectangle rect(shader, data);
-    Texture tex("resources/textures/items/t-" + std::to_string(slot->storedType.itemID) + "-" + std::to_string(slot->storedType.variation) + ".png");
-    rect.setTexture(&tex);
-    rect.setPixelSize(glm::vec2(32.0f));
-    rect.setPixelPosition(slot->renderMiddlePos);
-    rect.render();
 }

@@ -26,9 +26,9 @@ struct IllegalSlotAddition {
 };
 
 struct Item {
-    Item(unsigned int itemID);
+    Item(int itemID);
     
-    unsigned int itemID;
+    int itemID;
     unsigned int variation;
     
     Slot *storedIn;
@@ -36,18 +36,26 @@ struct Item {
     bool operator==(Item &other);
 };
 
-struct Slot {
-    Slot();
+class Slot {
+public:
+    Slot(Shader *shader, RenderData *data);
     
     std::vector<Item> items;
     Item storedType;
     
-    glm::vec2 renderMiddlePos;
+    void render();
+    
+    glm::vec2 getRenderPosition();
+    void setRenderPosition(glm::vec2 pos);
     
     Slot& operator+(Item &item);
     Slot& operator+=(Item &item);
+    
+private:
+    UIRectangle rect;
+    Texture tex;   
+    
+    glm::vec2 middlePos;
 };
-
-void renderSlot(Slot *slot, Shader *shader, RenderData *data);
 
 #endif /* item_hpp */

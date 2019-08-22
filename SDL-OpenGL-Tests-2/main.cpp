@@ -347,12 +347,11 @@ int main(int argc, const char * argv[]) {
     bool crosshairRayCollision = false;
     
     
-    Item item(0);
+    Item item(-1);
     Item item2(3);
-    Slot slot;
-    slot.renderMiddlePos = vec2(0.0f);
+    Slot slot(&uiShader, &uiData);
+    slot.setRenderPosition(vec2(0.0f));
     slot += item;
-//    slot += item2;
     
     
     while(running) {
@@ -529,7 +528,7 @@ int main(int argc, const char * argv[]) {
                 inv.render();
             }
             
-            renderSlot(&slot, &uiShader, &uiData);
+            slot.render();
             
             frame ++;
             totalFrames++;
