@@ -19,6 +19,7 @@ void printVec4(glm::vec4 data) {
     printf("X = %f\tY = %f\tZ = %f\tW = %f\n", data.x, data.y, data.z, data.w);
 }
 
+
 template <typename T>
 void printArray(T *array, int arraySize) {
     for(int i = 0; i < arraySize; i++) {
@@ -52,6 +53,7 @@ void swapBool(bool *b) {
     *b = !(*b);
 }
 
+
 glm::vec2 pixelPosToUIRect(glm::vec2 pixel, glm::vec2 rectSize) {
     return glm::vec2(pixel * (glm::vec2(1.0f) / (rectSize * glm::vec2(500.0f))));
 }
@@ -66,4 +68,9 @@ glm::vec2 UIRectToPixelPos(glm::vec2 rectSize) {
 
 glm::vec2 UIRectToPixelSize(glm::vec2 size) {
     return glm::vec2(size * glm::vec2(1000.0f));
+}
+
+
+unsigned int prng(int seed, int x, int y) {
+    return ((8253748 * seed * x + 2397403) * (8253729 * seed * y + 2397403)) % 32767;
 }

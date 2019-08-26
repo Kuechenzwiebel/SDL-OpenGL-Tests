@@ -183,7 +183,7 @@ int main(int argc, const char * argv[]) {
     Texture declinationMeterTex("resources/textures/declinationMeter2.png");
     Texture declinationMeterSelectorTex("resources/textures/declinationMeterSelector.png", TEXTURE_NO_MIP_MAP);
     Texture jupiterTexture("resources/textures/jupiter.jpg");
-    Texture stoneTexture("resources/textures/stone.png");
+    Texture stoneTexture("resources/textures/stones.png");
     Texture invTexture("resources/textures/inv.png", TEXTURE_NO_MIP_MAP);
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     

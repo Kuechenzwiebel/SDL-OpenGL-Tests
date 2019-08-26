@@ -43,4 +43,7 @@ glm::vec2 pixelSizeToUIRect(glm::vec2 size);
 glm::vec2 UIRectToPixelPos(glm::vec2 rectSize);
 glm::vec2 UIRectToPixelSize(glm::vec2 size);
 
+
+unsigned int prng(int seed, int x, int y);
+
 #endif /* utils_hpp */
