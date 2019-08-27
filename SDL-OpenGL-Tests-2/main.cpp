@@ -188,7 +188,7 @@ int main(int argc, const char * argv[]) {
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     
     
-    PerlinMap map(420, 50, 1.0f, &basicShader, &renderData);
+    PerlinMap map(420, 50, &basicShader, &renderData);
     map.setTexture(&stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setPerlinMapInfo(map.getMapInfo());
@@ -343,16 +343,9 @@ int main(int argc, const char * argv[]) {
     declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
     
+    
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
-    
-    
-    Item item(-1);
-    Item item2(3);
-    Slot slot(&uiShader, &uiData);
-    slot.setRenderPosition(vec2(0.0f));
-    slot += item;
-    
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -527,8 +520,6 @@ int main(int argc, const char * argv[]) {
             if(invOpen) {
                 inv.render();
             }
-            
-            slot.render();
             
             frame ++;
             totalFrames++;

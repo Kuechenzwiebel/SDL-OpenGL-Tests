@@ -25,6 +25,7 @@ enum TextureType {
 class Texture {
 public:
     Texture(std::string fileName, TextureType type = TEXTURE_GENERATE_MIPMAP);
+    ~Texture();
     
     GLuint getData();
     

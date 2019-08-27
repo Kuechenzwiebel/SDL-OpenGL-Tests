@@ -18,6 +18,7 @@
 class Cubemap {
 public:
     Cubemap(std::string* fileNames);
+    ~Cubemap();
     
     GLuint getData();
     

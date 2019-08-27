@@ -24,6 +24,7 @@
 class Shader {
 public:
     Shader(std::string vertexCode, std::string fragmentCode);
+    ~Shader();
     
     void use();
     
@@ -36,12 +37,9 @@ public:
     
     GLint getLoc(std::string name);
     
-    GLuint program;
-    
 private:
     void compileShader(const char* vertexCode, const char* fragmentCode);
-    
-    std::string _vertexCode, _fragmentCode;
+    GLuint program;
 };
 
 #endif /* shader_hpp */

@@ -55,7 +55,8 @@ void Camera::processInput() {
     }
     
     float mapPosition = 0.0f;
-    if(info.noise != nullptr && theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
+    if(info.noise != nullptr &&
+       theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
         mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
     }
     

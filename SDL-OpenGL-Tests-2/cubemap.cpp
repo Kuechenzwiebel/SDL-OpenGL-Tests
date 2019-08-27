@@ -28,6 +28,10 @@ Cubemap::Cubemap(std::string* fileNames) {
     }
 }
 
+Cubemap::~Cubemap() {
+    glDeleteTextures(1, &tex);
+}
+
 GLuint Cubemap::getData() {
     return tex;
 }

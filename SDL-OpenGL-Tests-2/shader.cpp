@@ -8,9 +8,12 @@
 
 #include "shader.hpp"
 
-Shader::Shader(std::string vertexCode, std::string fragmentCode):
-_vertexCode(vertexCode), _fragmentCode(fragmentCode) {
-    compileShader(_vertexCode.c_str(), _fragmentCode.c_str());
+Shader::Shader(std::string vertexCode, std::string fragmentCode) {
+    compileShader(vertexCode.c_str(), fragmentCode.c_str());
+}
+
+Shader::~Shader() {
+    glDeleteProgram(program);
 }
 
 void Shader::use() {

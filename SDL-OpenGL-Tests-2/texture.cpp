@@ -42,6 +42,10 @@ textureName("tex") {
     SOIL_free_image_data(image);
 }
 
+Texture::~Texture() {
+    glDeleteTextures(1, &tex);
+}
+
 GLuint Texture::getData() {
     return tex;
 }

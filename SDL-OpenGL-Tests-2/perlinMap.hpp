@@ -34,7 +34,7 @@ struct PerlinMapInformation {
 
 class PerlinMap: public Object {
 public:
-    PerlinMap(unsigned int seed, unsigned int width, float triangleWidth, Shader *shader, const RenderData *data);
+    PerlinMap(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data);
     ~PerlinMap();
     
     void setTexture(Texture *tex);
@@ -63,7 +63,6 @@ private:
     const RenderData *data;
     
     unsigned int width;
-    float triangleWidth;
     float freq, multiplier;
     int octaves;
     
