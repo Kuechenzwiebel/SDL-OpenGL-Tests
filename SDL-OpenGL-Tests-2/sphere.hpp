@@ -11,10 +11,13 @@
 
 #define GLM_FORCE_SWIZZLE
 
-#include <GL/glew.h>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/normal.hpp>
+#include <glm/gtx/norm.hpp>
+
 #include <string>
 
 #include "arrayBuffers/arrayBuffer.hpp"
@@ -38,7 +41,6 @@ public:
     void setPosition(glm::vec3 position);
     void setRadius(float radius);
     void setRotation(glm::vec4 rotation);
-    void setModelMat(glm::mat4 model);
     
     void setTexture(Texture *texture);
     
@@ -58,10 +60,11 @@ private:
     glm::mat4 translate, rotate, scale, model;
     
     GLuint VAO;
-    ArrayBuffer vertex, colorBuffer;
+    ArrayBuffer vertex, colorBuffer, normal;
     
     static glm::vec3 sphereVertices[sphereArraySize];
     static glm::vec2 sphereUVs[sphereArraySize];
+    static glm::vec3 sphereNormals[sphereArraySize];
     
     Shader *shader;
     const RenderData *data;

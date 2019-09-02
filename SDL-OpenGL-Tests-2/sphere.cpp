@@ -10,6 +10,7 @@
 
 glm::vec3 Sphere::sphereVertices[sphereArraySize];
 glm::vec2 Sphere::sphereUVs[sphereArraySize];
+glm::vec3 Sphere::sphereNormals[sphereArraySize];
 
 static glm::vec3 sphereSurface(float angleXZ, float angleXY) {
     glm::vec3 pos;
@@ -31,16 +32,30 @@ shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), mode
             sphereVertices[i + 0] = sphereSurface(angleXZ + (0.0f * sphereResolution), angleXY + (0.0f * sphereResolution));
             sphereVertices[i + 1] = sphereSurface(angleXZ + (1.0f * sphereResolution), angleXY + (0.0f * sphereResolution));
             sphereVertices[i + 2] = sphereSurface(angleXZ + (0.0f * sphereResolution), angleXY + (1.0f * sphereResolution));
+            
             sphereVertices[i + 3] = sphereSurface(angleXZ + (1.0f * sphereResolution), angleXY + (0.0f * sphereResolution));
             sphereVertices[i + 4] = sphereSurface(angleXZ + (0.0f * sphereResolution), angleXY + (1.0f * sphereResolution));
             sphereVertices[i + 5] = sphereSurface(angleXZ + (1.0f * sphereResolution), angleXY + (1.0f * sphereResolution));
             
+            
+            sphereNormals[i + 0] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
+            sphereNormals[i + 1] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
+            sphereNormals[i + 2] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
+           
+            sphereNormals[i + 3] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
+            sphereNormals[i + 4] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
+            sphereNormals[i + 5] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
+            
+            
+            
             sphereUVs[i + 0] = glm::vec2(1.0f - (angleXZ + (0.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (0.0f * sphereResolution)) / 180.0f);
             sphereUVs[i + 1] = glm::vec2(1.0f - (angleXZ + (1.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (0.0f * sphereResolution)) / 180.0f);
             sphereUVs[i + 2] = glm::vec2(1.0f - (angleXZ + (0.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (1.0f * sphereResolution)) / 180.0f);
+            
             sphereUVs[i + 3] = glm::vec2(1.0f - (angleXZ + (1.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (0.0f * sphereResolution)) / 180.0f);
             sphereUVs[i + 4] = glm::vec2(1.0f - (angleXZ + (0.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (1.0f * sphereResolution)) / 180.0f);
             sphereUVs[i + 5] = glm::vec2(1.0f - (angleXZ + (1.0f * sphereResolution)) / 360.0f, 1.0f - (angleXY + (1.0f * sphereResolution)) / 180.0f);
+            
             
             i += 6;
         }
@@ -48,9 +63,11 @@ shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), mode
     
     vertex.setData(sphereVertices, sphereArraySize * sizeof(glm::vec3), 0);
     colorBuffer.setData(sphereUVs, sphereArraySize * sizeof(glm::vec2), 1);
+    normal.setData(sphereNormals, sphereArraySize * sizeof(glm::vec3), 2);
     
     vertex.activate();
     colorBuffer.activate();
+    normal.activate();
     
     glBindVertexArray(0);
 }
@@ -66,6 +83,7 @@ void Sphere::setTexture(Texture *texture) {
 void Sphere::render() {
     vertex.activate();
     colorBuffer.activate();
+    normal.activate();
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tex->getData());
@@ -96,10 +114,6 @@ void Sphere::setRadius(float radius) {
     scale = glm::scale(glm::mat4(1), glm::vec3(radius));
     model = translate * rotate * scale;
     this->radius = radius;
-}
-
-void Sphere::setModelMat(glm::mat4 model) {
-    this->model = model;
 }
 
 glm::vec3 Sphere::getPosition() {
