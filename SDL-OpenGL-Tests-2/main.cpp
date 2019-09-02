@@ -61,6 +61,7 @@ using namespace glm;
 #include "physicsObjects/ray.hpp"
 #include "perlin.hpp"
 #include "physicsObjects/physicsWorld.hpp"
+#include "objModel.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
@@ -106,6 +107,7 @@ int main(int argc, const char * argv[]) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
+    glDisable(GL_CULL_FACE);  
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
@@ -346,6 +348,14 @@ int main(int argc, const char * argv[]) {
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
+    /*
+    ObjModel objCube("resources/models/cube.obj", &basicShader, &renderData);
+    objCube.setPosition(vec3(-3.0f, 2.0f, 1.0f));
+    objects.push_back(std::make_pair(0.0f, &objCube));
+    */
+    ObjModel axis("resources/models/multi.obj", &basicShader, &renderData);
+    axis.setPosition(vec3(-3.0f, 5.0f, 1.0f));
+    objects.push_back(std::make_pair(0.0f, &axis));
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
@@ -486,6 +496,9 @@ int main(int argc, const char * argv[]) {
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
+                if(it->second->getShaderPointer() == &basicShader) {
+                    it->second->getShaderPointer()->sendVec3(cam.getPosition(), "viewPos");
+                }
                 it->second->render();
             }
             
