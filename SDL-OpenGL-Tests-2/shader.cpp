@@ -75,6 +75,7 @@ void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
         printf(PRINTF_RED);
         printf("Vertex Shader failed compiliton! Infolog: %s\n", infoLog);
         printf(PRINTF_DEFAULT);
+        exit(2);
     }
     
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -89,6 +90,7 @@ void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
         printf(PRINTF_RED);
         printf("Fragment Shader failed compiliton! Infolog: %s\n", infoLog);
         printf(PRINTF_DEFAULT);
+        exit(3);
     }
     
     
