@@ -25,20 +25,20 @@ static std::string dataSetErrorMessage = "Data for ArrayBuffer is allready set! 
 
 class ArrayBuffer {
 public:
-    ArrayBuffer(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type);
-    ArrayBuffer(const glm::vec4 *data, int dataSize, int _shaderPos);
-    ArrayBuffer(const glm::vec3 *data, int dataSize, int _shaderPos);
-    ArrayBuffer(const glm::vec2 *data, int dataSize, int _shaderPos);
-    ArrayBuffer(const GLint *data, int dataSize, int _shaderPos);
+    ArrayBuffer(const GLfloat *data, unsigned long dataSize, int _shaderPos, arrayBufferType type);
+    ArrayBuffer(const glm::vec4 *data, unsigned long dataSize, int _shaderPos);
+    ArrayBuffer(const glm::vec3 *data, unsigned long dataSize, int _shaderPos);
+    ArrayBuffer(const glm::vec2 *data, unsigned long dataSize, int _shaderPos);
+    ArrayBuffer(const GLint *data, unsigned long dataSize, int _shaderPos);
     ArrayBuffer();
     
     ArrayBuffer(const ArrayBuffer& other);
     ArrayBuffer& operator=(const ArrayBuffer& other);
     
-    void setData(const glm::vec4 *data, int dataSize, int _shaderPos);
-    void setData(const glm::vec3 *data, int dataSize, int _shaderPos);
-    void setData(const glm::vec2 *data, int dataSize, int _shaderPos);
-    void setData(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type);
+    void setData(const GLfloat *data, unsigned long dataSize, int _shaderPos, arrayBufferType type);
+    void setData(const glm::vec4 *data, unsigned long dataSize, int _shaderPos);
+    void setData(const glm::vec3 *data, unsigned long dataSize, int _shaderPos);
+    void setData(const glm::vec2 *data, unsigned long dataSize, int _shaderPos);
     
     ~ArrayBuffer();
     

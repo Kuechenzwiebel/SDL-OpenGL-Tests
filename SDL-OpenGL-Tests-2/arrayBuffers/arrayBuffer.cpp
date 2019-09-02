@@ -8,7 +8,7 @@
 
 #include "arrayBuffer.hpp"
 
-ArrayBuffer::ArrayBuffer(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type):
+ArrayBuffer::ArrayBuffer(const GLfloat *data, unsigned long dataSize, int _shaderPos, arrayBufferType type):
 shaderPos(_shaderPos), shaderSize(type), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -17,7 +17,7 @@ shaderPos(_shaderPos), shaderSize(type), varType(GL_FLOAT) {
     dataSet = true;
 }
 
-ArrayBuffer::ArrayBuffer(const GLint *data, int dataSize, int _shaderPos):
+ArrayBuffer::ArrayBuffer(const GLint *data, unsigned long dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(1), varType(GL_INT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -26,7 +26,7 @@ shaderPos(_shaderPos), shaderSize(1), varType(GL_INT) {
     dataSet = true;
 }
 
-ArrayBuffer::ArrayBuffer(const glm::vec4 *data, int dataSize, int _shaderPos):
+ArrayBuffer::ArrayBuffer(const glm::vec4 *data, unsigned long dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(Vector4D), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -35,7 +35,7 @@ shaderPos(_shaderPos), shaderSize(Vector4D), varType(GL_FLOAT) {
     dataSet = true;
 }
 
-ArrayBuffer::ArrayBuffer(const glm::vec3 *data, int dataSize, int _shaderPos):
+ArrayBuffer::ArrayBuffer(const glm::vec3 *data, unsigned long dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(Vector3D), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -44,7 +44,7 @@ shaderPos(_shaderPos), shaderSize(Vector3D), varType(GL_FLOAT) {
     dataSet = true;
 }
 
-ArrayBuffer::ArrayBuffer(const glm::vec2 *data, int dataSize, int _shaderPos):
+ArrayBuffer::ArrayBuffer(const glm::vec2 *data, unsigned long dataSize, int _shaderPos):
 shaderPos(_shaderPos), shaderSize(Vector2D), varType(GL_FLOAT) {
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -57,7 +57,7 @@ ArrayBuffer::ArrayBuffer() {
     
 }
 
-void ArrayBuffer::setData(const glm::vec4 *data, int dataSize, int _shaderPos) {
+void ArrayBuffer::setData(const glm::vec4 *data, unsigned long dataSize, int _shaderPos) {
     if(dataSet == false) {
         varType = GL_FLOAT;
         shaderPos = _shaderPos;
@@ -75,7 +75,7 @@ void ArrayBuffer::setData(const glm::vec4 *data, int dataSize, int _shaderPos) {
     }
 }
 
-void ArrayBuffer::setData(const glm::vec3 *data, int dataSize, int _shaderPos) {
+void ArrayBuffer::setData(const glm::vec3 *data, unsigned long dataSize, int _shaderPos) {
     if(dataSet == false) {
         varType = GL_FLOAT;
         shaderPos = _shaderPos;
@@ -93,7 +93,7 @@ void ArrayBuffer::setData(const glm::vec3 *data, int dataSize, int _shaderPos) {
     }
 }
 
-void ArrayBuffer::setData(const glm::vec2 *data, int dataSize, int _shaderPos) {
+void ArrayBuffer::setData(const glm::vec2 *data, unsigned long dataSize, int _shaderPos) {
     if(dataSet == false) {
         varType = GL_FLOAT;
         shaderPos = _shaderPos;
@@ -111,7 +111,7 @@ void ArrayBuffer::setData(const glm::vec2 *data, int dataSize, int _shaderPos) {
     }
 }
 
-void ArrayBuffer::setData(const GLfloat *data, int dataSize, int _shaderPos, arrayBufferType type) {
+void ArrayBuffer::setData(const GLfloat *data, unsigned long dataSize, int _shaderPos, arrayBufferType type) {
     if(dataSet == false) {
         varType = GL_FLOAT;
         shaderPos = _shaderPos;
