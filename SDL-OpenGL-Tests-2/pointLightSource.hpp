@@ -17,6 +17,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <vector>
 
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "shader.hpp"
@@ -27,7 +28,7 @@
 
 class PointLightSource: public Object {
 public:
-    PointLightSource(Object *renderObject, Shader *shaders, int shaderAmount);
+    PointLightSource(Object *renderObject, std::vector<Shader*> *shaders);
     
     void render();
     
@@ -35,9 +36,9 @@ public:
     glm::vec3 getPosition();
     
 private:
+    std::vector<Shader*> *shaders;
+    
     Object *renderObject;
-    Shader *shaders;
-    int shaderAmount;
     
     glm::vec3 position;
 };

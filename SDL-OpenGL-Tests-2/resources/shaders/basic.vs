@@ -10,15 +10,15 @@ uniform mat4 projection;
 
 uniform float texOffset;
 
-out vec3 FragPos;
+out vec3 SpacePos;
 out vec2 Uvs;
 out vec3 Normals;
 
 void main() {
     gl_Position = projection * view * model * vec4(positions, 1.0f);
     
-    FragPos = (model * vec4(positions, 1.0f)).xyz;
+    SpacePos = (model * vec4(positions, 1.0f)).xyz;
     Uvs = vec2(uvs.x, 1.0f - uvs.y);
-    Normals = mat3(transpose(inverse(model))) * normals;
+    Normals = mat3(inverse(model)) * normals;
 }
 

@@ -8,8 +8,8 @@
 
 #include "pointLightSource.hpp"
 
-PointLightSource::PointLightSource(Object *renderObject, Shader *shaders, int shaderAmount):
-renderObject(renderObject), shaders(shaders), shaderAmount(shaderAmount) {
+PointLightSource::PointLightSource(Object *renderObject, std::vector<Shader*> *shaders):
+renderObject(renderObject), shaders(shaders) {
     
 }
 
@@ -25,6 +25,10 @@ void PointLightSource::setPosition(glm::vec3 position) {
     
     if(renderObject != nullptr) {
         renderObject->setPosition(position - renderObject->getSize() * glm::vec3(0.5f));
+    }
+    
+    for(int i = 0; i < shaders->size(); i++) {
+        
     }
 }
 
