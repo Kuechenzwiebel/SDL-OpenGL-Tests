@@ -12,10 +12,13 @@
 #include <stdio.h>
 #include <vector>
 #include <random>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/normal.hpp>
+#include <glm/gtx/norm.hpp>
 
 #include "perlin.hpp"
 #include "utils.hpp"
@@ -52,10 +55,10 @@ private:
     
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;
+    std::vector<glm::vec3> normals;
     
     GLuint VAO;
-    ArrayBuffer vertex;
-    ArrayBuffer texCoord;
+    ArrayBuffer vertex, texCoord, normal;
     
     Texture *tex;
     
