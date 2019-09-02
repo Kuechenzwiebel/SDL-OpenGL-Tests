@@ -25,7 +25,10 @@ enum TextureType {
 class Texture {
 public:
     Texture(std::string fileName, TextureType type = TEXTURE_GENERATE_MIPMAP);
+    Texture();
     ~Texture();
+    
+    Texture& operator=(const Texture &other);
     
     GLuint getData();
     
@@ -38,6 +41,8 @@ private:
     GLuint tex;    
     int texWidth, texHeight;
     std::string textureName;
+    std::string fileName;
+    TextureType type;
 };
 
 #endif /* texture_hpp */
