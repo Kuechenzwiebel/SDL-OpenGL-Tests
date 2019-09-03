@@ -30,7 +30,7 @@ public:
     
     Texture& operator=(const Texture &other);
     
-    GLuint getData();
+    GLuint getTextureID();
     
     void setTextureName(std::string name);
     std::string getTextureName();

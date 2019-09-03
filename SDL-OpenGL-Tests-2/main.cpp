@@ -353,9 +353,9 @@ int main(int argc, const char * argv[]) {
     objCube.setPosition(vec3(-3.0f, 2.0f, 1.0f));
     objects.push_back(std::make_pair(0.0f, &objCube));
     */
-    ObjModel axis("resources/models/multi.obj", &basicShader, &renderData);
-    axis.setPosition(vec3(-3.0f, 5.0f, 1.0f));
-    objects.push_back(std::make_pair(0.0f, &axis));
+    ObjModel cubes("resources/models/cubes.obj", &basicShader, &renderData);
+    cubes.setPosition(vec3(-3.0f, 5.0f, 1.0f));
+    objects.push_back(std::make_pair(0.0f, &cubes));
     
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {

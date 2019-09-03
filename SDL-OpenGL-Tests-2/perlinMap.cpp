@@ -123,7 +123,7 @@ void PerlinMap::render() {
     normal.activate();
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex->getData());
+    glBindTexture(GL_TEXTURE_2D, tex->getTextureID());
     shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);

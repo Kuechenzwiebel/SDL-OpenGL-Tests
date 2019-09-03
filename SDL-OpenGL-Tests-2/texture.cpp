@@ -47,7 +47,7 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
-    glDeleteTextures(1, &tex);
+//    glDeleteTextures(1, &tex);
 }
 
 Texture& Texture::operator=(const Texture &other) {
@@ -91,7 +91,7 @@ Texture& Texture::operator=(const Texture &other) {
     return *this;
 }
     
-GLuint Texture::getData() {
+GLuint Texture::getTextureID() {
     return tex;
 }
 

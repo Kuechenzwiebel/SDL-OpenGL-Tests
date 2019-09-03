@@ -31,14 +31,11 @@
 #include "texture.hpp"
 
 struct ObjModelComponent {
-    ObjModelComponent();
-    
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
     
     Texture tex;
-    
     ArrayBuffer vertex, uv, normal;
     GLuint VAO;
 };
@@ -78,23 +75,23 @@ private:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
+    std::vector<Texture> textures;
     */
+    Texture textures[3];
     
-    int numObjects;
-    
+    /*
     std::vector<std::vector<glm::vec3>> vertices;
     std::vector<std::vector<glm::vec2>> uvs;
     std::vector<std::vector<glm::vec3>> normals;
     
     std::vector<GLuint> VAOs;
-//    std::vector<Texture> textures;
     
     std::vector<ArrayBuffer> vertex;
     std::vector<ArrayBuffer> uv;
     std::vector<ArrayBuffer> normal;
+    */
     
-    
-//    std::vector<ObjModelComponent> components;
+    std::vector<ObjModelComponent> components;
 };
 
 #endif /* objModel_hpp */
