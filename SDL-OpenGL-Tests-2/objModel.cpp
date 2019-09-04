@@ -12,7 +12,7 @@ ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data):
 shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)) {
     
     hg::File objFile(path);
-    std::vector<std::string> objLines = objFile.readFileLineByLine();
+    std::vector<std::string> fileLines = objFile.readFileLineByLine();
     std::stringstream lineStream;
     
     std::vector<glm::vec3> readVertices;
@@ -28,8 +28,8 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
     textures[1] = Texture("resources/models/cube2.png");
     textures[2] = Texture("resources/models/cube3.png");
     
-    for(int i = 0; i < objLines.size(); i++) {
-        if(objLines[i].substr(0, 2) == "o ") {
+    for(int i = 0; i < fileLines.size(); i++) {
+        if(fileLines[i].substr(0, 2) == "o ") {
             if(!first) {
                 tmpComp.tex = tmpTex;
                 components.emplace_back(tmpComp);
@@ -38,34 +38,34 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             
             first = false;
             
-            tmpTex = Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(objLines[i], 2, int(objLines[i].length())) + ".png");
-            std::cout << "Opening Texture: "<< hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(objLines[i], 2, int(objLines[i].length())) + ".png" << std::endl;
+            tmpTex = Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png");
+            std::cout << "Opening Texture: "<< hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png" << std::endl;
         }
         
-        if(objLines[i].substr(0, 2) == "v ") {
+        if(fileLines[i].substr(0, 2) == "v ") {
             float x, y, z;
-            lineStream = std::stringstream(hg::substr(objLines[i], 2, int(objLines[i].length())));
+            lineStream = std::stringstream(hg::substr(fileLines[i], 2, int(fileLines[i].length())));
             lineStream >> x >> y >> z;
             readVertices.push_back(glm::vec3(x, y, z));
         }
         
-        else if(objLines[i].substr(0, 2) == "vt") {
+        else if(fileLines[i].substr(0, 2) == "vt") {
             float u, v;
-            lineStream = std::stringstream(hg::substr(objLines[i], 2, int(objLines[i].length())));
+            lineStream = std::stringstream(hg::substr(fileLines[i], 2, int(fileLines[i].length())));
             lineStream >> u >> v;
             readUVs.push_back(glm::vec2(u, v));
         }
         
-        else if(objLines[i].substr(0, 2) == "vn") {
+        else if(fileLines[i].substr(0, 2) == "vn") {
             float x, y, z;
-            lineStream = std::stringstream(hg::substr(objLines[i], 2, int(objLines[i].length())));
+            lineStream = std::stringstream(hg::substr(fileLines[i], 2, int(fileLines[i].length())));
             lineStream >> x >> y >> z;
             readNormals.push_back(glm::vec3(x, y, z));
         }
         
-        else if(objLines[i].substr(0, 2) == "f ") {
-            std::replace(objLines[i].begin(), objLines[i].end(), '/', ' ');
-            lineStream = std::stringstream(hg::substr(objLines[i], 2, int(objLines[i].length())));
+        else if(fileLines[i].substr(0, 2) == "f ") {
+            std::replace(fileLines[i].begin(), fileLines[i].end(), '/', ' ');
+            lineStream = std::stringstream(hg::substr(fileLines[i], 2, int(fileLines[i].length())));
             
             int v1, v2, v3;
             int t1, t2, t3;
@@ -127,8 +127,8 @@ void ObjModel::render() {
         components[i].normal.activate();
          
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[i].getTextureID());
-        shader->sendInt(0, textures[i].getTextureName());
+        glBindTexture(GL_TEXTURE_2D, components[i].tex.getTextureID());
+        shader->sendInt(0, components[i].tex.getTextureName());
         
         glBindVertexArray(components[i].VAO);
         shader->sendMat4(*data->projection, "projection");
