@@ -87,18 +87,22 @@ int main(int argc, const char * argv[]) {
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
-    
+   
     SDL_GL_SetSwapInterval(1);
     
     if (window == NULL) {
-        printf("Failed to open Window");
+        printf(PRINTF_RED);
+        printf("Failed to open Window!\n");
+        printf(PRINTF_DEFAULT);
         return EXIT_FAILURE;
     }
     
     glewExperimental = GL_TRUE;
     
     if (glewInit() != GLEW_OK) {
-        printf("Failed to initialize GLEW");
+        printf(PRINTF_RED);
+        printf("Failed to initialize GLEW!\n");
+        printf(PRINTF_DEFAULT);
         return EXIT_FAILURE;
     }
     
@@ -190,7 +194,7 @@ int main(int argc, const char * argv[]) {
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     
     
-    PerlinMap map(420, 50, &basicShader, &renderData);
+    PerlinMap map(420, 200, &basicShader, &renderData);
     map.setTexture(&stoneTexture);
     map.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setPerlinMapInfo(map.getMapInfo());
@@ -325,9 +329,8 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &jupiter));
     
     
-    for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
+    for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++)
         it->first = length2(cam.getPosition() - it->second->getPosition());
-    }
     
     objects.sort();
     
@@ -357,6 +360,20 @@ int main(int argc, const char * argv[]) {
     cubes.setPosition(vec3(-3.0f, 5.0f, 1.0f));
     objects.push_back(std::make_pair(0.0f, &cubes));
     
+    ObjModel axis("resources/models/axis.obj", &basicShader, &renderData);
+    axis.setPosition(vec3(0.0f, -1.8f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &axis));
+    
+    PerlinMapInformation pInfo = map.getMapInfo();
+    
+    vec3 axisPosition;
+    vec4 axisRotation(1.0f, 0.0f, 0.0f, 0.0f);
+    
+    float wheelDistance = 1.78f;
+    float wheelDiameter = 0.76f;
+    float alpha = 0.0f;
+    float a = wheelDistance / 2.0f, b = 0.0f, p1 = 0.0f, p2 = 0.0f;
+    
     while(running) {
         if(SDL_GetTicks() > nextMeasure) {
             fps = frame;
@@ -373,9 +390,8 @@ int main(int argc, const char * argv[]) {
         SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1.0f / fps) + "    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
      
         while(SDL_PollEvent(&windowEvent) != 0) {
-            if(windowEvent.type == SDL_QUIT) {
+            if(windowEvent.type == SDL_QUIT)
                 running = false;
-            }
             
             if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
                 if(windowEvent.button.button == SDL_BUTTON_LEFT) {
@@ -384,46 +400,37 @@ int main(int argc, const char * argv[]) {
                 }
             }
             
-            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-        
-                compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
-                declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
-                compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
-                declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
-                fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
-            }
-            
-            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-                render = true;
-            }
-            
-            if(windowEvent.type == SDL_WINDOWEVENT && windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-                render = false;
+            if(windowEvent.type == SDL_WINDOWEVENT) {
+                if(windowEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+                    
+                    compassSelector.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+                    declinationMeterSelector.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+                    compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
+                    declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
+                    fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+                }
+                
+                if(windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+                    render = true;
+                
+                if(windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+                    render = false;
             }
             
             if(windowEvent.type == SDL_MOUSEWHEEL) {
-                zoom += float(windowEvent.wheel.y) * 0.025f;
-                
-                if(zoom < 1.0f) {
-                    zoom = 1.0f;
-                }
-                if(zoom > 25.0f) {
-                    zoom = 25.0f;
-                }
+                axisPosition.x += float(windowEvent.wheel.y) * 0.05f;
+                axisPosition.z += float(windowEvent.wheel.x) * 0.05f;
             }
             
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_i) {
+            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_i)
                 swapBool(&invOpen);
-            }
             
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_o) {
+            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_o)
                 swapBool(&opticsOn);
-            }
             
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_f) {
+            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_f)
                 swapBool(&wireframe);
-            }
             
             if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_ESCAPE) {
                 render = false;
@@ -431,29 +438,38 @@ int main(int argc, const char * argv[]) {
             }
             
             
-            if(!invOpen) {
+            if(!invOpen)
                 cam.processMouseInput();
-            }
         }
         
-        if(checkMouse) {
+        if(checkMouse)
             SDL_SetRelativeMouseMode(SDL_TRUE);
-        }
-        else {
+        else
             SDL_SetRelativeMouseMode(SDL_FALSE);
-        }
         
         if(render) {
-            if(!invOpen) {
-                cam.processInput();
-            }
+            axisPosition.y = (pInfo.noise->perl(axisPosition.x, axisPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
             
-            if(wireframe == true) {
+            p2 = axisPosition.y - wheelDiameter / 2.0f;
+            p1 = pInfo.noise->perl(axisPosition.x, axisPosition.z - a, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f;
+            
+            b = p2 - p1;
+            alpha = atan(b / a);
+            
+            axisRotation.w = -alpha;
+            
+            axis.setPosition(axisPosition);
+            axis.setRotation(axisRotation);
+            
+            
+            if(!invOpen)
+                cam.processInput();
+            
+            if(wireframe == true)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            }
-            else {
+            else
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            }
+    
             
             
             
@@ -470,14 +486,13 @@ int main(int argc, const char * argv[]) {
                 cam.setMouseSensitivity(0.0025f);
             }
             
+            
             if(cam.getPosition() != oldCamPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
-                    if(it->second == &map) {
+                    if(it->second == &map)
                         it->first = 1000.0f;
-                    }
-                    else {
+                    else
                         it->first = length2(cam.getPosition() - it->second->getPosition());
-                    }
                 }
                 
                 objects.sort();
@@ -496,9 +511,8 @@ int main(int argc, const char * argv[]) {
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
-                if(it->second->getShaderPointer() == &basicShader) {
+                if(it->second->getShaderPointer() == &basicShader)
                     it->second->getShaderPointer()->sendVec3(cam.getPosition(), "viewPos");
-                }
                 it->second->render();
             }
             
@@ -510,29 +524,24 @@ int main(int argc, const char * argv[]) {
             
             for(int i = 0; i < 50; i++) {
                 crosshairRayCollision = worldPointCollision(&physicsWorld, crosshairRay.getRayPosition());
-                if(crosshairRayCollision) {
+                if(crosshairRayCollision)
                     break;
-                }
                 crosshairRay.step();
             }
             
-            if(crosshairRayCollision) {
+            if(crosshairRayCollision)
                 rayText.setText("Ray hit!");
-            }
-            else {
+            else
                 rayText.setText("No ray hit!");
-            }
             
             glClear(GL_DEPTH_BUFFER_BIT);
             
             uiShader.use();
-            for(int i = 0; i < uiObjects.size(); i++) {
+            for(int i = 0; i < uiObjects.size(); i++)
                 uiObjects[i]->render();
-            }
             
-            if(invOpen) {
+            if(invOpen)
                 inv.render();
-            }
             
             frame ++;
             totalFrames++;
@@ -542,9 +551,8 @@ int main(int argc, const char * argv[]) {
             SDL_GL_SwapWindow(window);
             glFlush();
         }
-        else {
+        else
             SDL_Delay(33);
-        }
     }
     
     SDL_GL_DeleteContext(context);
