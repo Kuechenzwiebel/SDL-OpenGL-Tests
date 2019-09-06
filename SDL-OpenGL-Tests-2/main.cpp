@@ -15,6 +15,8 @@
 #include <list>
 #include <utility>
 #include <chrono>
+#include <thread>
+#include <mutex>
 
 #define GLEW_STATIC
 #include <SDL2/SDL.h>
@@ -73,6 +75,41 @@ bool opticsOn = false;
 bool wireframe = false;
 bool render = true;
 
+vec3 oldCamPos;
+
+bool sortDone = false;
+bool sort = false;
+std::mutex sortMutex;
+
+void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, PerlinMap *map) {
+    while(running) {
+        if(sort) {
+            sortMutex.lock();
+            sortDone = false;
+            sortMutex.unlock();
+            
+            if(cam->getPosition() != oldCamPos) {
+                for(std::list<std::pair<float, Object*>>::iterator it = objects->begin(); it != objects->end(); it++) {
+                    if(it->second == map)
+                        it->first = 1000.0f;
+                    else
+                        it->first = length2(cam->getPosition() - it->second->getPosition());
+                }
+                
+                objects->sort();
+            }
+            
+            sortMutex.lock();
+            sortDone = true;
+            sort = false;
+            sortMutex.unlock();
+        }
+        else {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+    }
+}
+
 int main(int argc, const char * argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Failed to initialize SDL2");
@@ -88,7 +125,7 @@ int main(int argc, const char * argv[]) {
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
    
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
     
     if (window == NULL) {
         printf(PRINTF_RED);
@@ -334,7 +371,7 @@ int main(int argc, const char * argv[]) {
     
     objects.sort();
     
-    vec3 oldCamPos = cam.getPosition();
+    oldCamPos = cam.getPosition();
     
     PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
     CollisionInfo in = spherePointCollision(&s1, vec3(0.5f, 0.5f, 0.0f));
@@ -351,11 +388,8 @@ int main(int argc, const char * argv[]) {
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
-    /*
-    ObjModel objCube("resources/models/cube.obj", &basicShader, &renderData);
-    objCube.setPosition(vec3(-3.0f, 2.0f, 1.0f));
-    objects.push_back(std::make_pair(0.0f, &objCube));
-    */
+    
+    
     ObjModel cubes("resources/models/cubes.obj", &basicShader, &renderData);
     cubes.setPosition(vec3(-3.0f, 5.0f, 1.0f));
     objects.push_back(std::make_pair(0.0f, &cubes));
@@ -374,20 +408,27 @@ int main(int argc, const char * argv[]) {
     float alpha = 0.0f;
     float a = wheelDistance / 2.0f, b = 0.0f, p1 = 0.0f, p2 = 0.0f;
     
+    
+    std::thread sortThread(objectSort, &cam, &objects, &map);
+    
     while(running) {
+        sortMutex.lock();
+        sort = true;
+        sortMutex.unlock();
+        
         if(SDL_GetTicks() > nextMeasure) {
             fps = frame;
             frame = 0;
             nextMeasure += 1e3;
             
-            fpsText.setText(std::to_string(fps) + " FPS" + "\nFrametime: " + std::to_string(1.0f / fps) + " ms");
+            fpsText.setText(std::to_string(fps) + " FPS" + "\nFrametime: " + std::to_string(1000.0f / fps) + " ms");
         }
         
         currentFrame = SDL_GetTicks() / 1000.0f;
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         
-        SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1.0f / fps) + "    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
+        SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1000.0f / fps) + " ms    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
      
         while(SDL_PollEvent(&windowEvent) != 0) {
             if(windowEvent.type == SDL_QUIT)
@@ -486,16 +527,8 @@ int main(int argc, const char * argv[]) {
                 cam.setMouseSensitivity(0.0025f);
             }
             
-            
-            if(cam.getPosition() != oldCamPos) {
-                for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++) {
-                    if(it->second == &map)
-                        it->first = 1000.0f;
-                    else
-                        it->first = length2(cam.getPosition() - it->second->getPosition());
-                }
-                
-                objects.sort();
+            while(!sortDone) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
             
             uiProjection = ortho(-1.0f * float(windowWidth) / 1000.0f, 1.0f * float(windowWidth) / 1000.0f, -1.0f * float(windowHeight) / 1000.0f, 1.0f * float(windowHeight) / 1000.0f);
@@ -554,6 +587,8 @@ int main(int argc, const char * argv[]) {
         else
             SDL_Delay(33);
     }
+    
+    sortThread.join();
     
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
