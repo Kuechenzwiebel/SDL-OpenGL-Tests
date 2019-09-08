@@ -164,13 +164,11 @@ void Cube::render() {
     if(this->tex != nullptr) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tex->getTextureID());
-        shader->sendInt(0, tex->getTextureName());
     }
 
     if(this->map != nullptr) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, map->getData());
-        shader->sendInt(0, map->getTextureName());
     }
     
     
