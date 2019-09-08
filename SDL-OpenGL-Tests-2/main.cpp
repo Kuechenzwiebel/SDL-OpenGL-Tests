@@ -91,7 +91,7 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, Perl
             if(cam->getPosition() != oldCamPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects->begin(); it != objects->end(); it++) {
                     if(it->second == map)
-                        it->first = 1000.0f;
+                        it->first = INFINITY;
                     else
                         it->first = length2(cam->getPosition() - it->second->getPosition());
                 }
@@ -125,7 +125,7 @@ int main(int argc, const char * argv[]) {
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
    
-    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
     
     if (window == NULL) {
         printf(PRINTF_RED);
@@ -220,6 +220,7 @@ int main(int argc, const char * argv[]) {
     Cubemap spaceSkybox(spaceSkyboxLocation);
     
     Texture gradientTexture("resources/textures/grad.png", TEXTURE_NO_MIP_MAP);
+    Texture gradient2Texture("resources/models/grad.png", TEXTURE_NO_MIP_MAP);
     Texture nebulaTexture("resources/textures/nebel.jpg");
     Texture compassHeadbarTex("resources/textures/compassBar2.png");
     Texture compassSelectorTex("resources/textures/compassSelector.png", TEXTURE_NO_MIP_MAP);
@@ -239,7 +240,7 @@ int main(int argc, const char * argv[]) {
     
     
     Cube aabbTest(&basicShader, &renderData);
-    aabbTest.setTexture(&nebulaTexture);
+    aabbTest.setTexture(&gradient2Texture);
     aabbTest.setPosition(vec3(5.0f, -1.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &aabbTest));
     
