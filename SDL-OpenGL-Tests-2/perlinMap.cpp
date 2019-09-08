@@ -26,7 +26,6 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
         if(x >= width / 2.0f) {
             x = -(width / 2.0f);
             y += 1.0f;
-//            printf("\n");
         }
         
         vertices[i + 0] = glm::vec3(x + 0.0f, noise.perl(x + 0.0f, y + 0.0f, freq, octaves) * multiplier, y + 0.0f);
@@ -48,8 +47,6 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
         
         
         r = prng(seed, int(x / 8), int(y / 4)) % 4;
-        
-//        printf("%d %d | %d %d\n", int(x / 8), abs(int(x)) % 8, int(y / 4), abs(int(y)) % 4);
         
         u = (r % 2) * 0.5f;
         v = (r / 2) * 0.5f;
