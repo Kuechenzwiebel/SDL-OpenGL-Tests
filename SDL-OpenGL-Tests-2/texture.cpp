@@ -47,15 +47,13 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
-//    glDeleteTextures(1, &tex);
+    
 }
 
 Texture& Texture::operator=(const Texture &other) {
     this->fileName = other.fileName;
     this->textureName = other.textureName;
     this->type = other.type;
-    
-    glDeleteTextures(1, &tex);
     
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
