@@ -8,15 +8,24 @@
 
 #include "utils.hpp"
 
-void printVec2(glm::vec2 data) {
-    printf("X = %f\tY = %f\n", data.x, data.y);
+void printVec2(glm::vec2 data, bool newLine) {
+    printf("X = %f\tY = %f", data.x, data.y);
+    if(newLine) {
+        printf("\n");
+    }
 }
 
-void printVec3(glm::vec3 data) {
-    printf("X = %f\tY = %f\tZ = %f\n", data.x, data.y, data.z);
+void printVec3(glm::vec3 data, bool newLine) {
+    printf("X = %f\tY = %f\tZ = %f", data.x, data.y, data.z);
+    if(newLine) {
+        printf("\n");
+    }
 }
-void printVec4(glm::vec4 data) {
-    printf("X = %f\tY = %f\tZ = %f\tW = %f\n", data.x, data.y, data.z, data.w);
+void printVec4(glm::vec4 data, bool newLine) {
+    printf("X = %f\tY = %f\tZ = %f\tW = %f", data.x, data.y, data.z, data.w);
+    if(newLine) {
+        printf("\n");
+    }
 }
 
 

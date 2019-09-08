@@ -18,9 +18,9 @@
 #define PRINTF_GREEN "\033[0;32m"
 #define PRINTF_DEFAULT "\033[0m"
 
-void printVec2(glm::vec2 data);
-void printVec3(glm::vec3 data);
-void printVec4(glm::vec4 data);
+void printVec2(glm::vec2 data, bool newLine = true);
+void printVec3(glm::vec3 data, bool newLine = true);
+void printVec4(glm::vec4 data, bool newLine = true);
 
 template <typename T>
 void printArray(T *array, int arraySize);
