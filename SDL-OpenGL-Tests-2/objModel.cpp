@@ -9,7 +9,9 @@
 #include "objModel.hpp"
 
 ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data):
-shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)) {
+shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)) {
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
     
     hg::File objFile(path);
     std::vector<std::string> fileLines = objFile.readFileLineByLine();
@@ -18,28 +20,22 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
     std::vector<glm::vec3> readVertices;
     std::vector<glm::vec2> readUVs;
     std::vector<glm::vec3> readNormals;
-    ObjModelComponent tmpComp;
-    Texture tmpTex("");
     
-    int componentIndex = 0;
+    int lastSize = 0;
+    
     bool first = true;
-    
-    textures[0] = Texture("resources/models/cube.png");
-    textures[1] = Texture("resources/models/cube2.png");
-    textures[2] = Texture("resources/models/cube3.png");
     
     for(int i = 0; i < fileLines.size(); i++) {
         if(fileLines[i].substr(0, 2) == "o ") {
             if(!first) {
-                tmpComp.tex = tmpTex;
-                components.emplace_back(tmpComp);
-                componentIndex++;
+                ends[ends.size() - 1].second = int(vertices.size()) - lastSize;
             }
+            ends.push_back(std::make_pair(vertices.size(), 0));
+            lastSize = int(vertices.size());
             
             first = false;
             
-            tmpTex = Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png");
-            std::cout << "Opening Texture: "<< hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png" << std::endl;
+            textures.emplace_back(Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png"));
         }
         
         if(fileLines[i].substr(0, 2) == "v ") {
@@ -75,67 +71,55 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             >> v2 >> t2 >> n2
             >> v3 >> t3 >> n3;
             
-            tmpComp.vertices.push_back(readVertices[v1 - 1]);
-            tmpComp.vertices.push_back(readVertices[v2 - 1]);
-            tmpComp.vertices.push_back(readVertices[v3 - 1]);
+            vertices.push_back(readVertices[v1 - 1]);
+            vertices.push_back(readVertices[v2 - 1]);
+            vertices.push_back(readVertices[v3 - 1]);
             
-            tmpComp.uvs.push_back(readUVs[t1 - 1]);
-            tmpComp.uvs.push_back(readUVs[t2 - 1]);
-            tmpComp.uvs.push_back(readUVs[t3 - 1]);
+            uvs.push_back(readUVs[t1 - 1]);
+            uvs.push_back(readUVs[t2 - 1]);
+            uvs.push_back(readUVs[t3 - 1]);
             
-            tmpComp.normals.push_back(readNormals[n1 - 1]);
-            tmpComp.normals.push_back(readNormals[n2 - 1]);
-            tmpComp.normals.push_back(readNormals[n3 - 1]);
+            normals.push_back(readNormals[n1 - 1]);
+            normals.push_back(readNormals[n2 - 1]);
+            normals.push_back(readNormals[n3 - 1]);
         }
     }
     
-    tmpComp.tex = tmpTex;
-    components.emplace_back(tmpComp);
+    ends[ends.size() - 1].second = int(vertices.size()) - lastSize;
     
-    /*
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);*/
     
-    for(int i = 0; i < components.size(); i++) {
-        glGenVertexArrays(1, &components[i].VAO);
-        glBindVertexArray(components[i].VAO);
-        
-        components[i].vertex.setData(components[i].vertices.data(), sizeof(glm::vec3) * components[i].vertices.size(), 0);
-        components[i].uv.setData(components[i].uvs.data(), sizeof(glm::vec2) * components[i].uvs.size(), 1);
-        components[i].normal.setData(components[i].normals.data(), sizeof(glm::vec3) * components[i].normals.size(), 2);
-        
-        components[i].vertex.activate();
-        components[i].uv.activate();
-        components[i].normal.activate();
-        
-        glBindVertexArray(0);
-    }
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * vertices.size(), 0);
+    uv.setData(uvs.data(), sizeof(glm::vec2) * uvs.size(), 1);
+    normal.setData(normals.data(), sizeof(glm::vec3) * normals.size(), 2);
     
-//    glBindVertexArray(0);
+    vertex.activate();
+    uv.activate();
+    normal.activate();
+    
+    
+    glBindVertexArray(0);
 }
 
 ObjModel::~ObjModel() {
-    for(int i = 0; i < components.size(); i++) {
-        glDeleteVertexArrays(1, &components[i].VAO);
-    }
+    glDeleteVertexArrays(1, &VAO);
 }
 
 void ObjModel::render() {
-    for(int i = 0; i < components.size(); i++) {
-        components[i].vertex.activate();
-        components[i].uv.activate();
-        components[i].normal.activate();
-         
+    vertex.activate();
+    uv.activate();
+    normal.activate();
+    
+    for(int i = 0; i < ends.size(); i++) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, components[i].tex.getTextureID());
-        shader->sendInt(0, components[i].tex.getTextureName());
+        glBindTexture(GL_TEXTURE_2D, textures[i].getTextureID());
+        shader->sendInt(0, textures[i].getTextureName());
         
-        glBindVertexArray(components[i].VAO);
+        glBindVertexArray(VAO);
         shader->sendMat4(*data->projection, "projection");
         shader->sendMat4(data->viewMat, "view");
         shader->sendMat4(model, "model");
         
-        glDrawArrays(GL_TRIANGLES, 0, int(components[i].vertices.size()));
+        glDrawArrays(GL_TRIANGLES, ends[i].first, ends[i].second);
         glBindVertexArray(0);
     }
 }
@@ -148,13 +132,13 @@ void ObjModel::setPosition(glm::vec3 position) {
 }
 
 void ObjModel::setSize(glm::vec3 size) {
-    rotate = glm::rotate(glm::mat4(1), rotation.w, rotation.xyz());
+    scale = glm::scale(glm::mat4(1), size);
     model = translate * rotate * scale;
     this->size = size;
 }
 
 void ObjModel::setRotation(glm::vec4 rotation) {
-    scale = glm::scale(glm::mat4(1), size);
+    rotate = glm::rotate(glm::mat4(1), rotation.w, rotation.xyz());
     model = translate * rotate * scale;
     this->rotation = rotation;
 }

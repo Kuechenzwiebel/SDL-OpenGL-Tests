@@ -30,16 +30,6 @@
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
-struct ObjModelComponent {
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
-    
-    Texture tex;
-    ArrayBuffer vertex, uv, normal;
-    GLuint VAO;
-};
-
 class ObjModel: public Object {
 public:
     ObjModel(std::string path, Shader *shader, const RenderData *data);
@@ -58,40 +48,25 @@ public:
     Shader *getShaderPointer();
     
 private:
-//    GLuint VAO;
-//    ArrayBuffer vertex, uv, normal;
-//    Texture tex;
+    ArrayBuffer vertex, uv, normal;
+    GLuint VAO;
     
     Shader *shader;
     const RenderData *data;
-    
     
     glm::vec3 position;
     glm::vec4 rotation;
     glm::vec3 size;
     
     glm::mat4 translate, rotate, scale, model;
-    /*
+    
+    std::vector<Texture> textures;
+    
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
-    std::vector<Texture> textures;
-    */
-    Texture textures[3];
     
-    /*
-    std::vector<std::vector<glm::vec3>> vertices;
-    std::vector<std::vector<glm::vec2>> uvs;
-    std::vector<std::vector<glm::vec3>> normals;
-    
-    std::vector<GLuint> VAOs;
-    
-    std::vector<ArrayBuffer> vertex;
-    std::vector<ArrayBuffer> uv;
-    std::vector<ArrayBuffer> normal;
-    */
-    
-    std::vector<ObjModelComponent> components;
+    std::vector<std::pair<int, int>> ends;
 };
 
 #endif /* objModel_hpp */
