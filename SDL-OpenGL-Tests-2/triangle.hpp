@@ -24,7 +24,7 @@
 
 class Triangle: public Object {
 public:
-    Triangle(Shader *shader, const RenderData *data);
+    Triangle(Shader *shader, const RenderData *data, bool *wireframe = nullptr);
     ~Triangle();
     
     void render();
@@ -49,11 +49,13 @@ private:
     Shader *shader;
     const RenderData *data;
     
+    bool *wireframe;
     
-    glm::vec3 position = glm::vec3(0.0f);
-    float angle = 0.0f;
-    glm::vec3 rotationAxis = glm::vec3(0.0f);
-    glm::vec3 size = glm::vec3(1.0f);
+    
+    glm::vec3 position;
+    float angle;
+    glm::vec3 rotationAxis;
+    glm::vec3 size;
     
     glm::mat4 model;
 };

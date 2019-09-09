@@ -82,6 +82,8 @@ bool sort = false;
 std::mutex sortMutex;
 
 void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, PerlinMap *map) {
+    std::cout << "Sort Thread ID: " << std::this_thread::get_id() << std::endl;
+    
     while(running) {
         if(sort) {
             sortMutex.lock();
@@ -111,6 +113,8 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, Perl
 }
 
 int main(int argc, const char * argv[]) {
+    std::cout << "Main Thread ID: " << std::this_thread::get_id() << std::endl;
+    
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Failed to initialize SDL2");
         return EXIT_FAILURE;
@@ -124,7 +128,7 @@ int main(int argc, const char * argv[]) {
     SDL_Window *window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     SDL_GLContext context = SDL_GL_CreateContext(window);
     SDL_Event windowEvent;
-   
+
     SDL_GL_SetSwapInterval(1);
     
     if (window == NULL) {
@@ -344,7 +348,7 @@ int main(int argc, const char * argv[]) {
     
     
     
-    Sphere sphere(&basicShader, &renderData);
+    Sphere sphere(&basicShader, &renderData, &wireframe);
     sphere.setPosition(vec3(0.0f));
     sphere.setTexture(&gradientTexture);
     objects.push_back(std::make_pair(0.0f, &sphere));
@@ -361,7 +365,7 @@ int main(int argc, const char * argv[]) {
     uiObjects.push_back(&rayText);
     
     
-    Sphere jupiter(&basicShader, &renderData);
+    Sphere jupiter(&basicShader, &renderData, &wireframe);
     jupiter.setTexture(&jupiterTexture);
     jupiter.setPosition(vec3(10.0f));
     objects.push_back(std::make_pair(0.0f, &jupiter));
@@ -390,24 +394,38 @@ int main(int argc, const char * argv[]) {
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
     
-    
-    ObjModel cubes("resources/models/cubes.obj", &basicShader, &renderData);
-    cubes.setPosition(vec3(-3.0f, 5.0f, 1.0f));
-    objects.push_back(std::make_pair(0.0f, &cubes));
-    
-    ObjModel axis("resources/models/axis.obj", &basicShader, &renderData);
-    axis.setPosition(vec3(0.0f, -1.8f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &axis));
-    
     PerlinMapInformation pInfo = map.getMapInfo();
     
-    vec3 axisPosition;
-    vec4 axisRotation(1.0f, 0.0f, 0.0f, 0.0f);
+    
+    ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
+    vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &vehicle));
+    
+    vec3 vehiclePosition(0.0f, 1.8f, 0.0f);
+    
+    
+    ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
+    axis1.setPosition(vec3(0.0f, -1.8f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &axis1));
+    
+    ObjModel axis2("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
+    axis2.setPosition(vec3(-4.0f, -1.8f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &axis2));
+    
+    
+    vec3 axis1Position(0.0f, -1.8f, 0.0f), axis2Position(-4.0f, -1.8f, 0.0f);
+    vec3 axis1Rotation, axis2Rotation;
     
     float wheelDistance = 1.78f;
     float wheelDiameter = 0.76f;
-    float alpha = 0.0f;
-    float a = wheelDistance / 2.0f, b = 0.0f, p1 = 0.0f, p2 = 0.0f;
+    float alpha1 = 0.0f, alpha2 = 0.0f;
+    float a1 = wheelDistance / 2.0f, b1 = 0.0f, a2 = wheelDistance / 2.0f, b2 = 0.0f;
+    
+    
+    vec3 vehicleRotation;
+    
+    float valpha = 0.0f;
+    float va = 3.18f, vb = 0.0f;
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
@@ -461,8 +479,8 @@ int main(int argc, const char * argv[]) {
             }
             
             if(windowEvent.type == SDL_MOUSEWHEEL) {
-                axisPosition.x += float(windowEvent.wheel.y) * 0.05f;
-                axisPosition.z += float(windowEvent.wheel.x) * 0.05f;
+                vehiclePosition.x += float(windowEvent.wheel.y) * 0.05f;
+                vehiclePosition.z += float(windowEvent.wheel.x) * 0.05f;
             }
             
             if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_i)
@@ -490,18 +508,42 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
-            axisPosition.y = (pInfo.noise->perl(axisPosition.x, axisPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
+            vehiclePosition.y = (pInfo.noise->perl(vehiclePosition.x, vehiclePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f;
             
-            p2 = axisPosition.y - wheelDiameter / 2.0f;
-            p1 = pInfo.noise->perl(axisPosition.x, axisPosition.z - a, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f;
+            axis1Position = vehiclePosition + vec3(1.65f, (wheelDiameter / 2.0f), 0.0f);
+            axis2Position = vehiclePosition + vec3(-1.53f, (wheelDiameter / 2.0f), 0.0f);
             
-            b = p2 - p1;
-            alpha = atan(b / a);
             
-            axisRotation.w = -alpha;
+            axis1Position.y = (pInfo.noise->perl(axis1Position.x, axis1Position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
             
-            axis.setPosition(axisPosition);
-            axis.setRotation(axisRotation);
+            b1 = (axis1Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis1Position.x, axis1Position.z - a1, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
+            alpha1 = atan(b1 / a1);
+            
+            axis1Rotation.x = -alpha1;
+            
+            axis1.setPosition(axis1Position);
+            axis1.setRotation(eulerAnglesToAngleAxis(axis1Rotation));
+            
+            
+            axis2Position.y = (pInfo.noise->perl(axis2Position.x, axis2Position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
+            
+            b2 = (axis2Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis2Position.x, axis2Position.z - a2, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
+            alpha2 = atan(b2 / a2);
+            
+            axis2Rotation.x = -alpha2;
+            
+            axis2.setPosition(axis2Position);
+            axis2.setRotation(eulerAnglesToAngleAxis(axis2Rotation));
+            
+            
+            vb = axis1Position.y - axis2Position.y;
+            valpha = atan(vb / va);
+            
+            vehicleRotation.x = fmin(-alpha1, -alpha2) / 2.0f;
+            vehicleRotation.z = valpha;
+            
+            vehicle.setPosition(vehiclePosition);
+            vehicle.setRotation(eulerAnglesToAngleAxis(vehicleRotation));
             
             
             if(!invOpen)

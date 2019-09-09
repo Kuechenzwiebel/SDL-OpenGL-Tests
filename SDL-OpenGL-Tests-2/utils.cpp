@@ -83,3 +83,14 @@ glm::vec2 UIRectToPixelSize(glm::vec2 size) {
 unsigned int prng(int seed, int x, int y) {
     return ((8253748 * seed * x + 2397403) * (8253729 * seed * y + 2397403)) % 32767;
 }
+
+
+glm::vec4 eulerAnglesToAngleAxis(glm::vec3 rotation) {
+    glm::vec4 rot;
+    float maxRot(fmax(fmax(fabs(rotation.x), fabs(rotation.y)), fabs(rotation.z)));
+    rot.w = maxRot;
+    rot.x = rotation.x / maxRot;
+    rot.y = rotation.y / maxRot;
+    rot.z = rotation.z / maxRot;
+    return rot;
+}

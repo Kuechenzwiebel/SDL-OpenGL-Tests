@@ -17,7 +17,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    freq = 10.0f; multiplier = 4.5f;
+    freq = 10.0f; multiplier = 2.5f;
     octaves = 2;
     
     srand(seed);
@@ -124,6 +124,8 @@ void PerlinMap::render() {
     shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
+    shader->sendInt(0, "wireframe");
+    
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");

@@ -20,8 +20,8 @@ static glm::vec3 sphereSurface(float angleXZ, float angleXY) {
     return pos;
 }
 
-Sphere::Sphere(Shader *shader, const RenderData *data):
-shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), radius(1.0f), rotation(), data(data), tex(nullptr) {
+Sphere::Sphere(Shader *shader, const RenderData *data, bool *wireframe):
+shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), radius(1.0f), rotation(), data(data), tex(nullptr), wireframe(wireframe) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -90,6 +90,13 @@ void Sphere::render() {
     shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
+    if(wireframe != nullptr) {
+        shader->sendInt(*wireframe, "wireframe");
+    }
+    else {
+        shader->sendInt(0, "wireframe");
+    }
+    
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");

@@ -8,8 +8,8 @@
 
 #include "objModel.hpp"
 
-ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data):
-shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)) {
+ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe):
+shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)), wireframe(wireframe) {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
     
@@ -109,19 +109,28 @@ void ObjModel::render() {
     uv.activate();
     normal.activate();
     
+    glBindVertexArray(VAO);
+    
+    if(wireframe != nullptr) {
+        shader->sendInt(*wireframe, "wireframe");
+    }
+    else {
+        shader->sendInt(0, "wireframe");
+    }
+    
     for(int i = 0; i < ends.size(); i++) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[i].getTextureID());
         shader->sendInt(0, textures[i].getTextureName());
         
-        glBindVertexArray(VAO);
         shader->sendMat4(*data->projection, "projection");
         shader->sendMat4(data->viewMat, "view");
         shader->sendMat4(model, "model");
         
         glDrawArrays(GL_TRIANGLES, ends[i].first, ends[i].second);
-        glBindVertexArray(0);
     }
+    
+    glBindVertexArray(0);
 }
 
 

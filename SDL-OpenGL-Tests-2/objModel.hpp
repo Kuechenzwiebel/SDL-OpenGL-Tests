@@ -32,7 +32,7 @@
 
 class ObjModel: public Object {
 public:
-    ObjModel(std::string path, Shader *shader, const RenderData *data);
+    ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe = nullptr);
     ~ObjModel();
     
     void render();
@@ -53,6 +53,9 @@ private:
     
     Shader *shader;
     const RenderData *data;
+    
+    bool *wireframe;
+    
     
     glm::vec3 position;
     glm::vec4 rotation;

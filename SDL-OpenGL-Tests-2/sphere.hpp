@@ -33,7 +33,7 @@ const int sphereArraySize = 3888;
 
 class Sphere: public Object {
 public:
-    Sphere(Shader *shader, const RenderData *data);
+    Sphere(Shader *shader, const RenderData *data, bool *wireframe = nullptr);
     ~Sphere();
     
     void render();
@@ -51,7 +51,16 @@ public:
     Shader *getShaderPointer();
     
 private:
+    GLuint VAO;
+    ArrayBuffer vertex, colorBuffer, normal;
+    
+    Shader *shader;
+    const RenderData *data;
+    
     Texture *tex;
+    
+    bool *wireframe;
+    
     
     glm::vec3 position;
     glm::vec4 rotation;
@@ -59,15 +68,11 @@ private:
     
     glm::mat4 translate, rotate, scale, model;
     
-    GLuint VAO;
-    ArrayBuffer vertex, colorBuffer, normal;
     
     static glm::vec3 sphereVertices[sphereArraySize];
     static glm::vec2 sphereUVs[sphereArraySize];
     static glm::vec3 sphereNormals[sphereArraySize];
     
-    Shader *shader;
-    const RenderData *data;
 };
 
 #endif /* sphere_hpp */

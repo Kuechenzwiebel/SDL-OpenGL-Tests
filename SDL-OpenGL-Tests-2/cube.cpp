@@ -140,8 +140,8 @@ static glm::vec2 cubeTexCoords[] = {
     glm::vec2(0.0f,  1.0f)
 };
 
-Cube::Cube(Shader *shader, const RenderData *data):
-shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), data(data), tex(nullptr), map(nullptr) {
+Cube::Cube(Shader *shader, const RenderData *data, bool *wireframe):
+shader(shader), vertex(cubeVertices, sizeof(cubeVertices), 0), texCoord(cubeTexCoords, sizeof(cubeTexCoords), 1), normals(cubeNormals, sizeof(cubeNormals), 2), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), data(data), tex(nullptr), map(nullptr), wireframe(wireframe) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -173,6 +173,13 @@ void Cube::render() {
     
     
     glBindVertexArray(VAO);
+    if(wireframe != nullptr) {
+        shader->sendInt(*wireframe, "wireframe");
+    }
+    else {
+        shader->sendInt(0, "wireframe");
+    }
+    
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");

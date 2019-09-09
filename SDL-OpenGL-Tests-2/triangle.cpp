@@ -20,9 +20,9 @@ static glm::vec4 triangleColors[] = {
     glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
 };
 
-Triangle::Triangle(Shader *shader, const RenderData *data):
+Triangle::Triangle(Shader *shader, const RenderData *data, bool *wireframe):
 shader(shader), vertex(triangleVertices, sizeof(triangleVertices), 0), texCoord(triangleColors, sizeof(triangleColors), 1), model(1), position(glm::vec3(0.0f)),
-angle(0.0f), rotationAxis(glm::vec3(1.0f)), size(glm::vec3(1.0f)), data(data) {
+angle(0.0f), rotationAxis(glm::vec3(1.0f)), size(glm::vec3(1.0f)), data(data), wireframe(wireframe) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -41,6 +41,13 @@ void Triangle::render() {
     texCoord.activate();
     
     glBindVertexArray(VAO);
+    if(wireframe != nullptr) {
+        shader->sendInt(*wireframe, "wireframe");
+    }
+    else {
+        shader->sendInt(0, "wireframe");
+    }
+    
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");

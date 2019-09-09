@@ -26,8 +26,8 @@ static glm::vec2 rectangleTextures[] = {
     glm::vec2(1.0f, 1.0f)
 };
 
-Rectangle::Rectangle(Shader *shader, const RenderData *data):
-shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), tex(nullptr), data(data) {
+Rectangle::Rectangle(Shader *shader, const RenderData *data, bool *wireframe):
+shader(shader), vertex(rectangleVertices, sizeof(rectangleVertices), 0), texCoord(rectangleTextures, sizeof(rectangleTextures), 1), model(1), translate(1), rotate(1), scale(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), tex(nullptr), data(data), wireframe(wireframe) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -50,6 +50,13 @@ void Rectangle::render() {
     shader->sendInt(0, tex->getTextureName());
     
     glBindVertexArray(VAO);
+    if(wireframe != nullptr) {
+        shader->sendInt(*wireframe, "wireframe");
+    }
+    else {
+        shader->sendInt(0, "wireframe");
+    }
+    
     shader->sendMat4(*data->projection, "projection");
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");

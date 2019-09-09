@@ -9,6 +9,8 @@ in vec3 Normals;
 uniform sampler2D tex;
 uniform vec3 viewPos;
 
+uniform int wireframe;
+
 void main() {
     /*
     vec3 normals = normalize(Normals);
@@ -19,6 +21,10 @@ void main() {
     
     color = vec4(diffuse + vec3(0.2f), 1.0f) * texture(tex, Uvs);
      */
-    
-    color = texture(tex, Uvs);
+    if(wireframe == 0) {
+        color = texture(tex, Uvs);
+    }
+    else {
+        color = vec4(1.0f);
+    }
 }

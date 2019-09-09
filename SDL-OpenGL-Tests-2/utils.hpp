@@ -9,6 +9,10 @@
 #ifndef utils_hpp
 #define utils_hpp
 
+#define PI 3.1415926535897932384626433f
+
+#define GLM_FORCE_SWIZZLE
+
 #include <stdio.h>
 #include <iostream>
 #include <glm/glm.hpp>
@@ -45,5 +49,8 @@ glm::vec2 UIRectToPixelSize(glm::vec2 size);
 
 
 unsigned int prng(int seed, int x, int y);
+
+
+glm::vec4 eulerAnglesToAngleAxis(glm::vec3 rotation);
 
 #endif /* utils_hpp */

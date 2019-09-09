@@ -25,7 +25,7 @@
 
 class Rectangle: public Object {
 public:
-    Rectangle(Shader *shader, const RenderData *data);
+    Rectangle(Shader *shader, const RenderData *data, bool *wireframe = nullptr);
     ~Rectangle();
     
     void render();
@@ -49,6 +49,9 @@ private:
     
     Shader *shader;
     const RenderData *data;
+    
+    bool *wireframe;
+    
     
     glm::vec3 position;
     glm::vec3 size;
