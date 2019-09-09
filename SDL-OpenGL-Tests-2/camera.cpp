@@ -10,7 +10,7 @@
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
 up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse) {
+position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true) {
     this->updateCameraVectors();
 }
 
@@ -28,29 +28,24 @@ void Camera::processInput() {
     float velocity = this->movementSpeed * *deltaTime;
     
     if(*checkMouse) {
-        if(keystates[SDL_SCANCODE_W]) {
+        if(keystates[SDL_SCANCODE_W])
             this->theoreticalPosition += this->front * velocity;
-        }
-        if(keystates[SDL_SCANCODE_D]) {
+        if(keystates[SDL_SCANCODE_D])
             this->theoreticalPosition += this->right * velocity;
-        }
-        if(keystates[SDL_SCANCODE_S]) {
+        if(keystates[SDL_SCANCODE_S])
             this->theoreticalPosition -= this->front * velocity;
-        }
-        if(keystates[SDL_SCANCODE_A]) {
+        if(keystates[SDL_SCANCODE_A])
             this->theoreticalPosition -= this->right * velocity;
-        }
-        if(keystates[SDL_SCANCODE_SPACE]) {
+        if(keystates[SDL_SCANCODE_SPACE])
             this->theoreticalPosition.y += velocity;
-        }
-        if(keystates[SDL_SCANCODE_LSHIFT]) {
+        if(keystates[SDL_SCANCODE_LSHIFT])
             this->theoreticalPosition.y -= velocity;
-        }
     }
     
     collisionHappend = false;
     
-    theoreticalPosition.y -= 1.0f * *deltaTime;
+    if(gravity)
+        theoreticalPosition.y -= 1.0f * *deltaTime;
     
     float mapPosition = 0.0f;
     if(info.noise != nullptr &&
@@ -58,21 +53,17 @@ void Camera::processInput() {
         mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
     }
     
-    if(theoreticalPosition.y < mapPosition) {
+    if(theoreticalPosition.y < mapPosition)
         theoreticalPosition.y = mapPosition;
-    }
     
-    if(!collisionHappend) {
+    if(!collisionHappend)
         collisionHappend = worldPointCollision(objects, theoreticalPosition);
-    }
    
     
-    if(collisionHappend) {
+    if(collisionHappend)
         theoreticalPosition = position;
-    }
-    else {
+    else
         position = theoreticalPosition;
-    }
 }
 
 void Camera::processMouseInput() {
@@ -91,6 +82,10 @@ void Camera::processMouseInput() {
             
             this->updateCameraVectors();
         }
+    }
+    
+    if(windowEvent->type == SDL_KEYDOWN && windowEvent->key.keysym.sym == SDLK_g) {
+        swapBool(&gravity);
     }
     
     yaw = fmod(yaw + 360.0f, 360.0f);

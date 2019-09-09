@@ -82,6 +82,7 @@ private:
     
     PerlinMapInformation info;
     bool collisionHappend;
+    bool gravity;
 };
 
 #endif /* camera_hpp */

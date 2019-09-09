@@ -483,20 +483,21 @@ int main(int argc, const char * argv[]) {
                 vehiclePosition.z += float(windowEvent.wheel.x) * 0.05f;
             }
             
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_i)
-                swapBool(&invOpen);
-            
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_o)
-                swapBool(&opticsOn);
-            
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_f)
-                swapBool(&wireframe);
-            
-            if(windowEvent.type == SDL_KEYDOWN && windowEvent.key.keysym.sym == SDLK_ESCAPE) {
-                render = false;
-                checkMouse = false;
+            if(windowEvent.type == SDL_KEYDOWN) {
+                if(windowEvent.key.keysym.sym == SDLK_i)
+                    swapBool(&invOpen);
+                
+                if(windowEvent.key.keysym.sym == SDLK_o)
+                    swapBool(&opticsOn);
+                
+                if(windowEvent.key.keysym.sym == SDLK_f)
+                    swapBool(&wireframe);
+                
+                if(windowEvent.key.keysym.sym == SDLK_ESCAPE) {
+                    render = false;
+                    checkMouse = false;
+                }
             }
-            
             
             if(!invOpen)
                 cam.processMouseInput();
