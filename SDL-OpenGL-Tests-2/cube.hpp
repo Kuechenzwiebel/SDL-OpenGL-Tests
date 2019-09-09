@@ -16,7 +16,6 @@
 #include <glm/gtx/normal.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/euler_angles.hpp>
 #include <string>
 
 #include "arrayBuffers/arrayBuffer.hpp"
