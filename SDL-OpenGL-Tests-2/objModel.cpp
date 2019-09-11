@@ -38,7 +38,7 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             textures.emplace_back(Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png"));
         }
         
-        if(fileLines[i].substr(0, 2) == "v ") {
+        else if(fileLines[i].substr(0, 2) == "v ") {
             float x, y, z;
             lineStream = std::stringstream(hg::substr(fileLines[i], 2, int(fileLines[i].length())));
             lineStream >> x >> y >> z;
@@ -67,7 +67,8 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             int t1, t2, t3;
             int n1, n2, n3;
             
-            lineStream >> v1 >> t1 >> n1
+            lineStream
+            >> v1 >> t1 >> n1
             >> v2 >> t2 >> n2
             >> v3 >> t3 >> n3;
             
