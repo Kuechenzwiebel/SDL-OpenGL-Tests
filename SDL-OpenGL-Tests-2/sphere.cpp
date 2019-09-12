@@ -123,6 +123,11 @@ void Sphere::setRadius(float radius) {
     this->radius = radius;
 }
 
+void Sphere::setModelMat(glm::mat4 modelMat) {
+    this->model = modelMat;
+}
+
+
 glm::vec3 Sphere::getPosition() {
     return position;
 }

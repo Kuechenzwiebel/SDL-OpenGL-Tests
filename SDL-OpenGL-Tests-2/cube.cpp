@@ -215,6 +215,11 @@ void Cube::setSize(glm::vec3 size) {
     this->size = size;
 }
 
+void Cube::setModelMat(glm::mat4 modelMat) {
+    this->model = modelMat;
+}
+
+
 glm::vec3 Cube::getPosition() {
     return position;
 }

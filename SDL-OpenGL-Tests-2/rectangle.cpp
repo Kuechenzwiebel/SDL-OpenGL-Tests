@@ -87,6 +87,11 @@ void Rectangle::setSize(glm::vec3 size) {
     this->size = size;
 }
 
+void Rectangle::setModelMat(glm::mat4 modelMat) {
+    this->model = modelMat;
+}
+
+
 glm::vec3 Rectangle::getPosition() {
     return position;
 }

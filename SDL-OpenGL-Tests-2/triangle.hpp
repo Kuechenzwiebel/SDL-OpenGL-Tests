@@ -34,6 +34,7 @@ public:
     void setAngle(float angle);
     void setRotationAxis(glm::vec3 rotationAxis);
     void setSize(glm::vec3 size);
+    void setModelMat(glm::mat4 modelMat);
     
     glm::vec3 getPosition();
     float getAngle();

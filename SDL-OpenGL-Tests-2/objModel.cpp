@@ -153,6 +153,11 @@ void ObjModel::setRotation(glm::vec4 rotation) {
     this->rotation = rotation;
 }
 
+void ObjModel::setModelMat(glm::mat4 modelMat) {
+    this->model = modelMat;
+}
+
+
 glm::vec3 ObjModel::getPosition() {
     return position;
 }

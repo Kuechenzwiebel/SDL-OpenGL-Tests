@@ -79,6 +79,10 @@ void Triangle::setSize(glm::vec3 size) {
     this->size = size;
 }
 
+void Triangle::setModelMat(glm::mat4 modelMat) {
+    this->model = modelMat;
+}
+
 glm::vec3 Triangle::getPosition() {
     return position;
 }

@@ -41,6 +41,7 @@ public:
     void setPosition(glm::vec3 position);
     void setRadius(float radius);
     void setRotation(glm::vec4 rotation);
+    void setModelMat(glm::mat4 modelMat);
     
     void setTexture(Texture *texture);
     

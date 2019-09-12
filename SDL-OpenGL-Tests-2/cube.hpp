@@ -38,6 +38,7 @@ public:
     void setPosition(glm::vec3 position);
     void setSize(glm::vec3 size);
     void setRotation(glm::vec4 rotation);
+    void setModelMat(glm::mat4 modelMat);
     
     glm::vec3 getPosition();
     glm::vec4 getRotation();
