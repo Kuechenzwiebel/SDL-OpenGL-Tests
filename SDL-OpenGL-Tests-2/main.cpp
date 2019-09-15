@@ -261,7 +261,7 @@ int main(int argc, const char * argv[]) {
     
     objects.push_back(std::make_pair(0.0f, &tri));
     objects.push_back(std::make_pair(0.0f, &tri2));
-    
+
     vec2 compassUVs[] = {
         vec2(0.0832f * 1.5f, 0.0f),
         vec2(0.0832f * 2.5f, 0.0f),
@@ -399,21 +399,22 @@ int main(int argc, const char * argv[]) {
     
     ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
     vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &vehicle));
+//    objects.push_back(std::make_pair(0.0f, &vehicle));
     
     vec3 vehiclePosition(0.0f, 1.8f, 0.0f);
     
     
     ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis1.setPosition(vec3(0.0f, -1.8f, 0.0f));
+    axis1.setPosition(vec3(1.65f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis1));
     
     ObjModel axis2("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis2.setPosition(vec3(-4.0f, -1.8f, 0.0f));
+    axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
     
-    vec3 axis1Position(0.0f, -1.8f, 0.0f), axis2Position(-4.0f, -1.8f, 0.0f);
+    vec3 axis1Position(1.65f, 2.0f, 0.0f), axis2Position(-1.52f, 2.0f, 0.0f);
+    vec3 axis1OutPosition, axis2OutPosition;
     vec3 axis1Rotation, axis2Rotation;
     
     float wheelDistance = 1.78f;
@@ -426,6 +427,10 @@ int main(int argc, const char * argv[]) {
     
     float valpha = 0.0f;
     float va = 3.18f, vb = 0.0f;
+    
+    
+    float rotation = 0.0f;
+    vec3 position(0.0f, 2.0f, 0.0f);
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
@@ -479,8 +484,10 @@ int main(int argc, const char * argv[]) {
             }
             
             if(windowEvent.type == SDL_MOUSEWHEEL) {
-                vehiclePosition.x += float(windowEvent.wheel.y) * 0.05f;
-                vehiclePosition.z += float(windowEvent.wheel.x) * 0.05f;
+                rotation += float(windowEvent.wheel.x) * 0.025f;
+                
+                position.x += (float(windowEvent.wheel.y) * 0.05f) * cos(radians(rotation));
+                position.z += (float(windowEvent.wheel.y) * 0.05f) * -sin(radians(rotation));
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -509,32 +516,33 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
+            axis1OutPosition = vec3(translate(mat4(1), vec3(axis1Position)) *
+                                    rotate(mat4(1), radians(rotation), vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -a1, 1.0f));
+            axis2OutPosition = vec3(translate(mat4(1), vec3(axis2Position)) *
+                                    rotate(mat4(1), radians(rotation), vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -a1, 1.0f));
+            
+            
+            /*
             vehiclePosition.y = (pInfo.noise->perl(vehiclePosition.x, vehiclePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f;
             
             axis1Position = vehiclePosition + vec3(1.65f, (wheelDiameter / 2.0f), 0.0f);
             axis2Position = vehiclePosition + vec3(-1.53f, (wheelDiameter / 2.0f), 0.0f);
+            */
             
+            axis1Position.y = (pInfo.noise->perl(position.x + 1.65f, position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
             
-            axis1Position.y = (pInfo.noise->perl(axis1Position.x, axis1Position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
-            
-            b1 = (axis1Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis1Position.x, axis1Position.z - a1, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
+            b1 = (axis1Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis1OutPosition.x, axis1OutPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
             alpha1 = atan(b1 / a1);
             
             axis1Rotation.x = -alpha1;
             
-            axis1.setPosition(axis1Position);
-            axis1.setRotation(eulerAnglesToAngleAxis(axis1Rotation));
-            
             
             axis2Position.y = (pInfo.noise->perl(axis2Position.x, axis2Position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
             
-            b2 = (axis2Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis2Position.x, axis2Position.z - a2, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
+            b2 = (axis2Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis2OutPosition.x, axis2OutPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
             alpha2 = atan(b2 / a2);
             
             axis2Rotation.x = -alpha2;
-            
-            axis2.setPosition(axis2Position);
-            axis2.setRotation(eulerAnglesToAngleAxis(axis2Rotation));
             
             
             vb = axis1Position.y - axis2Position.y;
@@ -545,6 +553,18 @@ int main(int argc, const char * argv[]) {
             
             vehicle.setPosition(vehiclePosition);
             vehicle.setRotation(eulerAnglesToAngleAxis(vehicleRotation));
+            
+            
+            axis1Position = position + vec3(1.65f, 2.0f, 0.0f);
+            axis2Position = position + vec3(-1.52f, 2.0f, 0.0f);
+            
+            
+            axis1.setModelMat(translate(mat4(1), position + vec3(rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 2.0f, 0.0f, 1.0f))) *
+                              rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) /*
+                              rotate(mat4(1), -alpha1, vec3(1.0f, 0.0f, 0.0f))*/);
+            axis2.setModelMat(translate(mat4(1), position + vec3(rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 2.0f, 0.0f, 1.0f))) *
+                              rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)));
+            
             
             
             if(!invOpen)
@@ -632,7 +652,7 @@ int main(int argc, const char * argv[]) {
             SDL_Delay(33);
     }
     
-    sortThread.join();
+    sortThread.detach();
     
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
