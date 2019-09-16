@@ -414,13 +414,17 @@ int main(int argc, const char * argv[]) {
     
     
     vec3 axis1Position(1.65f, 2.0f, 0.0f), axis2Position(-1.52f, 2.0f, 0.0f);
-    vec3 axis1OutPosition, axis2OutPosition;
+    vec3 axis1OutPositionR, axis2OutPositionR;
+    vec3 axis1OutPositionL, axis2OutPositionL;
     vec3 axis1Rotation, axis2Rotation;
     
     float wheelDistance = 1.78f;
     float wheelDiameter = 0.76f;
-    float alpha1 = 0.0f, alpha2 = 0.0f;
-    float a1 = wheelDistance / 2.0f, b1 = 0.0f, a2 = wheelDistance / 2.0f, b2 = 0.0f;
+    float alpha1R = 0.0f, alpha2R = 0.0f;
+    float alpha1L = 0.0f, alpha2L = 0.0f;
+    float a = wheelDistance / 2.0f;
+    float b1R = 0.0f,  b2R = 0.0f;
+    float b1L = 0.0f,  b2L = 0.0f;
     
     
     vec3 vehicleRotation;
@@ -429,8 +433,13 @@ int main(int argc, const char * argv[]) {
     float va = 3.18f, vb = 0.0f;
     
     
-    float rotation = 0.0f;
+    float totalRotation = 0.0f;
     vec3 position(0.0f, 2.0f, 0.0f);
+    
+    
+    
+    vec3 axis1MiddlePosition, axis2MiddlePosition;
+    
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
@@ -484,10 +493,10 @@ int main(int argc, const char * argv[]) {
             }
             
             if(windowEvent.type == SDL_MOUSEWHEEL) {
-                rotation += float(windowEvent.wheel.x) * 0.025f;
+                totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
-                position.x += (float(windowEvent.wheel.y) * 0.05f) * cos(radians(rotation));
-                position.z += (float(windowEvent.wheel.y) * 0.05f) * -sin(radians(rotation));
+                position.x += (float(windowEvent.wheel.y) * 0.05f) * cos(totalRotation);
+                position.z += (float(windowEvent.wheel.y) * 0.05f) * -sin(totalRotation);
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -516,54 +525,38 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
-            axis1OutPosition = vec3(translate(mat4(1), vec3(axis1Position)) *
-                                    rotate(mat4(1), radians(rotation), vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -a1, 1.0f));
-            axis2OutPosition = vec3(translate(mat4(1), vec3(axis2Position)) *
-                                    rotate(mat4(1), radians(rotation), vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -a1, 1.0f));
+            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 0.0f, 0.0f, 1.0f));
+            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 0.0f, 0.0f, 1.0f));
+            
+            axis1MiddlePosition.y = (pInfo.noise->perl(axis1MiddlePosition.x, axis1MiddlePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
+            axis2MiddlePosition.y = (pInfo.noise->perl(axis2MiddlePosition.x, axis2MiddlePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
+
+            
+            axis1OutPositionR = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, (wheelDistance / 2.0f), 1.0f));
+            axis2OutPositionR = axis2MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, (wheelDistance / 2.0f), 1.0f));
+            
+            axis1OutPositionL = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
+            axis2OutPositionL = axis2MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
+            
+            b1R = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis1OutPositionR.x, axis1OutPositionR.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            b2R = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis2OutPositionR.x, axis2OutPositionR.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            
+            b1L = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis1OutPositionL.x, axis1OutPositionL.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            b2L = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis2OutPositionL.x, axis2OutPositionL.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            
+            alpha1R = atan(b1R / a);
+            alpha2R = atan(b2R / a);
+            
+            alpha1L = -atan(b1L / a);
+            alpha2L = -atan(b2L / a);
             
             
-            /*
-            vehiclePosition.y = (pInfo.noise->perl(vehiclePosition.x, vehiclePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f;
-            
-            axis1Position = vehiclePosition + vec3(1.65f, (wheelDiameter / 2.0f), 0.0f);
-            axis2Position = vehiclePosition + vec3(-1.53f, (wheelDiameter / 2.0f), 0.0f);
-            */
-            
-            axis1Position.y = (pInfo.noise->perl(position.x + 1.65f, position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
-            
-            b1 = (axis1Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis1OutPosition.x, axis1OutPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
-            alpha1 = atan(b1 / a1);
-            
-            axis1Rotation.x = -alpha1;
-            
-            
-            axis2Position.y = (pInfo.noise->perl(axis2Position.x, axis2Position.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
-            
-            b2 = (axis2Position.y - wheelDiameter / 2.0f) - (pInfo.noise->perl(axis2OutPosition.x, axis2OutPosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier - 2.0f);
-            alpha2 = atan(b2 / a2);
-            
-            axis2Rotation.x = -alpha2;
-            
-            
-            vb = axis1Position.y - axis2Position.y;
-            valpha = atan(vb / va);
-            
-            vehicleRotation.x = fmin(-alpha1, -alpha2) / 2.0f;
-            vehicleRotation.z = valpha;
-            
-            vehicle.setPosition(vehiclePosition);
-            vehicle.setRotation(eulerAnglesToAngleAxis(vehicleRotation));
-            
-            
-            axis1Position = position + vec3(1.65f, 2.0f, 0.0f);
-            axis2Position = position + vec3(-1.52f, 2.0f, 0.0f);
-            
-            
-            axis1.setModelMat(translate(mat4(1), position + vec3(rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 2.0f, 0.0f, 1.0f))) *
-                              rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) /*
-                              rotate(mat4(1), -alpha1, vec3(1.0f, 0.0f, 0.0f))*/);
-            axis2.setModelMat(translate(mat4(1), position + vec3(rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 2.0f, 0.0f, 1.0f))) *
-                              rotate(mat4(1), rotation, vec3(0.0f, 1.0f, 0.0f)));
+            axis1.setModelMat(translate(mat4(1), axis1MiddlePosition) *
+                              rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                              rotate(mat4(1), fmax(alpha1R, alpha1L), vec3(1.0f, 0.0f, 0.0f)));
+            axis2.setModelMat(translate(mat4(1), axis2MiddlePosition) *
+                              rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                              rotate(mat4(1), fmax(alpha2R, alpha2L), vec3(1.0f, 0.0f, 0.0f)));
             
             
             
