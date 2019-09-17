@@ -17,6 +17,7 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <iomanip>
 
 #define GLEW_STATIC
 #include <SDL2/SDL.h>
@@ -80,6 +81,25 @@ vec3 oldCamPos;
 bool sortDone = false;
 bool sort = false;
 std::mutex sortMutex;
+
+int ipow(int x, unsigned int y) {
+    unsigned int result = 1;
+    for(int i = 0; i < y; i++) {
+        result *= x;
+    }
+    return result;
+}
+
+float round(float value, unsigned int digits) {
+    if(digits == 0.0f) {
+        return round(value);
+    }
+    
+    value *= ipow(10, digits);
+    value = round(value);
+    value /= ipow(10, digits);
+    return value;
+}
 
 void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, PerlinMap *map) {
     std::cout << "Sort Thread ID: " << std::this_thread::get_id() << std::endl;
@@ -359,6 +379,10 @@ int main(int argc, const char * argv[]) {
     fpsText.setSize(vec2(0.25f));
     uiObjects.push_back(&fpsText);
     
+    UIText positionText("", &uiShader, &uiData);
+    positionText.setSize(vec2(0.25f));
+    uiObjects.push_back(&positionText);
+    
     UIText rayText("Ray hit:", &uiShader, &uiData);
     rayText.setSize(vec2(0.25f));
     rayText.setPixelPosition(vec2(100.0f));
@@ -389,6 +413,7 @@ int main(int argc, const char * argv[]) {
     compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
     declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+    positionText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, -float(windowHeight) / 2.0f + (charHeight / 2.0f) * 0.25f));
     
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
@@ -399,7 +424,7 @@ int main(int argc, const char * argv[]) {
     
     ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
     vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
-//    objects.push_back(std::make_pair(0.0f, &vehicle));
+    objects.push_back(std::make_pair(0.0f, &vehicle));
     
     vec3 vehiclePosition(0.0f, 1.8f, 0.0f);
     
@@ -413,6 +438,7 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &axis2));
     
 
+    vec3 axis1MiddlePosition, axis2MiddlePosition;
     vec3 axis1OutPositionR, axis2OutPositionR;
     vec3 axis1OutPositionL, axis2OutPositionL;
     
@@ -424,18 +450,11 @@ int main(int argc, const char * argv[]) {
     float b1R = 0.0f,  b2R = 0.0f;
     float b1L = 0.0f,  b2L = 0.0f;
     
-    
     float valpha = 0.0f;
     float va = 3.18f, vb = 0.0f;
     
-    
     float totalRotation = 0.0f;
-    vec3 position(0.0f, 2.0f, 0.0f);
-    
-    
-    
-    vec3 axis1MiddlePosition, axis2MiddlePosition;
-    
+    vec3 position;
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
@@ -479,6 +498,7 @@ int main(int argc, const char * argv[]) {
                     compassBar.setPixelPosition(vec2(0.0f, (float(windowHeight) / 2.0f) - 32.0f));
                     declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
                     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+                    positionText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, -float(windowHeight) / 2.0f + (charHeight / 2.0f) * 0.25f));
                 }
                 
                 if(windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
@@ -547,6 +567,14 @@ int main(int argc, const char * argv[]) {
             alpha2L = -atan(b2L / a);
             
             
+            vb = axis1MiddlePosition.y - axis2MiddlePosition.y;
+            valpha = atan(vb / va);
+            
+            vehicle.setModelMat(translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z)) *
+                                rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)));
+            
+            
             axis1.setModelMat(translate(mat4(1), axis1MiddlePosition) *
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                               rotate(mat4(1), fmax(alpha1R, alpha1L), vec3(1.0f, 0.0f, 0.0f)));
@@ -602,6 +630,10 @@ int main(int argc, const char * argv[]) {
                 it->second->render();
             }
             
+
+            
+            glClear(GL_DEPTH_BUFFER_BIT);
+            
             crosshairRay.setRayStartPosition(cam.getPosition());
             crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
             crosshairRay.reset();
@@ -620,7 +652,14 @@ int main(int argc, const char * argv[]) {
             else
                 rayText.setText("No ray hit!");
             
-            glClear(GL_DEPTH_BUFFER_BIT);
+            
+            if(oldCamPos != cam.getPosition()) {
+                std::stringstream positionStream;
+                positionStream << std::fixed << std::setprecision(2) << "Position:   X: " << cam.getPosition().x << "  Y: " << cam.getPosition().y << "  Z: " << cam.getPosition().z;
+//                 + std::to_string(round(cam.getPosition().x, 2)) + " Y: " + std::to_string(round(cam.getPosition().y, 2)) + " Z: " + std::to_string(round(cam.getPosition().z, 2))
+                positionText.setText(positionStream.str());
+            }
+            
             
             uiShader.use();
             for(int i = 0; i < uiObjects.size(); i++)
