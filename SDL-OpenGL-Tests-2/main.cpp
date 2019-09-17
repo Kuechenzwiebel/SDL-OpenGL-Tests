@@ -656,7 +656,6 @@ int main(int argc, const char * argv[]) {
             if(oldCamPos != cam.getPosition()) {
                 std::stringstream positionStream;
                 positionStream << std::fixed << std::setprecision(2) << "Position:   X: " << cam.getPosition().x << "  Y: " << cam.getPosition().y << "  Z: " << cam.getPosition().z;
-//                 + std::to_string(round(cam.getPosition().x, 2)) + " Y: " + std::to_string(round(cam.getPosition().y, 2)) + " Z: " + std::to_string(round(cam.getPosition().z, 2))
                 positionText.setText(positionStream.str());
             }
             
