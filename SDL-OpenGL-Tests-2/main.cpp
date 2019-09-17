@@ -412,11 +412,9 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-    
-    vec3 axis1Position(1.65f, 2.0f, 0.0f), axis2Position(-1.52f, 2.0f, 0.0f);
+
     vec3 axis1OutPositionR, axis2OutPositionR;
     vec3 axis1OutPositionL, axis2OutPositionL;
-    vec3 axis1Rotation, axis2Rotation;
     
     float wheelDistance = 1.78f;
     float wheelDiameter = 0.76f;
@@ -426,8 +424,6 @@ int main(int argc, const char * argv[]) {
     float b1R = 0.0f,  b2R = 0.0f;
     float b1L = 0.0f,  b2L = 0.0f;
     
-    
-    vec3 vehicleRotation;
     
     float valpha = 0.0f;
     float va = 3.18f, vb = 0.0f;
