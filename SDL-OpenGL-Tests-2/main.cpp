@@ -437,9 +437,9 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-    ObjModel wind("resources/models/Window.obj", &basicShader, &renderData);
-    wind.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &wind));
+//    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
+//    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
+//    objects.push_back(std::make_pair(0.0f, &newVehicle));
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
