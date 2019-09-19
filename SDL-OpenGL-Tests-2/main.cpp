@@ -437,12 +437,16 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
+    ObjModel wind("resources/models/Window.obj", &basicShader, &renderData);
+    wind.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &wind));
+    
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
     vec3 axis1OutPositionR, axis2OutPositionR;
     vec3 axis1OutPositionL, axis2OutPositionL;
     
-    float wheelDistance = 1.78f;
+    float wheelDistance = 1.73f;
     float wheelDiameter = 0.76f;
     float alpha1R = 0.0f, alpha2R = 0.0f;
     float alpha1L = 0.0f, alpha2L = 0.0f;
