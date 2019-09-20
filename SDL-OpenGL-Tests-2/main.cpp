@@ -426,8 +426,6 @@ int main(int argc, const char * argv[]) {
     vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &vehicle));
     
-    vec3 vehiclePosition(0.0f, 1.8f, 0.0f);
-    
     
     ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
     axis1.setPosition(vec3(1.65f, 2.0f, 0.0f));
@@ -437,9 +435,9 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-//    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
-//    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
-//    objects.push_back(std::make_pair(0.0f, &newVehicle));
+    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
+    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &newVehicle));
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
@@ -462,6 +460,9 @@ int main(int argc, const char * argv[]) {
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
+    
+    objects.clear();
+    objects.push_back(std::make_pair(0.0f, &map));
     
     while(running) {
         sortMutex.lock();

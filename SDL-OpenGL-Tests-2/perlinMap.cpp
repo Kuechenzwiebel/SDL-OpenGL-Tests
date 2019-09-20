@@ -17,7 +17,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    freq = 10.0f; multiplier = 2.5f;
+    freq = 10.0f; multiplier = 3.5f;
     octaves = 2;
     
     srand(seed);
