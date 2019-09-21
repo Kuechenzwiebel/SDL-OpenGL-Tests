@@ -61,6 +61,8 @@ public:
     
     PhysicsWorld *objects;
     
+    bool inVehicle;
+    
 private:
     glm::vec3 position, theoreticalPosition;
     glm::vec3 front;

@@ -10,7 +10,7 @@
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
 up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true) {
+position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false) {
     this->updateCameraVectors();
 }
 
@@ -27,38 +27,39 @@ void Camera::processInput() {
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     float velocity = this->movementSpeed * *deltaTime;
     
-    if(*checkMouse) {
-        if(keystates[SDL_SCANCODE_W])
-            this->theoreticalPosition += this->front * velocity;
-        if(keystates[SDL_SCANCODE_D])
-            this->theoreticalPosition += this->right * velocity;
-        if(keystates[SDL_SCANCODE_S])
-            this->theoreticalPosition -= this->front * velocity;
-        if(keystates[SDL_SCANCODE_A])
-            this->theoreticalPosition -= this->right * velocity;
-        if(keystates[SDL_SCANCODE_SPACE])
-            this->theoreticalPosition.y += velocity;
-        if(keystates[SDL_SCANCODE_LSHIFT])
-            this->theoreticalPosition.y -= velocity;
+    if(!inVehicle) {
+        if(*checkMouse) {
+            if(keystates[SDL_SCANCODE_W])
+                this->theoreticalPosition += this->front * velocity;
+            if(keystates[SDL_SCANCODE_D])
+                this->theoreticalPosition += this->right * velocity;
+            if(keystates[SDL_SCANCODE_S])
+                this->theoreticalPosition -= this->front * velocity;
+            if(keystates[SDL_SCANCODE_A])
+                this->theoreticalPosition -= this->right * velocity;
+            if(keystates[SDL_SCANCODE_SPACE])
+                this->theoreticalPosition.y += velocity;
+            if(keystates[SDL_SCANCODE_LSHIFT])
+                this->theoreticalPosition.y -= velocity;
+        }
+        
+        collisionHappend = false;
+        
+        if(gravity)
+            theoreticalPosition.y -= 1.0f * *deltaTime;
+        
+        float mapPosition = 0.0f;
+        if(info.noise != nullptr &&
+           theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
+            mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
+        }
+        
+        if(theoreticalPosition.y < mapPosition)
+            theoreticalPosition.y = mapPosition;
+        
+        if(!collisionHappend)
+            collisionHappend = worldPointCollision(objects, theoreticalPosition);
     }
-    
-    collisionHappend = false;
-    
-    if(gravity)
-        theoreticalPosition.y -= 1.0f * *deltaTime;
-    
-    float mapPosition = 0.0f;
-    if(info.noise != nullptr &&
-       theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
-        mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
-    }
-    
-    if(theoreticalPosition.y < mapPosition)
-        theoreticalPosition.y = mapPosition;
-    
-    if(!collisionHappend)
-        collisionHappend = worldPointCollision(objects, theoreticalPosition);
-   
     
     if(collisionHappend)
         theoreticalPosition = position;

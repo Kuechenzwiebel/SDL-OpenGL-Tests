@@ -66,7 +66,7 @@ using namespace glm;
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
 
-int windowWidth = 1080, windowHeight = 760;
+int windowWidth = 760, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
 
 bool running = true;
@@ -461,6 +461,8 @@ int main(int argc, const char * argv[]) {
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
     
+    cam.inVehicle = true;
+    
     while(running) {
         sortMutex.lock();
         sort = true;
@@ -584,9 +586,9 @@ int main(int argc, const char * argv[]) {
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                               rotate(mat4(1), fmax(alpha2R, alpha2L), vec3(1.0f, 0.0f, 0.0f)));
             
-            cam.setPosition((vec4(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z, 1.0f) *
-                            rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                            rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f))).xyz() + vec3(0.30f, 2.24f, -0.80f));
+            cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                                                                                                                               rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                                                                                                                                               vec4(0.30f, 2.24f, -0.80f, 1.0f)));
                             
 //                            (vec4((vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(0.30f, 2.24f, -0.80f)), 1.0f) *
 //                                         rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f))).xyz());
