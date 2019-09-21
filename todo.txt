@@ -1,0 +1,12 @@
+Things to add:                          Done:
+
+Use new vehicle model		            [ ]
+	Update axis model				    [ ]
+	Making axis rotate when moving	    [ ]
+
+Caves in map                            [ ]
+
+Dynamic map loading                     [ ]
+	Zipping data and unzipping 	        [ ]
+
+Object - object collisions              [ ]

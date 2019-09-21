@@ -66,7 +66,8 @@ using namespace glm;
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
 
-int windowWidth = 760, windowHeight = 760;
+int windowWidth = 1080, windowHeight = 760;
+//int windowWidth = 760, windowHeight = 760;
 std::string windowTitle = "SDL-OpenGL-Tests-2";
 
 bool running = true;
