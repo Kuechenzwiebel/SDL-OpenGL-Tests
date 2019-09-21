@@ -435,9 +435,9 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
-    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &newVehicle));
+//    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
+//    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
+//    objects.push_back(std::make_pair(0.0f, &newVehicle));
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
@@ -460,9 +460,6 @@ int main(int argc, const char * argv[]) {
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
-    
-    objects.clear();
-    objects.push_back(std::make_pair(0.0f, &map));
     
     while(running) {
         sortMutex.lock();
@@ -587,6 +584,12 @@ int main(int argc, const char * argv[]) {
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                               rotate(mat4(1), fmax(alpha2R, alpha2L), vec3(1.0f, 0.0f, 0.0f)));
             
+            cam.setPosition((vec4(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z, 1.0f) *
+                            rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                            rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f))).xyz() + vec3(0.30f, 2.24f, -0.80f));
+                            
+//                            (vec4((vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(0.30f, 2.24f, -0.80f)), 1.0f) *
+//                                         rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f))).xyz());
             
             
             if(!invOpen)

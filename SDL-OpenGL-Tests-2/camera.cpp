@@ -119,6 +119,7 @@ glm::vec3 Camera::getFront() {
 
 void Camera::setPosition(glm::vec3 pos) {
     this->position = pos;
+    this->theoreticalPosition = pos;
 }
 
 float *Camera::getYawPointer() {
