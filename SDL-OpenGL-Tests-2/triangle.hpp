@@ -40,6 +40,7 @@ public:
     float getAngle();
     glm::vec3 getRotationAxis();
     glm::vec3 getSize();
+    glm::vec3 getRealPosition();
     
     Shader *getShaderPointer();
     

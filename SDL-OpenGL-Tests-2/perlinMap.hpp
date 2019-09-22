@@ -46,6 +46,7 @@ public:
     
     glm::vec3 getPosition();
     Shader *getShaderPointer();
+    glm::vec3 getRealPosition();
     
     void render();
     

@@ -22,6 +22,7 @@ public:
     
     virtual void render();
     virtual glm::vec3 getPosition();
+    virtual glm::vec3 getRealPosition();
     virtual glm::vec3 getSize();
     virtual void setPosition(glm::vec3 position);
     virtual Shader* getShaderPointer();

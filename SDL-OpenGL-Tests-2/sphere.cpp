@@ -132,6 +132,10 @@ glm::vec3 Sphere::getPosition() {
     return position;
 }
 
+glm::vec3 Sphere::getRealPosition() {
+    return position;
+}
+
 glm::vec4 Sphere::getRotation() {
     return rotation;
 }

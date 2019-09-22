@@ -96,6 +96,10 @@ glm::vec3 Rectangle::getPosition() {
     return position;
 }
 
+glm::vec3 Rectangle::getRealPosition() {
+    return position;
+}
+
 glm::vec4 Rectangle::getRotation() {
     return rotation;
 }

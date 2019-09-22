@@ -39,6 +39,7 @@ public:
     glm::vec3 getPosition();
     glm::vec3 getSize();
     glm::vec4 getRotation();
+    glm::vec3 getRealPosition();
     
     Shader *getShaderPointer();
     

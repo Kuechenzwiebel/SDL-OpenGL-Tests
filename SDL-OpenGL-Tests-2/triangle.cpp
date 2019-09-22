@@ -67,6 +67,10 @@ void Triangle::setPosition(glm::vec3 position) {
     this->position = position;
 }
 
+glm::vec3 Triangle::getRealPosition() {
+    return position;
+}
+
 void Triangle::setAngle(float angle) {
     this->angle = angle;
 }

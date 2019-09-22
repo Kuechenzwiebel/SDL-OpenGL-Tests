@@ -9,7 +9,8 @@
 #include "objModel.hpp"
 
 ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe):
-shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)), wireframe(wireframe) {
+shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)), wireframe(wireframe), realPositionSet(false) {
+    realPosition = position;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
     
@@ -110,16 +111,15 @@ void ObjModel::render() {
     uv.activate();
     normal.activate();
     
-    glBindVertexArray(VAO);
     
-    if(wireframe != nullptr) {
+    if(wireframe != nullptr)
         shader->sendInt(*wireframe, "wireframe");
-    }
-    else {
+    else
         shader->sendInt(0, "wireframe");
-    }
     
     for(int i = 0; i < ends.size(); i++) {
+        glBindVertexArray(VAO);
+        
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[i].getTextureID());
         shader->sendInt(0, textures[i].getTextureName());
@@ -129,16 +129,24 @@ void ObjModel::render() {
         shader->sendMat4(model, "model");
         
         glDrawArrays(GL_TRIANGLES, ends[i].first, ends[i].second);
+        
+        glBindVertexArray(0);
     }
-    
-    glBindVertexArray(0);
 }
 
+
+void ObjModel::setRealPosition(glm::vec3 position) {
+    this->realPosition = position;
+    realPositionSet = true;
+}
 
 void ObjModel::setPosition(glm::vec3 position) {
     translate = glm::translate(glm::mat4(1), position);
     model = translate * rotate * scale;
     this->position = position;
+    if(realPositionSet == false) {
+        this->realPosition = position;
+    }
 }
 
 void ObjModel::setSize(glm::vec3 size) {
@@ -160,6 +168,10 @@ void ObjModel::setModelMat(glm::mat4 modelMat) {
 
 glm::vec3 ObjModel::getPosition() {
     return position;
+}
+
+glm::vec3 ObjModel::getRealPosition() {
+    return realPosition;
 }
 
 glm::vec4 ObjModel::getRotation() {

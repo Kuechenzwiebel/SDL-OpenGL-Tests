@@ -224,6 +224,10 @@ glm::vec3 Cube::getPosition() {
     return position;
 }
 
+glm::vec3 Cube::getRealPosition() {
+    return position;
+}
+
 glm::vec4 Cube::getRotation() {
     return rotation;
 }

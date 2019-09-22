@@ -48,6 +48,7 @@ public:
     glm::vec3 getPosition();
     glm::vec4 getRotation();
     float getRadius();
+    glm::vec3 getRealPosition();
     
     Shader *getShaderPointer();
     

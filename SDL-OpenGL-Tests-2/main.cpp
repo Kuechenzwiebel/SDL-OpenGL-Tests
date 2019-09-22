@@ -72,6 +72,7 @@ std::string windowTitle = "SDL-OpenGL-Tests-2";
 
 bool running = true;
 bool checkMouse = false;
+bool inVehicle = false;
 bool invOpen = false;
 bool opticsOn = false;
 bool wireframe = false;
@@ -116,7 +117,7 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, Perl
                     if(it->second == map)
                         it->first = INFINITY;
                     else
-                        it->first = length2(cam->getPosition() - it->second->getPosition());
+                        it->first = length2(cam->getPosition() - it->second->getRealPosition());
                 }
                 
                 objects->sort();
@@ -436,9 +437,17 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-//    ObjModel newVehicle("resources/models/vehicle\ new/vehicle\ new.obj", &basicShader, &renderData);
-//    newVehicle.setPosition(vec3(0.0f, 4.0f, 0.0f));
-//    objects.push_back(std::make_pair(0.0f, &newVehicle));
+    
+    
+    ObjModel backWindow2("resources/models/vehicle new/Back_Window_2.obj", &basicShader, &renderData, &wireframe);
+    backWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backWindow2.setRealPosition(backWindow2.getPosition() + vec3(0.9f, 1.14f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &backWindow2));
+    
+    ObjModel frontWindow2("resources/models/vehicle new/Front_Window_2.obj", &basicShader, &renderData, &wireframe);
+    frontWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontWindow2.setRealPosition(frontWindow2.getPosition() + vec3(1.75f, 1.17f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &frontWindow2));
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
@@ -457,12 +466,10 @@ int main(int argc, const char * argv[]) {
     float va = 3.18f, vb = 0.0f;
     
     float totalRotation = 0.0f;
-    vec3 position;
+    vec3 position(0.0f);
     
     
     std::thread sortThread(objectSort, &cam, &objects, &map);
-    
-    cam.inVehicle = true;
     
     while(running) {
         sortMutex.lock();
@@ -530,6 +537,9 @@ int main(int argc, const char * argv[]) {
                 if(windowEvent.key.keysym.sym == SDLK_f)
                     swapBool(&wireframe);
                 
+                if(windowEvent.key.keysym.sym == SDLK_v)
+                    swapBool(&inVehicle);
+                
                 if(windowEvent.key.keysym.sym == SDLK_ESCAPE) {
                     render = false;
                     checkMouse = false;
@@ -546,6 +556,8 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
+            cam.inVehicle = inVehicle;
+            
             axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 0.0f, 0.0f, 1.0f));
             axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 0.0f, 0.0f, 1.0f));
             
@@ -575,6 +587,7 @@ int main(int argc, const char * argv[]) {
             vb = axis1MiddlePosition.y - axis2MiddlePosition.y;
             valpha = atan(vb / va);
             
+            vehicle.setRealPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z));
             vehicle.setModelMat(translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z)) *
                                 rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                                 rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)));
@@ -587,12 +600,11 @@ int main(int argc, const char * argv[]) {
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                               rotate(mat4(1), fmax(alpha2R, alpha2L), vec3(1.0f, 0.0f, 0.0f)));
             
-            cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                                                                                                                                               rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
-                                                                                                                                               vec4(0.30f, 2.24f, -0.80f, 1.0f)));
-                            
-//                            (vec4((vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(0.30f, 2.24f, -0.80f)), 1.0f) *
-//                                         rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f))).xyz());
+            if(inVehicle) {
+                cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                                                                                                                                   rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                                                                                                                                                   vec4(0.30f, 2.24f, -0.80f, 1.0f)));
+            }
             
             
             if(!invOpen)

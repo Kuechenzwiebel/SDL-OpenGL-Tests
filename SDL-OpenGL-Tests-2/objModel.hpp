@@ -38,6 +38,7 @@ public:
     void render();
     
     void setPosition(glm::vec3 position);
+    void setRealPosition(glm::vec3 position);
     void setSize(glm::vec3 size);
     void setRotation(glm::vec4 rotation);
     void setModelMat(glm::mat4 modelMat);
@@ -45,6 +46,7 @@ public:
     glm::vec3 getPosition();
     glm::vec4 getRotation();
     glm::vec3 getSize();
+    glm::vec3 getRealPosition();
     
     Shader *getShaderPointer();
     
@@ -58,6 +60,8 @@ private:
     bool *wireframe;
     
     
+    glm::vec3 realPosition;
+    bool realPositionSet;
     glm::vec3 position;
     glm::vec4 rotation;
     glm::vec3 size;

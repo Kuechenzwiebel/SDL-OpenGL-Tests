@@ -147,6 +147,10 @@ glm::vec3 PerlinMap::getPosition() {
     return position;
 }
 
+glm::vec3 PerlinMap::getRealPosition() {
+    return position;
+}
+
 Shader* PerlinMap::getShaderPointer() {
     return shader;
 }
