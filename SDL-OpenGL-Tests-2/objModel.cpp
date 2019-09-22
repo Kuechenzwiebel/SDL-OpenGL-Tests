@@ -37,6 +37,7 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             first = false;
             
             textures.emplace_back(Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png"));
+            std::cout << "Opening texture: " << hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png" << std::endl;
         }
         
         else if(fileLines[i].substr(0, 2) == "v ") {
@@ -89,7 +90,6 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
     
     ends[ends.size() - 1].second = int(vertices.size()) - lastSize;
     
-    
     vertex.setData(vertices.data(), sizeof(glm::vec3) * vertices.size(), 0);
     uv.setData(uvs.data(), sizeof(glm::vec2) * uvs.size(), 1);
     normal.setData(normals.data(), sizeof(glm::vec3) * normals.size(), 2);
@@ -98,6 +98,7 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
     uv.activate();
     normal.activate();
     
+    printf("\n");
     
     glBindVertexArray(0);
 }

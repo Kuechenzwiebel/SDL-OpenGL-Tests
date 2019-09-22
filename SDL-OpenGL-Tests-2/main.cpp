@@ -205,6 +205,7 @@ int main(int argc, const char * argv[]) {
     hg::File uiShaderVertexFile("resources/shaders/ui.vs"), uiShaderFragmentFile("resources/shaders/ui.fs");
     hg::File skyboxShaderVertexFile("resources/shaders/skybox.vs"), skyboxShaderFragmentFile("resources/shaders/skybox.fs");
     
+    
     std::string spaceSkyboxLocation[6] = {
         "resources/textures/skyboxes/skybox2RT.png",
         "resources/textures/skyboxes/skybox2LF.png",
@@ -439,15 +440,60 @@ int main(int argc, const char * argv[]) {
     
     
     
+    
+    
+    ObjModel base("resources/models/vehicle new/Base.obj", &basicShader, &renderData, &wireframe);
+    base.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    base.setRealPosition(base.getPosition() + vec3(0.0f, 0.3f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &base));
+    
+    
+    ObjModel backWindow1("resources/models/vehicle new/Back_Window_1.obj", &basicShader, &renderData, &wireframe);
+    backWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backWindow1.setRealPosition(backWindow1.getPosition() + vec3(-0.9f, 0.33f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &backWindow1));
+    
     ObjModel backWindow2("resources/models/vehicle new/Back_Window_2.obj", &basicShader, &renderData, &wireframe);
     backWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backWindow2.setRealPosition(backWindow2.getPosition() + vec3(0.9f, 1.14f, 0.0f));
+    backWindow2.setRealPosition(backWindow2.getPosition() + vec3(-0.95f, 0.33f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &backWindow2));
+    
+    
+    ObjModel backSideWindow1("resources/models/vehicle new/Back_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
+    backSideWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backSideWindow1.setRealPosition(backSideWindow1.getPosition() + vec3(-0.2f, 0.25f, -0.84f));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow1));
+    
+    ObjModel backSideWindow2("resources/models/vehicle new/Back_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
+    backSideWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backSideWindow2.setRealPosition(backSideWindow2.getPosition() + vec3(-0.2f, 0.24f, -0.78f));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow2));
+    
+    ObjModel backSideWindow3("resources/models/vehicle new/Back_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
+    backSideWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backSideWindow3.setRealPosition(backSideWindow3.getPosition() + vec3(-0.2f, 0.25f, 0.84f));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow3));
+    
+    ObjModel backSideWindow4("resources/models/vehicle new/Back_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
+    backSideWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    backSideWindow4.setRealPosition(backSideWindow4.getPosition() + vec3(-0.2f, 0.25f, 0.79f));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow4));
+    
+    
+    
+    ObjModel frontWindow1("resources/models/vehicle new/Front_Window_1.obj", &basicShader, &renderData, &wireframe);
+    frontWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontWindow1.setRealPosition(frontWindow1.getPosition() + vec3(1.79f, 0.38f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &frontWindow1));
     
     ObjModel frontWindow2("resources/models/vehicle new/Front_Window_2.obj", &basicShader, &renderData, &wireframe);
     frontWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontWindow2.setRealPosition(frontWindow2.getPosition() + vec3(1.75f, 1.17f, 0.0f));
+    frontWindow2.setRealPosition(frontWindow2.getPosition() + vec3(1.75f, 0.36f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &frontWindow2));
+    
+    
+    
+    
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
@@ -703,6 +749,8 @@ int main(int argc, const char * argv[]) {
     }
     
     sortThread.detach();
+    
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
