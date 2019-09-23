@@ -440,11 +440,18 @@ int main(int argc, const char * argv[]) {
     
     
     
+    ObjModel axis3("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
+    axis3.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(-0.35f, -0.97f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &axis3));
+    
+    ObjModel axis4("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
+    axis4.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(2.68f, -0.97f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &axis4));
     
     
     ObjModel base("resources/models/vehicle new/Base.obj", &basicShader, &renderData, &wireframe);
     base.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    base.setRealPosition(base.getPosition() + vec3(0.0f, 0.3f, 0.0f));
+    base.setRealPosition(base.getPosition() + vec3(1000000.0f));
     objects.push_back(std::make_pair(0.0f, &base));
     
     
@@ -459,25 +466,68 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &backWindow2));
     
     
+    
     ObjModel backSideWindow1("resources/models/vehicle new/Back_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
     backSideWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow1.setRealPosition(backSideWindow1.getPosition() + vec3(-0.2f, 0.25f, -0.84f));
+    backSideWindow1.setRealPosition(backSideWindow1.getPosition() + vec3(-0.2f, 0.25f, 0.84f));
     objects.push_back(std::make_pair(0.0f, &backSideWindow1));
     
     ObjModel backSideWindow2("resources/models/vehicle new/Back_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
     backSideWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow2.setRealPosition(backSideWindow2.getPosition() + vec3(-0.2f, 0.24f, -0.78f));
+    backSideWindow2.setRealPosition(backSideWindow2.getPosition() + vec3(-0.2f, 0.24f, 0.78f));
     objects.push_back(std::make_pair(0.0f, &backSideWindow2));
     
     ObjModel backSideWindow3("resources/models/vehicle new/Back_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
     backSideWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow3.setRealPosition(backSideWindow3.getPosition() + vec3(-0.2f, 0.25f, 0.84f));
+    backSideWindow3.setRealPosition(backSideWindow3.getPosition() + vec3(-0.2f, 0.25f, -0.84f));
     objects.push_back(std::make_pair(0.0f, &backSideWindow3));
     
     ObjModel backSideWindow4("resources/models/vehicle new/Back_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
     backSideWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow4.setRealPosition(backSideWindow4.getPosition() + vec3(-0.2f, 0.25f, 0.79f));
+    backSideWindow4.setRealPosition(backSideWindow4.getPosition() + vec3(-0.2f, 0.25f, -0.79f));
     objects.push_back(std::make_pair(0.0f, &backSideWindow4));
+    
+    
+    ObjModel middleWindow1("resources/models/vehicle new/Middle_Window_1.obj", &basicShader, &renderData, &wireframe);
+    middleWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    middleWindow1.setRealPosition(middleWindow1.getPosition() + vec3(0.45f, 0.34f, -0.84f));
+    objects.push_back(std::make_pair(0.0f, &middleWindow1));
+    
+    ObjModel middleWindow2("resources/models/vehicle new/Middle_Window_2.obj", &basicShader, &renderData, &wireframe);
+    middleWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    middleWindow2.setRealPosition(middleWindow2.getPosition() + vec3(0.45f, 0.34f, -0.78f));
+    objects.push_back(std::make_pair(0.0f, &middleWindow2));
+    
+    ObjModel middleWindow3("resources/models/vehicle new/Middle_Window_3.obj", &basicShader, &renderData, &wireframe);
+    middleWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    middleWindow3.setRealPosition(middleWindow3.getPosition() + vec3(0.45f, 0.34f, 0.77f));
+    objects.push_back(std::make_pair(0.0f, &middleWindow3));
+    
+    ObjModel middleWindow4("resources/models/vehicle new/Middle_Window_4.obj", &basicShader, &renderData, &wireframe);
+    middleWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    middleWindow4.setRealPosition(middleWindow4.getPosition() + vec3(0.45f, 0.34f, 0.83f));
+    objects.push_back(std::make_pair(0.0f, &middleWindow4));
+    
+    
+    ObjModel frontSideWindow1("resources/models/vehicle new/Front_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
+    frontSideWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontSideWindow1.setRealPosition(frontSideWindow1.getPosition() + vec3(1.32f, 0.34f, -0.84f));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow1));
+    
+    ObjModel frontSideWindow2("resources/models/vehicle new/Front_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
+    frontSideWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontSideWindow2.setRealPosition(frontSideWindow2.getPosition() + vec3(1.32f, 0.33f, -0.78f));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow2));
+    
+    ObjModel frontSideWindow3("resources/models/vehicle new/Front_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
+    frontSideWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontSideWindow3.setRealPosition(frontSideWindow3.getPosition() + vec3(1.32f, 0.33f, 0.77f));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow3));
+    
+    ObjModel frontSideWindow4("resources/models/vehicle new/Front_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
+    frontSideWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
+    frontSideWindow4.setRealPosition(frontSideWindow4.getPosition() + vec3(1.32f, 0.33f, 0.83f));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow4));
     
     
     
@@ -490,10 +540,6 @@ int main(int argc, const char * argv[]) {
     frontWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
     frontWindow2.setRealPosition(frontWindow2.getPosition() + vec3(1.75f, 0.36f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &frontWindow2));
-    
-    
-    
-    
     
 
     vec3 axis1MiddlePosition, axis2MiddlePosition;
