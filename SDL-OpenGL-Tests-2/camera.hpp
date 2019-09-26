@@ -26,8 +26,8 @@
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
 
-#include "perlinMap.hpp"
-#include "perlin.hpp"
+#include "mapChunk.hpp"
+#include "perlinNoise.hpp"
 
 enum CameraMovement {
     FORWARD,
@@ -57,7 +57,7 @@ public:
     void processMouseInput();
     void processInput();
     
-    void setPerlinMapInfo(PerlinMapInformation info);
+    void setMapNoise(PerlinNoise *noise);
     
     PhysicsWorld *objects;
     
@@ -82,7 +82,7 @@ private:
     
     void updateCameraVectors();
     
-    PerlinMapInformation info;
+    PerlinNoise *noise;
     bool collisionHappend;
     bool gravity;
 };

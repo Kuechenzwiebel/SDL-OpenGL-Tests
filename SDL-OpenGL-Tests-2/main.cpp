@@ -58,11 +58,11 @@ using namespace glm;
 #include "physicsObjects/collisionInfo.h"
 #include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
-#include "perlinMap.hpp"
+#include "mapChunk.hpp"
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
 #include "physicsObjects/ray.hpp"
-#include "perlin.hpp"
+#include "perlinNoise.hpp"
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
 
@@ -103,7 +103,7 @@ float round(float value, unsigned int digits) {
     return value;
 }
 
-void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, PerlinMap *map) {
+void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, MapChunk *map) {
     std::cout << "Sort Thread ID: " << std::this_thread::get_id() << std::endl;
     
     while(running) {
@@ -227,6 +227,7 @@ int main(int argc, const char * argv[]) {
     RenderData renderData;
     RenderData skyboxData;
     RenderData uiData;
+    RenderData minimapData;
     
     renderData.projection = &projection;
     renderData.viewMat = cam.getViewMatrix();
@@ -242,6 +243,11 @@ int main(int argc, const char * argv[]) {
     uiData.viewMat = lookAt(vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     uiData.windowWidth = &windowWidth;
     uiData.windowHeight = &windowHeight;
+    
+    minimapData.projection = &projection;
+    minimapData.viewMat = lookAt(vec3(0.0f, 100.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    minimapData.windowWidth = &windowWidth;
+    minimapData.windowHeight = &windowHeight;
     
     
     Cubemap spaceSkybox(spaceSkyboxLocation);
@@ -259,11 +265,16 @@ int main(int argc, const char * argv[]) {
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     
     
-    PerlinMap map(420, 200, &basicShader, &renderData);
-    map.setTexture(&stoneTexture);
-    map.setPosition(vec3(0.0f, -2.0f, 0.0f));
-    cam.setPerlinMapInfo(map.getMapInfo());
-    objects.push_back(std::make_pair(0.0f, &map));
+    MapChunk chunk1(420, 200, &basicShader, &renderData, vec2(0.0f));
+    chunk1.setTexture(&stoneTexture);
+    chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
+    cam.setMapNoise(chunk1.getNoise());
+    objects.push_back(std::make_pair(0.0f, &chunk1));
+    
+    MapChunk chunk2(420, 200, &basicShader, &renderData, vec2(200.0f, 0.0f));
+    chunk2.setTexture(&stoneTexture);
+    chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &chunk2));
     
     
     Cube aabbTest(&basicShader, &renderData);
@@ -422,7 +433,7 @@ int main(int argc, const char * argv[]) {
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
     
-    PerlinMapInformation pInfo = map.getMapInfo();
+    PerlinNoise *noise = chunk1.getNoise();
     
     
     ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
@@ -529,8 +540,6 @@ int main(int argc, const char * argv[]) {
     frontSideWindow4.setRealPosition(frontSideWindow4.getPosition() + vec3(1.32f, 0.33f, 0.83f));
     objects.push_back(std::make_pair(0.0f, &frontSideWindow4));
     
-    
-    
     ObjModel frontWindow1("resources/models/vehicle new/Front_Window_1.obj", &basicShader, &renderData, &wireframe);
     frontWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
     frontWindow1.setRealPosition(frontWindow1.getPosition() + vec3(1.79f, 0.38f, 0.0f));
@@ -561,7 +570,7 @@ int main(int argc, const char * argv[]) {
     vec3 position(0.0f);
     
     
-    std::thread sortThread(objectSort, &cam, &objects, &map);
+    std::thread sortThread(objectSort, &cam, &objects, &chunk1);
     
     while(running) {
         sortMutex.lock();
@@ -648,13 +657,15 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
+            chunk1.setRenderData(&renderData);
+            
             cam.inVehicle = inVehicle;
             
             axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 0.0f, 0.0f, 1.0f));
             axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 0.0f, 0.0f, 1.0f));
             
-            axis1MiddlePosition.y = (pInfo.noise->perl(axis1MiddlePosition.x, axis1MiddlePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
-            axis2MiddlePosition.y = (pInfo.noise->perl(axis2MiddlePosition.x, axis2MiddlePosition.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f + wheelDiameter / 2.0f;
+            axis1MiddlePosition.y = (noise->noise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
+            axis2MiddlePosition.y = (noise->noise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
 
             
             axis1OutPositionR = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, (wheelDistance / 2.0f), 1.0f));
@@ -663,11 +674,11 @@ int main(int argc, const char * argv[]) {
             axis1OutPositionL = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
             axis2OutPositionL = axis2MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
             
-            b1R = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis1OutPositionR.x, axis1OutPositionR.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
-            b2R = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis2OutPositionR.x, axis2OutPositionR.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            b1R = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis1OutPositionR.x, axis1OutPositionR.z) - 2.0f);
+            b2R = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis2OutPositionR.x, axis2OutPositionR.z) - 2.0f);
             
-            b1L = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis1OutPositionL.x, axis1OutPositionL.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
-            b2L = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - ((pInfo.noise->perl(axis2OutPositionL.x, axis2OutPositionL.z, pInfo.freq, pInfo.octaves) * pInfo.multiplier) - 2.0f);
+            b1L = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis1OutPositionL.x, axis1OutPositionL.z) - 2.0f);
+            b2L = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis2OutPositionL.x, axis2OutPositionL.z) - 2.0f);
             
             alpha1R = atan(b1R / a);
             alpha2R = atan(b2R / a);
@@ -781,6 +792,18 @@ int main(int argc, const char * argv[]) {
             
             if(invOpen)
                 inv.render();
+            
+            /*
+            minimapData.viewMat = lookAt(vec3(cam.getPosition().x, 100.0f, cam.getPosition().z), vec3(0.0, 0.0f, 0.0), vec3(0.0f, 101.0f, 0.0f));
+            
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glViewport(10, 600, 100, 100);
+            
+            map1.setRenderData(&minimapData);
+            map1.getShaderPointer()->use();
+            map1.render();
+            */
+            
             
             frame ++;
             totalFrames++;

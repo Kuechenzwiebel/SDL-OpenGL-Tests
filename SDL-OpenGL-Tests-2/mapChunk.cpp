@@ -6,35 +6,36 @@
 //  Copyright © 2019 Tobias Pflüger. All rights reserved.
 //
 
-#include "perlinMap.hpp"
+#include "mapChunk.hpp"
 
-PerlinMap::PerlinMap(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data):
+MapChunk::MapChunk(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data, glm::vec2 offset):
 tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), vertices(pow(width, 2.0f) * 6), texCoords(pow(width, 2.0f) * 6), normals(pow(width, 2.0f) * 6) {
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
-    float x = -(width / 2.0f), y = -(width / 2.0f);
+    float x = -(width / 2.0f) + offset.x, z = -(width / 2.0f) + offset.y;
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    freq = 15.0f; multiplier = 3.5f;
-    octaves = 2;
+    noise.frequency = 15.0f;
+    noise.multiplier = 3.5f;
+    noise.octaves = 2;
     
     srand(seed);
     
     for(unsigned long i = 0; i < pow((width), 2.0f) * 6 ; i += 6) {
-        if(x >= width / 2.0f) {
-            x = -(width / 2.0f);
-            y += 1.0f;
+        if(x >= (width / 2.0f) + offset.x) {
+            x = -(width / 2.0f) + offset.x;
+            z += 1.0f;
         }
         
-        vertices[i + 0] = glm::vec3(x + 0.0f, noise.perl(x + 0.0f, y + 0.0f, freq, octaves) * multiplier, y + 0.0f);
-        vertices[i + 1] = glm::vec3(x + 1.0f, noise.perl(x + 1.0f, y + 0.0f, freq, octaves) * multiplier, y + 0.0f);
-        vertices[i + 2] = glm::vec3(x + 0.0f, noise.perl(x + 0.0f, y + 1.0f, freq, octaves) * multiplier, y + 1.0f);
+        vertices[i + 0] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 1] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 2] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 1.0f), z + 1.0f);
         
-        vertices[i + 3] = glm::vec3(x + 1.0f, noise.perl(x + 1.0f, y + 1.0f, freq, octaves) * multiplier, y + 1.0f);
-        vertices[i + 4] = glm::vec3(x + 1.0f, noise.perl(x + 1.0f, y + 0.0f, freq, octaves) * multiplier, y + 0.0f);
-        vertices[i + 5] = glm::vec3(x + 0.0f, noise.perl(x + 0.0f, y + 1.0f, freq, octaves) * multiplier, y + 1.0f);
+        vertices[i + 3] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 4] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 5] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 1.0f), z + 1.0f);
         
         
         normals[i + 0] = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f;
@@ -46,19 +47,19 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
         normals[i + 5] = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
         
         
-        r = prng(seed, int(x / 8), int(y / 4)) % 4;
+        r = prng(seed, int(x / 8), int(z / 4)) % 4;
         
         u = (r % 2) * 0.5f;
         v = (r / 2) * 0.5f;
         
         
-        texCoords[i + 0] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(y), 4.0f) / 4.0f);
-        texCoords[i + 1] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(y), 4.0f) / 4.0f);
-        texCoords[i + 2] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(y), 4.0f) / 4.0f);
+        texCoords[i + 0] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 1] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 2] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
         
-        texCoords[i + 3] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(y), 4.0f) / 4.0f);
-        texCoords[i + 4] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(y), 4.0f) / 4.0f);
-        texCoords[i + 5] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(y), 4.0f) / 4.0f);
+        texCoords[i + 3] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 4] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 5] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
         
         
         texCoords[i + 0] /= 2.0f;
@@ -98,23 +99,15 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     glBindVertexArray(0);
 }
 
-PerlinMapInformation PerlinMap::getMapInfo() {
-    PerlinMapInformation info;
-    
-    info.noise = &noise;
-    info.freq = freq;
-    info.multiplier = multiplier;
-    info.octaves = octaves;
-    info.width = width;
-    
-    return info;
+PerlinNoise* MapChunk::getNoise() {
+    return &noise;
 }
 
-PerlinMap::~PerlinMap() {
+MapChunk::~MapChunk() {
     glDeleteVertexArrays(1, &this->VAO);
 }
 
-void PerlinMap::render() {
+void MapChunk::render() {
     vertex.activate();
     texCoord.activate();
     normal.activate();
@@ -134,23 +127,27 @@ void PerlinMap::render() {
     glBindVertexArray(0);
 }
 
-void PerlinMap::setTexture(Texture *tex) {
+void MapChunk::setTexture(Texture *tex) {
     this->tex = tex;
 }
 
-void PerlinMap::setPosition(glm::vec3 position) {
+void MapChunk::setPosition(glm::vec3 position) {
     model = glm::translate(glm::mat4(1), position);
     this->position = position;
 }
 
-glm::vec3 PerlinMap::getPosition() {
+glm::vec3 MapChunk::getPosition() {
     return position;
 }
 
-glm::vec3 PerlinMap::getRealPosition() {
+glm::vec3 MapChunk::getRealPosition() {
     return position;
 }
 
-Shader* PerlinMap::getShaderPointer() {
+Shader* MapChunk::getShaderPointer() {
     return shader;
+}
+
+void MapChunk::setRenderData(const RenderData *data) {
+    this->data = data;
 }

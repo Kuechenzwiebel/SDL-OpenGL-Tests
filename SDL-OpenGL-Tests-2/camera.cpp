@@ -9,7 +9,7 @@
 #include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 10.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
 position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false) {
     this->updateCameraVectors();
 }
@@ -49,9 +49,8 @@ void Camera::processInput() {
             theoreticalPosition.y -= 1.0f * *deltaTime;
         
         float mapPosition = 0.0f;
-        if(info.noise != nullptr &&
-           theoreticalPosition.x < info.width / 2.0f && theoreticalPosition.x > -(info.width / 2.0f) && theoreticalPosition.z < info.width / 2.0f && theoreticalPosition.z > -(info.width / 2.0f)) {
-            mapPosition = (info.noise->perl(theoreticalPosition.x, theoreticalPosition.z, info.freq, info.octaves) * info.multiplier) - 2.0f + 0.2f;
+        if(noise != nullptr) {
+            mapPosition = noise->noise(theoreticalPosition.x, theoreticalPosition.z) - 2.0f + 0.2f;
         }
         
         if(theoreticalPosition.y < mapPosition)
@@ -131,6 +130,6 @@ float *Camera::getPitchPointer() {
     return &pitch;
 }
 
-void Camera::setPerlinMapInfo(PerlinMapInformation info) {
-    this->info = info;
+void Camera::setMapNoise(PerlinNoise *noise) {
+    this->noise = noise;
 }

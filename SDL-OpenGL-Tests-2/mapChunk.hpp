@@ -20,30 +20,23 @@
 #include <glm/gtx/normal.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include "perlin.hpp"
+#include "perlinNoise.hpp"
 #include "utils.hpp"
 #include "shader.hpp"
 #include "object.hpp"
 #include "arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
-struct PerlinMapInformation {
-    PerlinNoise* noise;
-    float multiplier;
-    float freq;
-    int octaves;
-    unsigned int width;
-};
-
-class PerlinMap: public Object {
+class MapChunk: public Object {
 public:
-    PerlinMap(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data);
-    ~PerlinMap();
+    MapChunk(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data, glm::vec2 offset);
+    ~MapChunk();
     
     void setTexture(Texture *tex);
     void setPosition(glm::vec3 position);
-    PerlinMapInformation getMapInfo();
+    void setRenderData(const RenderData *data);
     
+    PerlinNoise* getNoise();
     glm::vec3 getPosition();
     Shader *getShaderPointer();
     glm::vec3 getRealPosition();
