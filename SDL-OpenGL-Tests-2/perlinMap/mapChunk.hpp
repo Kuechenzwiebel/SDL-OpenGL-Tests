@@ -24,12 +24,12 @@
 #include "utils.hpp"
 #include "shader.hpp"
 #include "object.hpp"
-#include "arrayBuffers/arrayBuffer.hpp"
+#include "../arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
 class MapChunk: public Object {
 public:
-    MapChunk(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data, glm::vec2 offset);
+    MapChunk(unsigned int seed, Shader *shader, const RenderData *data, glm::vec2 offset);
     ~MapChunk();
     
     void setTexture(Texture *tex);
@@ -58,10 +58,6 @@ private:
     
     Shader *shader;
     const RenderData *data;
-    
-    unsigned int width;
-    float freq, multiplier;
-    int octaves;
     
     glm::vec3 position;
     glm::mat4 translate, model;

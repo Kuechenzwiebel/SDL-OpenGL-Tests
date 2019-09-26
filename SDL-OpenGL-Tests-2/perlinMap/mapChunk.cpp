@@ -8,8 +8,10 @@
 
 #include "mapChunk.hpp"
 
-MapChunk::MapChunk(unsigned int seed, unsigned int width, Shader *shader, const RenderData *data, glm::vec2 offset):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), width(width), noise(seed), vertices(pow(width, 2.0f) * 6), texCoords(pow(width, 2.0f) * 6), normals(pow(width, 2.0f) * 6) {
+MapChunk::MapChunk(unsigned int seed, Shader *shader, const RenderData *data, glm::vec2 offset):
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), noise(seed), vertices(98304), texCoords(98304), normals(98304) {
+    unsigned int width = 128;
+    
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
@@ -88,9 +90,9 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     texCoords.shrink_to_fit();
     normals.shrink_to_fit();
     
-    vertex.setData(vertices.data(), sizeof(glm::vec3) * pow(width, 2.0f) * 6, 0);
-    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * pow(width, 2.0f) * 6, 1);
-    normal.setData(normals.data(), sizeof(glm::vec3) * pow(width, 2.0f) * 6, 2);
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * 98304, 0);
+    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 98304, 1);
+    normal.setData(normals.data(), sizeof(glm::vec3) * 98304, 2);
     
     vertex.activate();
     texCoord.activate();
@@ -123,7 +125,7 @@ void MapChunk::render() {
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");
     
-    glDrawArrays(GL_TRIANGLES, 0, pow(width, 2.0f) * 6);
+    glDrawArrays(GL_TRIANGLES, 0, 98304);
     glBindVertexArray(0);
 }
 
@@ -141,7 +143,7 @@ glm::vec3 MapChunk::getPosition() {
 }
 
 glm::vec3 MapChunk::getRealPosition() {
-    return position;
+    return glm::vec3(INFINITY);
 }
 
 Shader* MapChunk::getShaderPointer() {

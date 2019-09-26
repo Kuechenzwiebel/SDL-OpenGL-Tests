@@ -58,11 +58,11 @@ using namespace glm;
 #include "physicsObjects/collisionInfo.h"
 #include "physicsObjects/physicsObject.hpp"
 #include "physicsObjects/physicsSphere.hpp"
-#include "mapChunk.hpp"
+#include "perlinMap/mapChunk.hpp"
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
 #include "physicsObjects/ray.hpp"
-#include "perlinNoise.hpp"
+#include "perlinMap/perlinNoise.hpp"
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
 
@@ -103,7 +103,7 @@ float round(float value, unsigned int digits) {
     return value;
 }
 
-void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, MapChunk *map) {
+void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects) {
     std::cout << "Sort Thread ID: " << std::this_thread::get_id() << std::endl;
     
     while(running) {
@@ -114,10 +114,7 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects, MapC
             
             if(cam->getPosition() != oldCamPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects->begin(); it != objects->end(); it++) {
-                    if(it->second == map)
-                        it->first = INFINITY;
-                    else
-                        it->first = length2(cam->getPosition() - it->second->getRealPosition());
+                    it->first = length2(cam->getPosition() - it->second->getRealPosition());
                 }
                 
                 objects->sort();
@@ -265,17 +262,16 @@ int main(int argc, const char * argv[]) {
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     
     
-    MapChunk chunk1(420, 200, &basicShader, &renderData, vec2(0.0f));
+    MapChunk chunk1(420, &basicShader, &renderData, vec2(0.0f));
     chunk1.setTexture(&stoneTexture);
     chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setMapNoise(chunk1.getNoise());
     objects.push_back(std::make_pair(0.0f, &chunk1));
     
-    MapChunk chunk2(420, 200, &basicShader, &renderData, vec2(200.0f, 0.0f));
+    MapChunk chunk2(420, &basicShader, &renderData, vec2(128.0f, 0.0f));
     chunk2.setTexture(&stoneTexture);
     chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &chunk2));
-    
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
@@ -570,7 +566,7 @@ int main(int argc, const char * argv[]) {
     vec3 position(0.0f);
     
     
-    std::thread sortThread(objectSort, &cam, &objects, &chunk1);
+    std::thread sortThread(objectSort, &cam, &objects);
     
     while(running) {
         sortMutex.lock();

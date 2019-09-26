@@ -27,8 +27,7 @@
 #include "physicsObjects/obb.hpp"
 
 #include "mapChunk.hpp"
-#include "perlinNoise.hpp"
-
+#include "perlinMap/perlinNoise.hpp"
 enum CameraMovement {
     FORWARD,
     BACKWARD,
