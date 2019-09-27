@@ -65,6 +65,7 @@ using namespace glm;
 #include "perlinMap/perlinNoise.hpp"
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
+#include "perlinMap/map.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 //int windowWidth = 760, windowHeight = 760;
@@ -262,16 +263,25 @@ int main(int argc, const char * argv[]) {
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
     
     
-    MapChunk chunk1(420, &basicShader, &renderData, vec2(0.0f));
+    PerlinNoise n(420);
+    n.frequency = 15.0f;
+    n.multiplier = 3.5f;
+    n.octaves = 2;
+    
+    
+    MapChunk chunk1(&n, &basicShader, &renderData, vec2(0.0f));
     chunk1.setTexture(&stoneTexture);
     chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setMapNoise(chunk1.getNoise());
     objects.push_back(std::make_pair(0.0f, &chunk1));
     
-    MapChunk chunk2(420, &basicShader, &renderData, vec2(128.0f, 0.0f));
+    MapChunk chunk2(&n, &basicShader, &renderData, vec2(128.0f, 0.0f));
     chunk2.setTexture(&stoneTexture);
     chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &chunk2));
+
+    
+//    Map map(420, &basicShader, &renderData);
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
@@ -565,9 +575,8 @@ int main(int argc, const char * argv[]) {
     float totalRotation = 0.0f;
     vec3 position(0.0f);
     
-    
     std::thread sortThread(objectSort, &cam, &objects);
-    
+
     while(running) {
         sortMutex.lock();
         sort = true;
@@ -660,8 +669,8 @@ int main(int argc, const char * argv[]) {
             axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 0.0f, 0.0f, 1.0f));
             axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 0.0f, 0.0f, 1.0f));
             
-            axis1MiddlePosition.y = (noise->noise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
-            axis2MiddlePosition.y = (noise->noise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
+            axis1MiddlePosition.y = (noise->octaveNoise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
+            axis2MiddlePosition.y = (noise->octaveNoise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
 
             
             axis1OutPositionR = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, (wheelDistance / 2.0f), 1.0f));
@@ -670,11 +679,11 @@ int main(int argc, const char * argv[]) {
             axis1OutPositionL = axis1MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
             axis2OutPositionL = axis2MiddlePosition + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(0.0f, 0.0f, -(wheelDistance / 2.0f), 1.0f));
             
-            b1R = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis1OutPositionR.x, axis1OutPositionR.z) - 2.0f);
-            b2R = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis2OutPositionR.x, axis2OutPositionR.z) - 2.0f);
+            b1R = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->octaveNoise(axis1OutPositionR.x, axis1OutPositionR.z) - 2.0f);
+            b2R = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->octaveNoise(axis2OutPositionR.x, axis2OutPositionR.z) - 2.0f);
             
-            b1L = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis1OutPositionL.x, axis1OutPositionL.z) - 2.0f);
-            b2L = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->noise(axis2OutPositionL.x, axis2OutPositionL.z) - 2.0f);
+            b1L = (axis1MiddlePosition.y - wheelDiameter / 2.0f) - (noise->octaveNoise(axis1OutPositionL.x, axis1OutPositionL.z) - 2.0f);
+            b2L = (axis2MiddlePosition.y - wheelDiameter / 2.0f) - (noise->octaveNoise(axis2OutPositionL.x, axis2OutPositionL.z) - 2.0f);
             
             alpha1R = atan(b1R / a);
             alpha2R = atan(b2R / a);
@@ -743,7 +752,6 @@ int main(int argc, const char * argv[]) {
             skyboxShader.use();
             skybox.render();
             glDepthMask(GL_TRUE);
-            
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();

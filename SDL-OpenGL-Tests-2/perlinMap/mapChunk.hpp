@@ -29,7 +29,7 @@
 
 class MapChunk: public Object {
 public:
-    MapChunk(unsigned int seed, Shader *shader, const RenderData *data, glm::vec2 offset);
+    MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset);
     ~MapChunk();
     
     void setTexture(Texture *tex);
@@ -45,7 +45,7 @@ public:
     
     
 private:
-    PerlinNoise noise;
+    PerlinNoise *noise;
     
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;

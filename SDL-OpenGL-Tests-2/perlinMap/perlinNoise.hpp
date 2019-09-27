@@ -17,11 +17,12 @@ class PerlinNoise {
 public:
     PerlinNoise(unsigned int seed);
     
-    float noise(float x, float y);
+    float octaveNoise(float x, float y);
     
     float frequency;
     float multiplier;
     int octaves;
+    unsigned int seed;
     
 private:
     siv::PerlinNoise perlinNoise;

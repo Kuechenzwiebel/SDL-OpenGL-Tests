@@ -8,8 +8,8 @@
 
 #include "mapChunk.hpp"
 
-MapChunk::MapChunk(unsigned int seed, Shader *shader, const RenderData *data, glm::vec2 offset):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), noise(seed), vertices(98304), texCoords(98304), normals(98304) {
+MapChunk::MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset):
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), noise(noise), vertices(98304), texCoords(98304), normals(98304) {
     unsigned int width = 128;
     
     glGenVertexArrays(1, &this->VAO);
@@ -19,25 +19,19 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    noise.frequency = 15.0f;
-    noise.multiplier = 3.5f;
-    noise.octaves = 2;
-    
-    srand(seed);
-    
     for(unsigned long i = 0; i < pow((width), 2.0f) * 6 ; i += 6) {
         if(x >= (width / 2.0f) + offset.x) {
             x = -(width / 2.0f) + offset.x;
             z += 1.0f;
         }
         
-        vertices[i + 0] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 1] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 2] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 0] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 1] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 2] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 1.0f), z + 1.0f);
         
-        vertices[i + 3] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 1.0f), z + 1.0f);
-        vertices[i + 4] = glm::vec3(x + 1.0f, noise.noise(x + 1.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 5] = glm::vec3(x + 0.0f, noise.noise(x + 0.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 3] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 4] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 0.0f), z + 0.0f);
+        vertices[i + 5] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 1.0f), z + 1.0f);
         
         
         normals[i + 0] = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f;
@@ -49,7 +43,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
         normals[i + 5] = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
         
         
-        r = prng(seed, int(x / 8), int(z / 4)) % 4;
+        r = prng(noise->seed, int(x / 8), int(z / 4)) % 4;
         
         u = (r % 2) * 0.5f;
         v = (r / 2) * 0.5f;
@@ -102,7 +96,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
 }
 
 PerlinNoise* MapChunk::getNoise() {
-    return &noise;
+    return noise;
 }
 
 MapChunk::~MapChunk() {
