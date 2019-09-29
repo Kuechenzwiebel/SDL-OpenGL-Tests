@@ -273,15 +273,16 @@ int main(int argc, const char * argv[]) {
     chunk1.setTexture(&stoneTexture);
     chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
     cam.setMapNoise(chunk1.getNoise());
-    objects.push_back(std::make_pair(0.0f, &chunk1));
+//    objects.push_back(std::make_pair(0.0f, &chunk1));
     
     MapChunk chunk2(&n, &basicShader, &renderData, vec2(128.0f, 0.0f));
     chunk2.setTexture(&stoneTexture);
     chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &chunk2));
+//    objects.push_back(std::make_pair(0.0f, &chunk2));
 
     
     Map map(420, &basicShader, &renderData);
+    map.update(vec3(0.0f));
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
@@ -442,11 +443,6 @@ int main(int argc, const char * argv[]) {
     PerlinNoise *noise = chunk1.getNoise();
     
     
-    /*ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
-    vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &vehicle));*/
-    
-    
     ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
     axis1.setPosition(vec3(1.65f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis1));
@@ -455,16 +451,6 @@ int main(int argc, const char * argv[]) {
     axis2.setPosition(vec3(-1.52f, 2.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis2));
     
-    
-    /*
-    ObjModel axis3("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis3.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(1.7f, -0.97f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &axis3));
-    
-    ObjModel axis4("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis4.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(-1.33f, -0.97f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &axis4));
-    */
     
     ObjModel base("resources/models/vehicle new/Base.obj", &basicShader, &renderData, &wireframe);
     base.setRealPosition(vec3(1000000.0f));
@@ -779,9 +765,11 @@ int main(int argc, const char * argv[]) {
             glDepthMask(GL_TRUE);
             
             basicShader.use();
-//            map.update(cam.getPosition());
-//            map.render();
-            printf("\n\n");
+            if(SDL_GetTicks() % 5000 <= 30) {
+//                map.update(cam.getPosition());
+            }
+            
+            map.render();
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();

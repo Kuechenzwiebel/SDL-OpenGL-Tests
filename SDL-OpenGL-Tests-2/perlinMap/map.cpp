@@ -21,19 +21,19 @@ void Map::update(glm::vec3 cameraPosition) {
     for(int x = -viewRange * 2; x < viewRange * 2; x += 128) {
         for(int y = -viewRange * 2; y < viewRange * 2; y += 128) {
             if(glm::distance(glm::vec2(x, y), glm::vec2(0.0f)) <= float(viewRange)) {
-                requiredChunks.push_back(glm::vec2(x, y));
+                requiredChunks.push_back(glm::vec2(x, y) + round(cameraPosition.xz()));
             }
         }
     }
-    /*
+    
     printf("Size: %lu\n", requiredChunks.size());
     
     for(int i = 0; i < requiredChunks.size(); i++) {
         printVec2(requiredChunks[i]);
-    }*/
+    }
     
     
-//    chunks.clear();
+    chunks.clear();
     
     for(int i = 0; i < requiredChunks.size(); i++) {
         /*bool chunkLoaded = false;
@@ -45,8 +45,9 @@ void Map::update(glm::vec3 cameraPosition) {
         }
        */
 //        if(!chunkLoaded) {
-//            chunks.push_back(std::make_unique<MapChunk>(MapChunk(&noise, shader, data, requiredChunks[i])));
-//            chunks[chunks.size() - 1]->setTexture(&texture);
+            chunks.push_back(std::make_unique<MapChunk>(&noise, shader, data, requiredChunks[i]));
+            chunks[chunks.size() - 1]->setTexture(&texture);
+            chunks[chunks.size() - 1]->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
 //        }
     }
 }

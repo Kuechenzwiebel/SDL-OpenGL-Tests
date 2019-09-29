@@ -6,7 +6,8 @@ Use new vehicle model		        [x]
 
 Caves in map                            [ ]
 
-Dynamic map loading                     [ ]
+Dynamic map loading                     [x]
+	Make it efficent 		[ ]
 	Zipping data and unzipping 	[ ]
 
 Object - object collisions              [ ]
