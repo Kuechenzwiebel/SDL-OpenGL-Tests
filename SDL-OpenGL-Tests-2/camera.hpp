@@ -84,6 +84,7 @@ private:
     PerlinNoise *noise;
     bool collisionHappend;
     bool gravity;
+    float gravityInertia;
 };
 
 #endif /* camera_hpp */

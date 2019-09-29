@@ -281,7 +281,7 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &chunk2));
 
     
-//    Map map(420, &basicShader, &renderData);
+    Map map(420, &basicShader, &renderData);
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
@@ -442,9 +442,9 @@ int main(int argc, const char * argv[]) {
     PerlinNoise *noise = chunk1.getNoise();
     
     
-    ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
+    /*ObjModel vehicle("resources/models/vehicle/vehicle.obj", &basicShader, &renderData, &wireframe);
     vehicle.setPosition(vec3(0.0f, 1.8f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &vehicle));
+    objects.push_back(std::make_pair(0.0f, &vehicle));*/
     
     
     ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
@@ -456,104 +456,65 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &axis2));
     
     
-    
+    /*
     ObjModel axis3("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis3.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(-0.35f, -0.97f, 0.0f));
+    axis3.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(1.7f, -0.97f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis3));
     
     ObjModel axis4("resources/models/axis.obj", &basicShader, &renderData, &wireframe);
-    axis4.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(2.68f, -0.97f, 0.0f));
+    axis4.setPosition(vec3(0.0f, 4.0f, 0.0f) + vec3(-1.33f, -0.97f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &axis4));
-    
+    */
     
     ObjModel base("resources/models/vehicle new/Base.obj", &basicShader, &renderData, &wireframe);
-    base.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    base.setRealPosition(base.getPosition() + vec3(1000000.0f));
+    base.setRealPosition(vec3(1000000.0f));
     objects.push_back(std::make_pair(0.0f, &base));
     
     
     ObjModel backWindow1("resources/models/vehicle new/Back_Window_1.obj", &basicShader, &renderData, &wireframe);
-    backWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backWindow1.setRealPosition(backWindow1.getPosition() + vec3(-0.9f, 0.33f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &backWindow1));
-    
     ObjModel backWindow2("resources/models/vehicle new/Back_Window_2.obj", &basicShader, &renderData, &wireframe);
-    backWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backWindow2.setRealPosition(backWindow2.getPosition() + vec3(-0.95f, 0.33f, 0.0f));
+    
+    objects.push_back(std::make_pair(0.0f, &backWindow1));
     objects.push_back(std::make_pair(0.0f, &backWindow2));
     
     
-    
     ObjModel backSideWindow1("resources/models/vehicle new/Back_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
-    backSideWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow1.setRealPosition(backSideWindow1.getPosition() + vec3(-0.2f, 0.25f, 0.84f));
-    objects.push_back(std::make_pair(0.0f, &backSideWindow1));
-    
     ObjModel backSideWindow2("resources/models/vehicle new/Back_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
-    backSideWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow2.setRealPosition(backSideWindow2.getPosition() + vec3(-0.2f, 0.24f, 0.78f));
-    objects.push_back(std::make_pair(0.0f, &backSideWindow2));
-    
     ObjModel backSideWindow3("resources/models/vehicle new/Back_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
-    backSideWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow3.setRealPosition(backSideWindow3.getPosition() + vec3(-0.2f, 0.25f, -0.84f));
-    objects.push_back(std::make_pair(0.0f, &backSideWindow3));
-    
     ObjModel backSideWindow4("resources/models/vehicle new/Back_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
-    backSideWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    backSideWindow4.setRealPosition(backSideWindow4.getPosition() + vec3(-0.2f, 0.25f, -0.79f));
+    
+    objects.push_back(std::make_pair(0.0f, &backSideWindow1));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow2));
+    objects.push_back(std::make_pair(0.0f, &backSideWindow3));
     objects.push_back(std::make_pair(0.0f, &backSideWindow4));
     
     
     ObjModel middleWindow1("resources/models/vehicle new/Middle_Window_1.obj", &basicShader, &renderData, &wireframe);
-    middleWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    middleWindow1.setRealPosition(middleWindow1.getPosition() + vec3(0.45f, 0.34f, -0.84f));
-    objects.push_back(std::make_pair(0.0f, &middleWindow1));
-    
     ObjModel middleWindow2("resources/models/vehicle new/Middle_Window_2.obj", &basicShader, &renderData, &wireframe);
-    middleWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    middleWindow2.setRealPosition(middleWindow2.getPosition() + vec3(0.45f, 0.34f, -0.78f));
-    objects.push_back(std::make_pair(0.0f, &middleWindow2));
-    
     ObjModel middleWindow3("resources/models/vehicle new/Middle_Window_3.obj", &basicShader, &renderData, &wireframe);
-    middleWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    middleWindow3.setRealPosition(middleWindow3.getPosition() + vec3(0.45f, 0.34f, 0.77f));
-    objects.push_back(std::make_pair(0.0f, &middleWindow3));
-    
     ObjModel middleWindow4("resources/models/vehicle new/Middle_Window_4.obj", &basicShader, &renderData, &wireframe);
-    middleWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    middleWindow4.setRealPosition(middleWindow4.getPosition() + vec3(0.45f, 0.34f, 0.83f));
+    
+    objects.push_back(std::make_pair(0.0f, &middleWindow1));
+    objects.push_back(std::make_pair(0.0f, &middleWindow2));
+    objects.push_back(std::make_pair(0.0f, &middleWindow3));
     objects.push_back(std::make_pair(0.0f, &middleWindow4));
     
     
     ObjModel frontSideWindow1("resources/models/vehicle new/Front_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
-    frontSideWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontSideWindow1.setRealPosition(frontSideWindow1.getPosition() + vec3(1.32f, 0.34f, -0.84f));
-    objects.push_back(std::make_pair(0.0f, &frontSideWindow1));
-    
     ObjModel frontSideWindow2("resources/models/vehicle new/Front_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
-    frontSideWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontSideWindow2.setRealPosition(frontSideWindow2.getPosition() + vec3(1.32f, 0.33f, -0.78f));
-    objects.push_back(std::make_pair(0.0f, &frontSideWindow2));
-    
     ObjModel frontSideWindow3("resources/models/vehicle new/Front_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
-    frontSideWindow3.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontSideWindow3.setRealPosition(frontSideWindow3.getPosition() + vec3(1.32f, 0.33f, 0.77f));
-    objects.push_back(std::make_pair(0.0f, &frontSideWindow3));
-    
     ObjModel frontSideWindow4("resources/models/vehicle new/Front_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
-    frontSideWindow4.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontSideWindow4.setRealPosition(frontSideWindow4.getPosition() + vec3(1.32f, 0.33f, 0.83f));
+    
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow1));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow2));
+    objects.push_back(std::make_pair(0.0f, &frontSideWindow3));
     objects.push_back(std::make_pair(0.0f, &frontSideWindow4));
     
-    ObjModel frontWindow1("resources/models/vehicle new/Front_Window_1.obj", &basicShader, &renderData, &wireframe);
-    frontWindow1.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontWindow1.setRealPosition(frontWindow1.getPosition() + vec3(1.79f, 0.38f, 0.0f));
-    objects.push_back(std::make_pair(0.0f, &frontWindow1));
     
+    ObjModel frontWindow1("resources/models/vehicle new/Front_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel frontWindow2("resources/models/vehicle new/Front_Window_2.obj", &basicShader, &renderData, &wireframe);
-    frontWindow2.setPosition(vec3(0.0f, 4.0f, 0.0f));
-    frontWindow2.setRealPosition(frontWindow2.getPosition() + vec3(1.75f, 0.36f, 0.0f));
+    
+    objects.push_back(std::make_pair(0.0f, &frontWindow1));
     objects.push_back(std::make_pair(0.0f, &frontWindow2));
     
 
@@ -574,6 +535,10 @@ int main(int argc, const char * argv[]) {
     
     float totalRotation = 0.0f;
     vec3 position(0.0f);
+    
+    mat4 vehicleModelMat(1);
+    mat4 vehicleWindowRotation(1);
+    vec3 vehicleWindowPosition;
     
     std::thread sortThread(objectSort, &cam, &objects);
 
@@ -662,12 +627,10 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
-            chunk1.setRenderData(&renderData);
-            
             cam.inVehicle = inVehicle;
             
-            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.65f, 0.0f, 0.0f, 1.0f));
-            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.52f, 0.0f, 0.0f, 1.0f));
+            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.7f, -0.97f, 0.0f, 1.0f));
+            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.33f, -0.97f, 0.0f, 1.0f));
             
             axis1MiddlePosition.y = (noise->octaveNoise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
             axis2MiddlePosition.y = (noise->octaveNoise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
@@ -695,24 +658,86 @@ int main(int argc, const char * argv[]) {
             vb = axis1MiddlePosition.y - axis2MiddlePosition.y;
             valpha = atan(vb / va);
             
-            vehicle.setRealPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z));
-            vehicle.setModelMat(translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z)) *
-                                rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                                rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)));
             
+            vehicleWindowPosition = vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z);
+            
+            vehicleWindowRotation = rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                    rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                                    rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f));
+            
+            vehicleModelMat = translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z)) *
+                              rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                              rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                              rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
+                              translate(mat4(1), vec3(0.0f, 0.97f, 0.0f));
+            
+            
+            base.setModelMat(vehicleModelMat);
             
             axis1.setModelMat(translate(mat4(1), axis1MiddlePosition) *
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                              rotate(mat4(1), fmax(alpha1R, alpha1L), vec3(1.0f, 0.0f, 0.0f)));
+                              rotate(mat4(1), fmin(fmax(alpha1R, alpha1L), radians(20.0f)), vec3(1.0f, 0.0f, 0.0f)));
             axis2.setModelMat(translate(mat4(1), axis2MiddlePosition) *
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                              rotate(mat4(1), fmax(alpha2R, alpha2L), vec3(1.0f, 0.0f, 0.0f)));
+                              rotate(mat4(1), fmin(fmax(alpha2R, alpha2L), radians(20.0f)), vec3(1.0f, 0.0f, 0.0f)));
             
             if(inVehicle) {
-                cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f - wheelDiameter / 2.0f, position.z) + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                                                                                                                                                   rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
-                                                                                                                                                   vec4(0.30f, 2.24f, -0.80f, 1.0f)));
+                cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z) +
+                                (rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                 rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                                 rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
+                                 vec4(0.55f, 0.45f + 0.97f, -0.45f, 1.0f)).xyz());
             }
+            
+            
+            backWindow1.setModelMat(vehicleModelMat);
+            backWindow2.setModelMat(vehicleModelMat);
+            
+            backSideWindow1.setModelMat(vehicleModelMat);
+            backSideWindow2.setModelMat(vehicleModelMat);
+            backSideWindow3.setModelMat(vehicleModelMat);
+            backSideWindow4.setModelMat(vehicleModelMat);
+            
+            middleWindow1.setModelMat(vehicleModelMat);
+            middleWindow2.setModelMat(vehicleModelMat);
+            middleWindow3.setModelMat(vehicleModelMat);
+            middleWindow4.setModelMat(vehicleModelMat);
+            
+            frontSideWindow1.setModelMat(vehicleModelMat);
+            frontSideWindow2.setModelMat(vehicleModelMat);
+            frontSideWindow3.setModelMat(vehicleModelMat);
+            frontSideWindow4.setModelMat(vehicleModelMat);
+            
+            frontWindow1.setModelMat(vehicleModelMat);
+            frontWindow2.setModelMat(vehicleModelMat);
+            
+            
+            backWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.95f, 0.33f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            backWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.9f, 0.33f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            
+            backSideWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.2f, 0.25f, 0.84f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            backSideWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.2f, 0.24f, 0.78f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            backSideWindow3.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.2f, 0.25f, -0.84f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            backSideWindow4.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(-0.2f, 0.25f, -0.79f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            
+            middleWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(0.45f, 0.34f, -0.84f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            middleWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(0.45f, 0.34f, -0.78f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            middleWindow3.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(0.45f, 0.34f, 0.77f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            middleWindow4.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(0.45f, 0.34f, 0.83f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            
+            frontSideWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.32f, 0.34f, -0.84f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            frontSideWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.32f, 0.33f, -0.78f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            frontSideWindow3.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.32f, 0.33f, 0.77f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            frontSideWindow4.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.32f, 0.33f, 0.83f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            
+            frontWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.79f, 0.38f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            frontWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.75f, 0.36f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
+            
+            
+            
+            
+            
+            
             
             
             if(!invOpen)
@@ -731,7 +756,7 @@ int main(int argc, const char * argv[]) {
             
             glViewport(0, 0, windowWidth, windowHeight);
             if(!opticsOn) {
-                projection = infinitePerspective(radians(45.0f), float(windowWidth) / float(windowHeight), 0.005f);
+                projection = infinitePerspective(radians(60.0f), float(windowWidth) / float(windowHeight), 0.005f);
                 cam.setMouseSensitivity(0.25f);
             }
             else {
@@ -752,6 +777,11 @@ int main(int argc, const char * argv[]) {
             skyboxShader.use();
             skybox.render();
             glDepthMask(GL_TRUE);
+            
+            basicShader.use();
+//            map.update(cam.getPosition());
+//            map.render();
+            printf("\n\n");
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();

@@ -16,15 +16,24 @@ noise(seed), shader(shader), data(data), texture("resources/textures/stones.png"
 }
 
 void Map::update(glm::vec3 cameraPosition) {
-    for(int x = -viewRange * 128; x < viewRange * 128; x += 128) {
-        for(int y = -viewRange * 128; y < viewRange * 128; y += 128) {
+    requiredChunks.clear();
+    
+    for(int x = -viewRange * 2; x < viewRange * 2; x += 128) {
+        for(int y = -viewRange * 2; y < viewRange * 2; y += 128) {
             if(glm::distance(glm::vec2(x, y), glm::vec2(0.0f)) <= float(viewRange)) {
                 requiredChunks.push_back(glm::vec2(x, y));
             }
         }
     }
+    /*
+    printf("Size: %lu\n", requiredChunks.size());
     
-    chunks.clear();
+    for(int i = 0; i < requiredChunks.size(); i++) {
+        printVec2(requiredChunks[i]);
+    }*/
+    
+    
+//    chunks.clear();
     
     for(int i = 0; i < requiredChunks.size(); i++) {
         /*bool chunkLoaded = false;
@@ -34,10 +43,10 @@ void Map::update(glm::vec3 cameraPosition) {
                 break;
             }
         }
-       
-        if(!chunkLoaded) {*/
-            chunks.push_back(std::make_unique<MapChunk>(MapChunk(&noise, shader, data, requiredChunks[i])));
-            chunks[chunks.size() - 1]->setTexture(&texture);
+       */
+//        if(!chunkLoaded) {
+//            chunks.push_back(std::make_unique<MapChunk>(MapChunk(&noise, shader, data, requiredChunks[i])));
+//            chunks[chunks.size() - 1]->setTexture(&texture);
 //        }
     }
 }

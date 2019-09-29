@@ -18,7 +18,7 @@
 
 #include "mapChunk.hpp"
 
-const int viewRange = 256;
+const int viewRange = 128 * 3;
 
 class Map {
 public:

@@ -1,6 +1,6 @@
 Things to add:                          Done:
 
-Use new vehicle model		        [ ]
+Use new vehicle model		        [x]
 	Update axis model		[ ]
 	Making axis rotate when moving	[ ]
 

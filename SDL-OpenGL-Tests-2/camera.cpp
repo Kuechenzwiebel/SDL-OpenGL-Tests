@@ -9,8 +9,8 @@
 #include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 10.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(false), inVehicle(false) {
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), gravityInertia(0.0f) {
     this->updateCameraVectors();
 }
 
@@ -45,8 +45,10 @@ void Camera::processInput() {
         
         collisionHappend = false;
         
+        gravityInertia = 9.8f * *deltaTime;
+        
         if(gravity)
-            theoreticalPosition.y -= 9.8f * *deltaTime;
+            theoreticalPosition.y -= gravityInertia;
         
         float mapPosition = 0.0f;
         if(noise != nullptr) {
@@ -60,10 +62,15 @@ void Camera::processInput() {
             collisionHappend = worldPointCollision(objects, theoreticalPosition);
     }
     
-    if(collisionHappend)
+    if(collisionHappend) {
         theoreticalPosition = position;
-    else
+//        gravityInertia = 0.0f;
+    }
+    else {
         position = theoreticalPosition;
+//        if(gravity)
+//            gravityInertia += 1.8f * *deltaTime;
+    }
 }
 
 void Camera::processMouseInput() {
