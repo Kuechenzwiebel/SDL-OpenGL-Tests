@@ -87,7 +87,6 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             normals.push_back(readNormals[n3 - 1]);
         }
     }
-    
     ends[ends.size() - 1].second = int(vertices.size()) - lastSize;
     
     vertex.setData(vertices.data(), sizeof(glm::vec3) * vertices.size(), 0);

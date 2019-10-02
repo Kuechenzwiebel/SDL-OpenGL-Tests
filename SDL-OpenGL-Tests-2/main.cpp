@@ -264,9 +264,9 @@ int main(int argc, const char * argv[]) {
     
     
     PerlinNoise n(420);
-    n.frequency = 15.0f;
-    n.multiplier = 3.5f;
-    n.octaves = 2;
+    n.frequency = 200.0f;
+    n.multiplier = 40.0f;
+    n.octaves = 4;
     
     
     MapChunk chunk1(&n, &basicShader, &renderData, vec2(0.0f));
@@ -281,7 +281,7 @@ int main(int argc, const char * argv[]) {
 //    objects.push_back(std::make_pair(0.0f, &chunk2));
 
     
-    Map map(420, &basicShader, &renderData);
+    Map map(&n, &basicShader, &renderData);
     map.update(vec3(0.0f));
     
     Cube aabbTest(&basicShader, &renderData);
@@ -580,8 +580,8 @@ int main(int argc, const char * argv[]) {
             if(windowEvent.type == SDL_MOUSEWHEEL) {
                 totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
-                position.x += (float(windowEvent.wheel.y) * 0.05f) * cos(totalRotation);
-                position.z += (float(windowEvent.wheel.y) * 0.05f) * -sin(totalRotation);
+                position.x += (float(windowEvent.wheel.y) * 0.15f) * cos(totalRotation);
+                position.z += (float(windowEvent.wheel.y) * 0.15f) * -sin(totalRotation);
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -746,7 +746,7 @@ int main(int argc, const char * argv[]) {
                 cam.setMouseSensitivity(0.25f);
             }
             else {
-                projection = perspective(radians(zoom), float(windowWidth) / float(windowHeight), 0.5f, 1000.0f);
+                projection = infinitePerspective(radians(zoom), float(windowWidth) / float(windowHeight), 0.5f);
                 cam.setMouseSensitivity(0.0025f);
             }
             
@@ -766,7 +766,7 @@ int main(int argc, const char * argv[]) {
             
             basicShader.use();
             if(SDL_GetTicks() % 5000 <= 30) {
-//                map.update(cam.getPosition());
+                map.update(cam.getPosition());
             }
             
             map.render();
@@ -781,6 +781,7 @@ int main(int argc, const char * argv[]) {
 
             
             glClear(GL_DEPTH_BUFFER_BIT);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             
             crosshairRay.setRayStartPosition(cam.getPosition());
             crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());

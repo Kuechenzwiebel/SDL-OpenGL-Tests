@@ -9,7 +9,9 @@
 #include "mapChunk.hpp"
 
 MapChunk::MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(glm::vec3(0.0f)), data(data), shader(shader), noise(noise), vertices(98304), texCoords(98304), normals(98304) {
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0.0f), offset(offset), data(data), shader(shader), noise(noise), vertices(98304), texCoords(98304), normals(98304) {
+    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+    
     unsigned int width = 128;
     
     glGenVertexArrays(1, &this->VAO);
@@ -24,23 +26,29 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
             x = -(width / 2.0f) + offset.x;
             z += 1.0f;
         }
+//        std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now();
+        float p1 = noise->octaveNoise(x + 0.0f, z + 0.0f), p2 = noise->octaveNoise(x + 1.0f, z + 0.0f), p3 = noise->octaveNoise(x + 0.0f, z + 1.0f), p4 = noise->octaveNoise(x + 1.0f, z + 1.0f);
         
-        vertices[i + 0] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 1] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 2] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 0] = glm::vec3(x + 0.0f, p1, z + 0.0f);
+        vertices[i + 1] = glm::vec3(x + 1.0f, p2, z + 0.0f);
+        vertices[i + 2] = glm::vec3(x + 0.0f, p3, z + 1.0f);
         
-        vertices[i + 3] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 1.0f), z + 1.0f);
-        vertices[i + 4] = glm::vec3(x + 1.0f, noise->octaveNoise(x + 1.0f, z + 0.0f), z + 0.0f);
-        vertices[i + 5] = glm::vec3(x + 0.0f, noise->octaveNoise(x + 0.0f, z + 1.0f), z + 1.0f);
+        vertices[i + 3] = glm::vec3(x + 1.0f, p4, z + 1.0f);
+        vertices[i + 4] = glm::vec3(x + 1.0f, p2, z + 0.0f);
+        vertices[i + 5] = glm::vec3(x + 0.0f, p3, z + 1.0f);
+//        std::chrono::steady_clock::time_point t4 = std::chrono::steady_clock::now();
+//        std::cout << "Time to generate triangle: " << std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count() << "µs" << std::endl;
         
         
-        normals[i + 0] = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f;
-        normals[i + 1] = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f;
-        normals[i + 2] = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f;
+        glm::vec3 n1 = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f, n2 = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
         
-        normals[i + 3] = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
-        normals[i + 4] = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
-        normals[i + 5] = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
+        normals[i + 0] = n1;
+        normals[i + 1] = n1;
+        normals[i + 2] = n1;
+        
+        normals[i + 3] = n2;
+        normals[i + 4] = n2;
+        normals[i + 5] = n2;
         
         
         r = prng(noise->seed, int(x / 8), int(z / 4)) % 4;
@@ -93,6 +101,9 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(g
     normal.activate();
     
     glBindVertexArray(0);
+    
+    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    std::cout << "Total time to generate chunk: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << "ms" << std::endl;
 }
 
 PerlinNoise* MapChunk::getNoise() {
@@ -133,7 +144,7 @@ void MapChunk::setPosition(glm::vec3 position) {
 }
 
 glm::vec3 MapChunk::getPosition() {
-    return position;
+    return glm::vec3(offset.x, position.y, offset.y);
 }
 
 glm::vec3 MapChunk::getRealPosition() {

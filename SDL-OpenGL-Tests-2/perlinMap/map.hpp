@@ -22,7 +22,7 @@ const int viewRange = 128 * 3;
 
 class Map {
 public:
-    Map(unsigned int seed, Shader *shader, const RenderData *data);
+    Map(PerlinNoise *noise, Shader *shader, const RenderData *data);
     
     void update(glm::vec3 cameraPosition);
     void render();
@@ -32,7 +32,7 @@ private:
     const RenderData *data;
     Texture texture;
     
-    PerlinNoise noise;
+    PerlinNoise *noise;
     
     std::vector<std::unique_ptr<MapChunk>> chunks;
     std::vector<glm::vec2> requiredChunks;

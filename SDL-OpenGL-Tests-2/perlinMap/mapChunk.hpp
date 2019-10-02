@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <chrono>
 #include <random>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -60,6 +61,7 @@ private:
     const RenderData *data;
     
     glm::vec3 position;
+    glm::vec2 offset;
     glm::mat4 translate, model;
 };
 
