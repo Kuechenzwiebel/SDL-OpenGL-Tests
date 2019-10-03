@@ -268,7 +268,7 @@ int main(int argc, const char * argv[]) {
     n.multiplier = 40.0f;
     n.octaves = 4;
     
-    
+    /*
     MapChunk chunk1(&n, &basicShader, &renderData, vec2(0.0f));
     chunk1.setTexture(&stoneTexture);
     chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
@@ -279,10 +279,11 @@ int main(int argc, const char * argv[]) {
     chunk2.setTexture(&stoneTexture);
     chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
 //    objects.push_back(std::make_pair(0.0f, &chunk2));
-
+*/
+    
+    cam.setMapNoise(&n);
     
     Map map(&n, &basicShader, &renderData);
-    map.update(vec3(0.0f));
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
@@ -440,7 +441,7 @@ int main(int argc, const char * argv[]) {
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
     
-    PerlinNoise *noise = chunk1.getNoise();
+    PerlinNoise *noise = &n;
     
     
     ObjModel axis1("resources/models/axis.obj", &basicShader, &renderData, &wireframe);

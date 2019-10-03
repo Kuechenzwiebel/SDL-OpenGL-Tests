@@ -9,7 +9,7 @@
 #include "camera.hpp"
 
 Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 20.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 50.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
 position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), gravityInertia(0.0f) {
     this->updateCameraVectors();
 }

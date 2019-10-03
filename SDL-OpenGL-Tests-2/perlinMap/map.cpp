@@ -10,7 +10,7 @@
 
 Map::Map(PerlinNoise *noise, Shader *shader, const RenderData *data):
 noise(noise), shader(shader), data(data), texture("resources/textures/stones.png") {
-    
+    update(glm::vec3(0.0f));
 }
 
 void Map::update(glm::vec3 cameraPosition) {
@@ -19,7 +19,7 @@ void Map::update(glm::vec3 cameraPosition) {
     for(int x = -viewRange; x <= viewRange; x += 128) {
         for(int y = -viewRange; y <= viewRange; y += 128) {
             if(glm::distance(glm::vec2(x, y), glm::vec2(0.0f)) <= float(viewRange)) {
-                requiredChunks.push_back(glm::vec2(x, y) + round(cameraPosition.xz()));
+                requiredChunks.push_back(glm::vec2(x, y) + glm::vec2(float((int(round(cameraPosition.x)) / 128) * 128), float((int(round(cameraPosition.z)) / 128) * 128)));
             }
         }
     }
@@ -27,10 +27,11 @@ void Map::update(glm::vec3 cameraPosition) {
     bool chunkNotNeeded = true;
     
     for(int i = 0; i < chunks.size(); i++) {
+        chunkNotNeeded = true;
+        
         glm::vec2 position = chunks[i]->getPosition().xz();
         for(int j = 0; j < requiredChunks.size(); j++) {
             if(position == requiredChunks[j]) {
-                printVec2(requiredChunks[j]);
                 requiredChunks.erase(requiredChunks.begin() + j);
                 chunkNotNeeded = false;
                 break;
@@ -38,21 +39,24 @@ void Map::update(glm::vec3 cameraPosition) {
         }
         
         if(chunkNotNeeded) {
+            printf("Erasing %d\n", i);
             chunks.erase(chunks.begin() + i);
+            i--;
         }
     }
-    
-//    chunks.clear();
-    
+     
+    printf("\n%lu chunks to generate \n\n", requiredChunks.size());
     
     for(int i = 0; i < requiredChunks.size(); i++) {
-        std::cout << "Generating chunk ";
+        std::cout << "Generating chunk at\t\t";
         printVec2(requiredChunks[i], false);
-        std::cout << "\t\t";
+        std::cout << "\t\t\t";
         chunks.push_back(std::make_unique<MapChunk>(noise, shader, data, requiredChunks[i]));
         chunks[chunks.size() - 1]->setTexture(&texture);
         chunks[chunks.size() - 1]->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
     }
+    
+    printf("\n\n");
 }
 
 void Map::render() {
