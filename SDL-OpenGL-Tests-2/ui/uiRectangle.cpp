@@ -200,6 +200,7 @@ void UIRectangle::setSize(glm::vec2 size) {
     model = scale * translate;
     this->size = size;
 }
+
 glm::vec2 UIRectangle::getPosition() {
     return position;
 }
