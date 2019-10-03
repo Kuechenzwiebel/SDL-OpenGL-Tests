@@ -80,6 +80,7 @@ bool wireframe = false;
 bool render = true;
 
 vec3 oldCamPos;
+vec2 oldCamMapPos;
 
 bool sortDone = false;
 bool sort = false;
@@ -766,10 +767,9 @@ int main(int argc, const char * argv[]) {
             glDepthMask(GL_TRUE);
             
             basicShader.use();
-            if(SDL_GetTicks() % 5000 <= 30) {
+            if(oldCamMapPos != glm::vec2(float((int(round(cam.getPosition().x)) / 128) * 128), float((int(round(cam.getPosition().z)) / 128) * 128))) {
                 map.update(cam.getPosition());
             }
-            
             map.render();
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
@@ -833,6 +833,7 @@ int main(int argc, const char * argv[]) {
             totalFrames++;
             runTime += deltaTime;
             oldCamPos = cam.getPosition();
+            oldCamMapPos = glm::vec2(float((int(round(cam.getPosition().x)) / 128) * 128), float((int(round(cam.getPosition().z)) / 128) * 128));
             
             SDL_GL_SwapWindow(window);
             glFlush();

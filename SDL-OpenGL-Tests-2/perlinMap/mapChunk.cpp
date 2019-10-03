@@ -21,7 +21,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    for(unsigned long i = 0; i < pow((width), 2.0f) * 6 ; i += 6) {
+    for(unsigned long i = 0; i < 98304; i += 6) {
         if(x >= (width / 2.0f) + offset.x) {
             x = -(width / 2.0f) + offset.x;
             z += 1.0f;
@@ -51,19 +51,19 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         normals[i + 5] = n2;
         
         
-        r = prng(noise->seed, int(x / 8), int(z / 4)) % 4;
+        r = prng(noise->seed, int(x / 16), int(z / 8)) % 4;
         
         u = (r % 2) * 0.5f;
         v = (r / 2) * 0.5f;
         
         
-        texCoords[i + 0] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
-        texCoords[i + 1] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
-        texCoords[i + 2] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 0] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 1] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 2] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
         
-        texCoords[i + 3] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
-        texCoords[i + 4] = glm::vec2(0.125f +   fmod(fabs(x), 8.0f) / 8.0f, 0.0f  +   fmod(fabs(z), 4.0f) / 4.0f);
-        texCoords[i + 5] = glm::vec2(0.0f   +   fmod(fabs(x), 8.0f) / 8.0f, 0.25f +   fmod(fabs(z), 4.0f) / 4.0f);
+        texCoords[i + 3] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 4] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 5] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
         
         
         texCoords[i + 0] /= 2.0f;
