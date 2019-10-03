@@ -39,7 +39,7 @@ enum CameraMovement {
 
 class Camera {
 public:
-    Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse);
+    Camera(const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse);
     
     glm::mat4 getViewMatrix();
     float getZoom();
@@ -63,7 +63,8 @@ public:
     bool inVehicle;
     
 private:
-    glm::vec3 position, theoreticalPosition;
+    glm::vec3 footPosition, theoreticalFootPosition;
+    glm::vec3 eyePosition;
     glm::vec3 front;
     glm::vec3 up;
     glm::vec3 right;

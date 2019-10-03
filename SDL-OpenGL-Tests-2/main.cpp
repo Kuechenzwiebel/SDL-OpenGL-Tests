@@ -220,7 +220,7 @@ int main(int argc, const char * argv[]) {
     Shader uiShader(uiShaderVertexFile.readFile(), uiShaderFragmentFile.readFile());
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
     
-    Camera cam(vec3(0.0f, 20.0f, 0.0f), &deltaTime, &windowEvent, &checkMouse);
+    Camera cam(&deltaTime, &windowEvent, &checkMouse);
     cam.objects = &physicsWorld;
     
     RenderData renderData;
@@ -744,7 +744,7 @@ int main(int argc, const char * argv[]) {
             
             glViewport(0, 0, windowWidth, windowHeight);
             if(!opticsOn) {
-                projection = infinitePerspective(radians(60.0f), float(windowWidth) / float(windowHeight), 0.005f);
+                projection = infinitePerspective(radians(68.4f), float(windowWidth) / float(windowHeight), 0.005f);
                 cam.setMouseSensitivity(0.25f);
             }
             else {

@@ -40,6 +40,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
 //        std::cout << "Time to generate triangle: " << std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count() << "µs" << std::endl;
         
         
+        
         glm::vec3 n1 = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f, n2 = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
         
         normals[i + 0] = n1;
@@ -51,11 +52,11 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         normals[i + 5] = n2;
         
         
+        
         r = prng(noise->seed, int(x / 16), int(z / 8)) % 4;
         
         u = (r % 2) * 0.5f;
         v = (r / 2) * 0.5f;
-        
         
         texCoords[i + 0] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
         texCoords[i + 1] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
@@ -82,6 +83,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         texCoords[i + 3] += glm::vec2(u, v);
         texCoords[i + 4] += glm::vec2(u, v);
         texCoords[i + 5] += glm::vec2(u, v);
+        
         
         
         x += 1.0f;

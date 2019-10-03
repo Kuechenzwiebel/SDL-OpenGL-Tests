@@ -8,9 +8,9 @@
 
 #include "camera.hpp"
 
-Camera::Camera(glm::vec3 position, const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 50.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-position(position), theoreticalPosition(position), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), gravityInertia(0.0f) {
+Camera::Camera(const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(1.388f * 1.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+footPosition(glm::vec3(0.0f, 20.0f, 0.0f)), theoreticalFootPosition(glm::vec3(0.0f, 20.0f, 0.0f)), eyePosition(glm::vec3(0.0f, 20.0f, 0.0f) + glm::vec3(0.0f, 1.73f, 0.0f)), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), gravityInertia(0.0f) {
     this->updateCameraVectors();
 }
 
@@ -30,17 +30,17 @@ void Camera::processInput() {
     if(!inVehicle) {
         if(*checkMouse) {
             if(keystates[SDL_SCANCODE_W])
-                this->theoreticalPosition += this->front * velocity;
+                this->theoreticalFootPosition += this->front * velocity;
             if(keystates[SDL_SCANCODE_D])
-                this->theoreticalPosition += this->right * velocity;
+                this->theoreticalFootPosition += this->right * velocity;
             if(keystates[SDL_SCANCODE_S])
-                this->theoreticalPosition -= this->front * velocity;
+                this->theoreticalFootPosition -= this->front * velocity;
             if(keystates[SDL_SCANCODE_A])
-                this->theoreticalPosition -= this->right * velocity;
+                this->theoreticalFootPosition -= this->right * velocity;
             if(keystates[SDL_SCANCODE_SPACE])
-                this->theoreticalPosition.y += velocity;
+                this->theoreticalFootPosition.y += velocity;
             if(keystates[SDL_SCANCODE_LSHIFT])
-                this->theoreticalPosition.y -= velocity;
+                this->theoreticalFootPosition.y -= velocity;
         }
         
         collisionHappend = false;
@@ -48,29 +48,34 @@ void Camera::processInput() {
         gravityInertia = 9.8f * *deltaTime;
         
         if(gravity)
-            theoreticalPosition.y -= gravityInertia;
+            theoreticalFootPosition.y -= gravityInertia;
         
         float mapPosition = 0.0f;
         if(noise != nullptr) {
-            mapPosition = noise->octaveNoise(theoreticalPosition.x, theoreticalPosition.z) - 2.0f + 0.2f;
+            mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z) - 2.0f + 0.2f;
         }
         
-        if(theoreticalPosition.y < mapPosition)
-            theoreticalPosition.y = mapPosition;
+        if(theoreticalFootPosition.y < mapPosition)
+            theoreticalFootPosition.y = mapPosition;
         
         if(!collisionHappend)
-            collisionHappend = worldPointCollision(objects, theoreticalPosition);
+            collisionHappend = worldPointCollision(objects, theoreticalFootPosition);
     }
     
     if(collisionHappend) {
-        theoreticalPosition = position;
+        theoreticalFootPosition = footPosition;
 //        gravityInertia = 0.0f;
     }
     else {
-        position = theoreticalPosition;
+        footPosition = theoreticalFootPosition;
 //        if(gravity)
 //            gravityInertia += 1.8f * *deltaTime;
     }
+    
+    if(!inVehicle)
+        eyePosition = footPosition + glm::vec3(0.0f, 1.73f, 0.0f);
+    else
+        eyePosition = footPosition;
 }
 
 void Camera::processMouseInput() {
@@ -109,7 +114,7 @@ void Camera::setMouseSensitivity(float sensitivity) {
 }
 
 glm::mat4 Camera::getViewMatrix() {
-    return glm::lookAt(this->position, this->position + this->front, this->up);
+    return glm::lookAt(this->eyePosition, this->eyePosition + this->front, this->up);
 }
 
 float Camera::getZoom() {
@@ -117,7 +122,7 @@ float Camera::getZoom() {
 }
 
 glm::vec3 Camera::getPosition() {
-    return this->position;
+    return this->footPosition;
 }
 
 glm::vec3 Camera::getFront() {
@@ -125,8 +130,8 @@ glm::vec3 Camera::getFront() {
 }
 
 void Camera::setPosition(glm::vec3 pos) {
-    this->position = pos;
-    this->theoreticalPosition = pos;
+    this->footPosition = pos;
+    this->theoreticalFootPosition = pos;
 }
 
 float *Camera::getYawPointer() {
