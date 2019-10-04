@@ -9,21 +9,19 @@
 #include "mapChunk.hpp"
 
 MapChunk::MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0.0f), offset(offset), data(data), shader(shader), noise(noise), vertices(98304), texCoords(98304), normals(98304) {
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0.0f), offset(offset), data(data), shader(shader), noise(noise), vertices(24576), texCoords(24576), normals(24576) {
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-    
-    unsigned int width = 128;
     
     glGenVertexArrays(1, &this->VAO);
     glBindVertexArray(this->VAO);
     
-    float x = -(width / 2.0f) + offset.x, z = -(width / 2.0f) + offset.y;
+    float x = -(CHUNK_SIZE / 2.0f) + offset.x, z = -(CHUNK_SIZE / 2.0f) + offset.y;
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    for(unsigned long i = 0; i < 98304; i += 6) {
-        if(x >= (width / 2.0f) + offset.x) {
-            x = -(width / 2.0f) + offset.x;
+    for(unsigned long i = 0; i < 24576; i += 6) {
+        if(x >= (CHUNK_SIZE / 2.0f) + offset.x) {
+            x = -(CHUNK_SIZE / 2.0f) + offset.x;
             z += 1.0f;
         }
 //        std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now();
@@ -94,9 +92,9 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
     texCoords.shrink_to_fit();
     normals.shrink_to_fit();
     
-    vertex.setData(vertices.data(), sizeof(glm::vec3) * 98304, 0);
-    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 98304, 1);
-    normal.setData(normals.data(), sizeof(glm::vec3) * 98304, 2);
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * 24576, 0);
+    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 24576, 1);
+    normal.setData(normals.data(), sizeof(glm::vec3) * 24576, 2);
     
     vertex.activate();
     texCoord.activate();
@@ -132,7 +130,7 @@ void MapChunk::render() {
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");
     
-    glDrawArrays(GL_TRIANGLES, 0, 98304);
+    glDrawArrays(GL_TRIANGLES, 0, 24576);
     glBindVertexArray(0);
 }
 

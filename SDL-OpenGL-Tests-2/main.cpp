@@ -116,7 +116,7 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects) {
             
             if(cam->getPosition() != oldCamPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects->begin(); it != objects->end(); it++) {
-                    it->first = length2(cam->getPosition() - it->second->getRealPosition());
+                    it->first = length(cam->getPosition() - it->second->getRealPosition());
                 }
                 
                 objects->sort();
@@ -406,6 +406,10 @@ int main(int argc, const char * argv[]) {
     positionText.setSize(vec2(0.25f));
     uiObjects.push_back(&positionText);
     
+    UIText speedText("", &uiShader, &uiData);
+    speedText.setSize(vec2(0.25f));
+    uiObjects.push_back(&speedText);
+    
     UIText rayText("Ray hit:", &uiShader, &uiData);
     rayText.setSize(vec2(0.25f));
     rayText.setPixelPosition(vec2(100.0f));
@@ -418,10 +422,6 @@ int main(int argc, const char * argv[]) {
     objects.push_back(std::make_pair(0.0f, &jupiter));
     
     
-    for(std::list<std::pair<float, Object*>>::iterator it = objects.begin(); it != objects.end(); it++)
-        it->first = length2(cam.getPosition() - it->second->getPosition());
-    
-    objects.sort();
     
     oldCamPos = cam.getPosition();
     
@@ -527,6 +527,7 @@ int main(int argc, const char * argv[]) {
     mat4 vehicleModelMat(1);
     mat4 vehicleWindowRotation(1);
     vec3 vehicleWindowPosition;
+    float vehicleSpeed = 0.0f;
     
     std::thread sortThread(objectSort, &cam, &objects);
 
@@ -546,6 +547,8 @@ int main(int argc, const char * argv[]) {
         currentFrame = SDL_GetTicks() / 1000.0f;
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        
+//        vehicleInertia = 10.5f;
         
         SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1000.0f / fps) + " ms    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
      
@@ -582,8 +585,7 @@ int main(int argc, const char * argv[]) {
             if(windowEvent.type == SDL_MOUSEWHEEL) {
                 totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
-                position.x += (float(windowEvent.wheel.y) * 0.15f) * cos(totalRotation);
-                position.z += (float(windowEvent.wheel.y) * 0.15f) * -sin(totalRotation);
+                vehicleSpeed += float(windowEvent.wheel.y) * 0.15f * deltaTime;
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -615,10 +617,13 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
+            position.x += vehicleSpeed * cos(totalRotation);
+            position.z += vehicleSpeed * -sin(totalRotation);
+            
             cam.inVehicle = inVehicle;
             
-            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.7f, -0.97f, 0.0f, 1.0f));
-            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.33f, -0.97f, 0.0f, 1.0f));
+            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.5215f, 0.0f, 0.0f, 1.0f));
+            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.5215f, 0.0f, 0.0f, 1.0f));
             
             axis1MiddlePosition.y = (noise->octaveNoise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
             axis2MiddlePosition.y = (noise->octaveNoise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
@@ -674,7 +679,7 @@ int main(int argc, const char * argv[]) {
                                 (rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                                  rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
                                  rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
-                                 vec4(0.55f, 0.45f + 0.97f, -0.45f, 1.0f)).xyz());
+                                 vec4(0.35f, 0.45f + 0.97f, -0.45f, 1.0f)).xyz());
             }
             
             
@@ -766,8 +771,9 @@ int main(int argc, const char * argv[]) {
             skybox.render();
             glDepthMask(GL_TRUE);
             
+            
             basicShader.use();
-            if(oldCamMapPos != glm::vec2(float((int(round(cam.getPosition().x)) / 128) * 128), float((int(round(cam.getPosition().z)) / 128) * 128))) {
+            if(oldCamMapPos != glm::vec2(float((int(round(cam.getPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE))) {
                 map.update(cam.getPosition());
             }
             map.render();
@@ -809,31 +815,30 @@ int main(int argc, const char * argv[]) {
                 positionText.setText(positionStream.str());
             }
             
+            if(inVehicle) {
+                std::stringstream speedStream;
+                speedStream << std::fixed << std::setprecision(3) << vehicleSpeed << "m/s";
+//                speedText.setPixelPosition(vec2(float(windowWidth) / 2.0f - ((charWidth / 2.0f) * 0.25f * speedStream.str().length()), float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+                speedText.setText(speedStream.str());
+            }
+            
             
             uiShader.use();
             for(int i = 0; i < uiObjects.size(); i++)
                 uiObjects[i]->render();
             
+            if(inVehicle)
+                speedText.render();
+            
             if(invOpen)
                 inv.render();
-            
-            /*
-            minimapData.viewMat = lookAt(vec3(cam.getPosition().x, 100.0f, cam.getPosition().z), vec3(0.0, 0.0f, 0.0), vec3(0.0f, 101.0f, 0.0f));
-            
-            glClear(GL_DEPTH_BUFFER_BIT);
-            glViewport(10, 600, 100, 100);
-            
-            map1.setRenderData(&minimapData);
-            map1.getShaderPointer()->use();
-            map1.render();
-            */
             
             
             frame ++;
             totalFrames++;
             runTime += deltaTime;
             oldCamPos = cam.getPosition();
-            oldCamMapPos = glm::vec2(float((int(round(cam.getPosition().x)) / 128) * 128), float((int(round(cam.getPosition().z)) / 128) * 128));
+            oldCamMapPos = glm::vec2(float((int(round(cam.getPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE));
             
             SDL_GL_SwapWindow(window);
             glFlush();

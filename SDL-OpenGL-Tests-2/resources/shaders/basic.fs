@@ -19,8 +19,8 @@ void main() {
     float diff = max(dot(normals, lightDir), 0.0);
     vec3 diffuse = diff * vec3(1.0f);
     
-    color = vec4(diffuse + vec3(0.2f), 1.0f) * texture(tex, Uvs);
-     */
+    color = vec4(diffuse + vec3(0.2f), 1.0f) * texture(tex, Uvs);*/
+     
     if(wireframe == 0) {
         color = texture(tex, Uvs);
     }

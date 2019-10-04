@@ -28,6 +28,8 @@
 #include "../arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
+#define CHUNK_SIZE 64
+
 class MapChunk: public Object {
 public:
     MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset);

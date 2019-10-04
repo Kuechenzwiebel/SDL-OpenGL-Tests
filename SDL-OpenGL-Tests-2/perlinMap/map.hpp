@@ -18,7 +18,7 @@
 
 #include "mapChunk.hpp"
 
-const int viewRange = 128 * 2;
+const int viewRange = CHUNK_SIZE * 5;
 
 class Map {
 public:
