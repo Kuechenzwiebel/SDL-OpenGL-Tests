@@ -18,7 +18,7 @@ void Map::update(glm::vec3 cameraPosition) {
     
     for(int x = -viewRange; x <= viewRange; x += CHUNK_SIZE) {
         for(int y = -viewRange; y <= viewRange; y += CHUNK_SIZE) {
-            if(glm::distance(glm::vec2(x, y), glm::vec2(0.0f)) <= float(viewRange)) {
+            if(glm::fastDistance(glm::vec2(x, y), glm::vec2(0.0f)) < float(viewRange)) {
                 requiredChunks.push_back(glm::vec2(x, y) + glm::vec2(float((int(round(cameraPosition.x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cameraPosition.z)) / CHUNK_SIZE) * CHUNK_SIZE)));
             }
         }

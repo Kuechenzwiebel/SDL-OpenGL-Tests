@@ -269,19 +269,6 @@ int main(int argc, const char * argv[]) {
     n.multiplier = 40.0f;
     n.octaves = 4;
     
-    /*
-    MapChunk chunk1(&n, &basicShader, &renderData, vec2(0.0f));
-    chunk1.setTexture(&stoneTexture);
-    chunk1.setPosition(vec3(0.0f, -2.0f, 0.0f));
-    cam.setMapNoise(chunk1.getNoise());
-//    objects.push_back(std::make_pair(0.0f, &chunk1));
-    
-    MapChunk chunk2(&n, &basicShader, &renderData, vec2(128.0f, 0.0f));
-    chunk2.setTexture(&stoneTexture);
-    chunk2.setPosition(vec3(0.0f, -2.0f, 0.0f));
-//    objects.push_back(std::make_pair(0.0f, &chunk2));
-*/
-    
     cam.setMapNoise(&n);
     
     Map map(&n, &basicShader, &renderData);
@@ -406,9 +393,11 @@ int main(int argc, const char * argv[]) {
     positionText.setSize(vec2(0.25f));
     uiObjects.push_back(&positionText);
     
-    UIText speedText("", &uiShader, &uiData);
-    speedText.setSize(vec2(0.25f));
-    uiObjects.push_back(&speedText);
+    UIText speedTextms("", &uiShader, &uiData);
+    speedTextms.setSize(vec2(0.25f));
+    
+    UIText speedTextkmh("", &uiShader, &uiData);
+    speedTextkmh.setSize(vec2(0.25f));
     
     UIText rayText("Ray hit:", &uiShader, &uiData);
     rayText.setSize(vec2(0.25f));
@@ -539,7 +528,7 @@ int main(int argc, const char * argv[]) {
         if(SDL_GetTicks() > nextMeasure) {
             fps = frame;
             frame = 0;
-            nextMeasure += 1e3;
+            nextMeasure += 1000;
             
             fpsText.setText(std::to_string(fps) + " FPS" + "\nFrametime: " + std::to_string(1000.0f / fps) + " ms");
         }
@@ -547,8 +536,6 @@ int main(int argc, const char * argv[]) {
         currentFrame = SDL_GetTicks() / 1000.0f;
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        
-//        vehicleInertia = 10.5f;
         
         SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1000.0f / fps) + " ms    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
      
@@ -585,7 +572,7 @@ int main(int argc, const char * argv[]) {
             if(windowEvent.type == SDL_MOUSEWHEEL) {
                 totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
-                vehicleSpeed += float(windowEvent.wheel.y) * 0.15f * deltaTime;
+                vehicleSpeed += float(windowEvent.wheel.y) * 0.15f;
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -617,8 +604,8 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
-            position.x += vehicleSpeed * cos(totalRotation);
-            position.z += vehicleSpeed * -sin(totalRotation);
+            position.x += vehicleSpeed * deltaTime * cos(totalRotation);
+            position.z += vehicleSpeed * deltaTime * -sin(totalRotation);
             
             cam.inVehicle = inVehicle;
             
@@ -816,10 +803,15 @@ int main(int argc, const char * argv[]) {
             }
             
             if(inVehicle) {
-                std::stringstream speedStream;
-                speedStream << std::fixed << std::setprecision(3) << vehicleSpeed << "m/s";
-//                speedText.setPixelPosition(vec2(float(windowWidth) / 2.0f - ((charWidth / 2.0f) * 0.25f * speedStream.str().length()), float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
-                speedText.setText(speedStream.str());
+                std::stringstream speedStreamms;
+                speedStreamms << std::fixed << std::setprecision(3) << vehicleSpeed << "m/s";
+                speedTextms.setPixelPosition(vec2(float(windowWidth) / 2.0f - (charWidth * 0.25f * speedStreamms.str().length()) + (charWidth / 2.0f * 0.25f), float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
+                speedTextms.setText(speedStreamms.str());
+                
+                std::stringstream speedStreamkmh;
+                speedStreamkmh << std::fixed << std::setprecision(2) << vehicleSpeed * 3.6f<< "km/h";
+                speedTextkmh.setPixelPosition(vec2(float(windowWidth) / 2.0f - (charWidth * 0.25f * speedStreamkmh.str().length()) + (charWidth / 2.0f * 0.25f), float(windowHeight) / 2.0f - (charHeight * 1.5f) * 0.25f));
+                speedTextkmh.setText(speedStreamkmh.str());
             }
             
             
@@ -827,8 +819,10 @@ int main(int argc, const char * argv[]) {
             for(int i = 0; i < uiObjects.size(); i++)
                 uiObjects[i]->render();
             
-            if(inVehicle)
-                speedText.render();
+            if(inVehicle) {
+                speedTextms.render();
+                speedTextkmh.render();
+            }
             
             if(invOpen)
                 inv.render();

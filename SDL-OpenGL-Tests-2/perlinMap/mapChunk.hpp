@@ -28,7 +28,7 @@
 #include "../arrayBuffers/arrayBuffer.hpp"
 #include "texture.hpp"
 
-#define CHUNK_SIZE 64
+#define CHUNK_SIZE 32
 
 class MapChunk: public Object {
 public:

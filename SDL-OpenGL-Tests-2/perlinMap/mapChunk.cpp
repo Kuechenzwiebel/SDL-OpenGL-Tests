@@ -9,7 +9,7 @@
 #include "mapChunk.hpp"
 
 MapChunk::MapChunk(PerlinNoise *noise, Shader *shader, const RenderData *data, glm::vec2 offset):
-tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0.0f), offset(offset), data(data), shader(shader), noise(noise), vertices(24576), texCoords(24576), normals(24576) {
+tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0.0f), offset(offset), data(data), shader(shader), noise(noise), vertices(1536), texCoords(1536), normals(1536) {
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     
     glGenVertexArrays(1, &this->VAO);
@@ -19,21 +19,21 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
     float u = 0.0f, v = 0.0f;
     int r = 0;
     
-    for(unsigned long i = 0; i < 24576; i += 6) {
+    for(unsigned long i = 0; i < 1536; i += 6) {
         if(x >= (CHUNK_SIZE / 2.0f) + offset.x) {
             x = -(CHUNK_SIZE / 2.0f) + offset.x;
-            z += 1.0f;
+            z += 2.0f;
         }
 //        std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now();
-        float p1 = noise->octaveNoise(x + 0.0f, z + 0.0f), p2 = noise->octaveNoise(x + 1.0f, z + 0.0f), p3 = noise->octaveNoise(x + 0.0f, z + 1.0f), p4 = noise->octaveNoise(x + 1.0f, z + 1.0f);
+        float p1 = noise->octaveNoise(x + 0.0f, z + 0.0f), p2 = noise->octaveNoise(x + 2.0f, z + 0.0f), p3 = noise->octaveNoise(x + 0.0f, z + 2.0f), p4 = noise->octaveNoise(x + 2.0f, z + 2.0f);
         
         vertices[i + 0] = glm::vec3(x + 0.0f, p1, z + 0.0f);
-        vertices[i + 1] = glm::vec3(x + 1.0f, p2, z + 0.0f);
-        vertices[i + 2] = glm::vec3(x + 0.0f, p3, z + 1.0f);
+        vertices[i + 1] = glm::vec3(x + 2.0f, p2, z + 0.0f);
+        vertices[i + 2] = glm::vec3(x + 0.0f, p3, z + 2.0f);
         
-        vertices[i + 3] = glm::vec3(x + 1.0f, p4, z + 1.0f);
-        vertices[i + 4] = glm::vec3(x + 1.0f, p2, z + 0.0f);
-        vertices[i + 5] = glm::vec3(x + 0.0f, p3, z + 1.0f);
+        vertices[i + 3] = glm::vec3(x + 2.0f, p4, z + 2.0f);
+        vertices[i + 4] = glm::vec3(x + 2.0f, p2, z + 0.0f);
+        vertices[i + 5] = glm::vec3(x + 0.0f, p3, z + 2.0f);
 //        std::chrono::steady_clock::time_point t4 = std::chrono::steady_clock::now();
 //        std::cout << "Time to generate triangle: " << std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3).count() << "µs" << std::endl;
         
@@ -57,12 +57,12 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         v = (r / 2) * 0.5f;
         
         texCoords[i + 0] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
-        texCoords[i + 1] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
-        texCoords[i + 2] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 1] = glm::vec2(2.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 2] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   2.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
         
-        texCoords[i + 3] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
-        texCoords[i + 4] = glm::vec2(1.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
-        texCoords[i + 5] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   1.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 3] = glm::vec2(2.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   2.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 4] = glm::vec2(2.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   0.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
+        texCoords[i + 5] = glm::vec2(0.0f / 16.0f + fmod(fabs(x), 16.0f) / 16.0f,   2.0f / 8.0f + fmod(fabs(z), 8.0f) / 8.0f);
         
         
         texCoords[i + 0] /= 2.0f;
@@ -84,7 +84,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         
         
         
-        x += 1.0f;
+        x += 2.0f;
     }
     
     
@@ -92,9 +92,9 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
     texCoords.shrink_to_fit();
     normals.shrink_to_fit();
     
-    vertex.setData(vertices.data(), sizeof(glm::vec3) * 24576, 0);
-    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 24576, 1);
-    normal.setData(normals.data(), sizeof(glm::vec3) * 24576, 2);
+    vertex.setData(vertices.data(), sizeof(glm::vec3) * 1536, 0);
+    texCoord.setData(texCoords.data(), sizeof(glm::vec2) * 1536, 1);
+    normal.setData(normals.data(), sizeof(glm::vec3) * 1536, 2);
     
     vertex.activate();
     texCoord.activate();
@@ -103,7 +103,7 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
     glBindVertexArray(0);
     
     std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-    std::cout << "Total time to generate chunk: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << "ms" << std::endl;
+    std::cout << "Total time to generate chunk: " << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() << "µs" << std::endl;
 }
 
 PerlinNoise* MapChunk::getNoise() {
@@ -130,7 +130,7 @@ void MapChunk::render() {
     shader->sendMat4(data->viewMat, "view");
     shader->sendMat4(model, "model");
     
-    glDrawArrays(GL_TRIANGLES, 0, 24576);
+    glDrawArrays(GL_TRIANGLES, 0, 1536);
     glBindVertexArray(0);
 }
 

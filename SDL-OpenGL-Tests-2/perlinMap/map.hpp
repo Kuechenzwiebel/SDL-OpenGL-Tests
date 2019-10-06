@@ -12,13 +12,14 @@
 #define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
+#include <glm/gtx/fast_square_root.hpp>
 
 #include <stdio.h>
 #include <vector>
 
 #include "mapChunk.hpp"
 
-const int viewRange = CHUNK_SIZE * 5;
+const int viewRange = CHUNK_SIZE * 9;
 
 class Map {
 public:
