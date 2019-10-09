@@ -9,8 +9,8 @@
 #include "camera.hpp"
 
 Camera::Camera(const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(0.5f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
-footPosition(glm::vec3(0.0f, 20.0f, 0.0f)), theoreticalFootPosition(glm::vec3(0.0f, 20.0f, 0.0f)), eyePosition(glm::vec3(0.0f, 20.0f, 0.0f) + glm::vec3(0.0f, 1.73f, 0.0f)), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), gravityInertia(0.0f) {
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(0.6f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+footPosition(glm::vec3(0.0f, 20.0f, 0.0f)), theoreticalFootPosition(glm::vec3(0.0f, 20.0f, 0.0f)), eyePosition(glm::vec3(0.0f, 20.0f, 0.0f) + glm::vec3(0.0f, 1.73f, 0.0f)), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), timeSinceLastOnFloor(0) {
     this->updateCameraVectors();
 }
 
@@ -44,19 +44,20 @@ void Camera::processInput() {
         }
         
         collisionHappend = false;
-        
-        gravityInertia = 9.8f * *deltaTime;
+        mapCollisionHappend = false;
         
         if(gravity)
-            theoreticalFootPosition.y -= gravityInertia;
+            theoreticalFootPosition.y -= (9.8f * (SDL_GetTicks() - timeSinceLastOnFloor) / 1000.0f) * *deltaTime;
         
         float mapPosition = 0.0f;
         if(noise != nullptr) {
-            mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z) - 2.0f + 0.2f;
+            mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z) - 2.0f;
         }
         
-        if(theoreticalFootPosition.y < mapPosition)
+        if(theoreticalFootPosition.y < mapPosition) {
             theoreticalFootPosition.y = mapPosition;
+            mapCollisionHappend = true;
+        }
         
         if(!collisionHappend)
             collisionHappend = worldPointCollision(objects, theoreticalFootPosition);
@@ -64,13 +65,18 @@ void Camera::processInput() {
     
     if(collisionHappend) {
         theoreticalFootPosition = footPosition;
-//        gravityInertia = 0.0f;
     }
     else {
         footPosition = theoreticalFootPosition;
-//        if(gravity)
-//            gravityInertia += 1.8f * *deltaTime;
     }
+    
+    if((collisionHappend || mapCollisionHappend) && gravity)
+        timeSinceLastOnFloor = SDL_GetTicks();
+    
+    
+    if(!gravity)
+        timeSinceLastOnFloor = SDL_GetTicks();
+    
     
     if(!inVehicle)
         eyePosition = footPosition + glm::vec3(0.0f, 1.73f, 0.0f);
