@@ -205,7 +205,7 @@ int main(int argc, const char * argv[]) {
     hg::File skyboxShaderVertexFile("resources/shaders/skybox.vs"), skyboxShaderFragmentFile("resources/shaders/skybox.fs");
     
     
-    std::string spaceSkyboxLocation[6] = {
+    std::string skyboxLocation[6] = {
         "resources/textures/skyboxes/skybox2RT.png",
         "resources/textures/skyboxes/skybox2LF.png",
         "resources/textures/skyboxes/skybox2UP.png",
@@ -249,7 +249,7 @@ int main(int argc, const char * argv[]) {
     minimapData.windowHeight = &windowHeight;
     
     
-    Cubemap spaceSkybox(spaceSkyboxLocation);
+    Cubemap spaceSkybox(skyboxLocation);
     
     Texture gradientTexture("resources/textures/grad.png", TEXTURE_NO_MIP_MAP);
     Texture gradient2Texture("resources/models/grad.png", TEXTURE_NO_MIP_MAP);
@@ -649,7 +649,7 @@ int main(int argc, const char * argv[]) {
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                               rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
                               rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
-                              translate(mat4(1), vec3(0.0f, 0.97f, 0.0f));
+                              translate(mat4(1), vec3(0.0, 0.97f, 0.0f));
             
             
             base.setModelMat(vehicleModelMat);
