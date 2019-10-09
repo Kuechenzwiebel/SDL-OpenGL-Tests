@@ -18,7 +18,7 @@ static glm::vec2 uiTextUVs[] = {
 };
 
 UIText::UIText(std::string s, Shader *shader, const RenderData *data):
-s(s), data(data), shader(shader), position(0.0f), size(1.0f), charSet("resources/textures/text.png") {
+s(s), data(data), shader(shader), position(0.0f), size(1.0f), charSet("resources/textures/text.png"), colorMultiplier(1.0f) {
     rects.resize(s.length());
     originalPositions.resize(s.length());
     charSet.setTextureName("tex");
@@ -92,6 +92,7 @@ void UIText::setText(std::string s) {
 }
 
 void UIText::render() {
+    shader->sendVec4(colorMultiplier, "colorMultiplier");
     for(int i = 0; i < rects.size(); i++) {
         if(rects[i].getSize() != glm::vec2(0.0f, 0.0f)) {
             rects[i].render();
@@ -123,6 +124,11 @@ void UIText::setPixelSize(glm::vec2 size) {
     setSize(this->size);
 }
 
+void UIText::setColorMultiplier(glm::vec4 multiplier) {
+    this->colorMultiplier = multiplier;
+}
+
+
 glm::vec2 UIText::getPosition() {
     return position;
 }
@@ -133,4 +139,8 @@ glm::vec2 UIText::getSize() {
 
 Shader* UIText::getShaderPointer() {
     return shader;
+}
+
+glm::vec4 UIText::getColorMultiplier() {
+    return colorMultiplier;
 }

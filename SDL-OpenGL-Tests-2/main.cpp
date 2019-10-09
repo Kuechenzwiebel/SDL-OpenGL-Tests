@@ -203,6 +203,7 @@ int main(int argc, const char * argv[]) {
     hg::File blurShaderVertexFile("resources/shaders/blur.vs"), blurShaderFragmentFile("resources/shaders/blur.fs");
     hg::File uiShaderVertexFile("resources/shaders/ui.vs"), uiShaderFragmentFile("resources/shaders/ui.fs");
     hg::File skyboxShaderVertexFile("resources/shaders/skybox.vs"), skyboxShaderFragmentFile("resources/shaders/skybox.fs");
+    hg::File textShaderVertexFile("resources/shaders/text.vs"), textShaderFragmentFile("resources/shaders/text.fs");
     
     
     std::string skyboxLocation[6] = {
@@ -219,6 +220,7 @@ int main(int argc, const char * argv[]) {
     Shader blurShader(blurShaderVertexFile.readFile(), blurShaderFragmentFile.readFile());
     Shader uiShader(uiShaderVertexFile.readFile(), uiShaderFragmentFile.readFile());
     Shader skyboxShader(skyboxShaderVertexFile.readFile(), skyboxShaderFragmentFile.readFile());
+    Shader textShader(textShaderVertexFile.readFile(), textShaderFragmentFile.readFile());
     
     Camera cam(&deltaTime, &windowEvent, &checkMouse);
     cam.objects = &physicsWorld;
@@ -385,21 +387,21 @@ int main(int argc, const char * argv[]) {
     
     
     
-    UIText fpsText("", &uiShader, &uiData);
+    UIText fpsText("", &textShader, &uiData);
     fpsText.setSize(vec2(0.25f));
     uiObjects.push_back(&fpsText);
     
-    UIText positionText("", &uiShader, &uiData);
+    UIText positionText("", &textShader, &uiData);
     positionText.setSize(vec2(0.25f));
     uiObjects.push_back(&positionText);
     
-    UIText speedTextms("", &uiShader, &uiData);
+    UIText speedTextms("", &textShader, &uiData);
     speedTextms.setSize(vec2(0.25f));
     
-    UIText speedTextkmh("", &uiShader, &uiData);
+    UIText speedTextkmh("", &textShader, &uiData);
     speedTextkmh.setSize(vec2(0.25f));
     
-    UIText rayText("Ray hit:", &uiShader, &uiData);
+    UIText rayText("Ray hit:", &textShader, &uiData);
     rayText.setSize(vec2(0.25f));
     rayText.setPixelPosition(vec2(100.0f));
     uiObjects.push_back(&rayText);
@@ -504,8 +506,8 @@ int main(int argc, const char * argv[]) {
     float alpha1R = 0.0f, alpha2R = 0.0f;
     float alpha1L = 0.0f, alpha2L = 0.0f;
     float a = wheelDistance / 2.0f;
-    float b1R = 0.0f,  b2R = 0.0f;
-    float b1L = 0.0f,  b2L = 0.0f;
+    float b1R = 0.0f, b2R = 0.0f;
+    float b1L = 0.0f, b2L = 0.0f;
     
     float valpha = 0.0f;
     float va = 3.18f, vb = 0.0f;
@@ -815,11 +817,14 @@ int main(int argc, const char * argv[]) {
             }
             
             
-            uiShader.use();
-            for(int i = 0; i < uiObjects.size(); i++)
+            for(int i = 0; i < uiObjects.size(); i++) {
+                uiObjects[i]->getShaderPointer()->use();
                 uiObjects[i]->render();
+            }
             
             if(inVehicle) {
+                uiShader.use();
+                
                 speedTextms.render();
                 speedTextkmh.render();
             }

@@ -21,7 +21,6 @@
 #include "../arrayBuffers/arrayBuffer.hpp"
 #include "../arrayBuffers/dynamicArrayBuffer.hpp"
 #include "../rectangle.hpp"
-#include "../shader.hpp"
 #include "../texture.hpp"
 #include "../utils.hpp"
 

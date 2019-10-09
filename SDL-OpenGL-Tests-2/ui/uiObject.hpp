@@ -11,11 +11,14 @@
 
 #include <stdio.h>
 
+#include "../shader.hpp"
+
 class UIObject {
 public:
     UIObject();
     
     virtual void render();
+    virtual Shader *getShaderPointer();
 };
 
 #endif /* uiObject_hpp */

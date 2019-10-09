@@ -16,3 +16,7 @@ UIObject::UIObject() {
 void UIObject::render() {
     
 }
+
+Shader* UIObject::getShaderPointer() {
+    return nullptr;
+}

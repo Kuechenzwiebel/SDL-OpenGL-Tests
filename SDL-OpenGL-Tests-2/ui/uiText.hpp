@@ -40,9 +40,11 @@ public:
     void setSize(glm::vec2 size);
     void setPixelPosition(glm::vec2 position);
     void setPixelSize(glm::vec2 size);
+    void setColorMultiplier(glm::vec4 multiplier);
     
     glm::vec2 getPosition();
     glm::vec2 getSize();
+    glm::vec4 getColorMultiplier();
     
     Shader *getShaderPointer();
     
@@ -53,6 +55,8 @@ private:
     
     glm::vec2 position;
     glm::vec2 size;
+    
+    glm::vec4 colorMultiplier;
     
     std::string s;
     std::vector<UIRectangle> rects;
