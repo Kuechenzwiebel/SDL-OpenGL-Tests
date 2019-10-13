@@ -9,7 +9,7 @@
 #include "camera.hpp"
 
 Camera::Camera(const float *deltaTime, const SDL_Event *windowEvent, bool *checkMouse):
-up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(0.6f * 100.0f), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
+up(glm::vec3(0.0f, 1.0f, 0.0f)), front(glm::vec3(0.0f, 0.0f, -1.0f)), speed(REGULAR), mouseSensitivity(0.25f), zoom(45.0f), yaw(0.0f), pitch(0.0f),
 footPosition(glm::vec3(0.0f, 20.0f, 0.0f)), theoreticalFootPosition(glm::vec3(0.0f, 20.0f, 0.0f)), eyePosition(glm::vec3(0.0f, 20.0f, 0.0f) + glm::vec3(0.0f, 1.73f, 0.0f)), deltaTime(deltaTime), windowEvent(windowEvent), checkMouse(checkMouse), gravity(true), inVehicle(false), timeSinceLastOnFloor(0) {
     this->updateCameraVectors();
 }
@@ -25,7 +25,22 @@ void Camera::updateCameraVectors() {
 
 void Camera::processInput() {
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
-    float velocity = this->movementSpeed * *deltaTime;
+    
+    float velocity = *deltaTime;
+    
+    switch(speed) {
+        case INSPECTION:
+            velocity *= 0.6f;
+            break;
+            
+        case REGULAR:
+            velocity *= 1.6f;
+            break;
+            
+        case SPRINTING:
+            velocity *= 4.6f;
+            break;
+    }
     
     if(!inVehicle) {
         if(*checkMouse) {
@@ -70,12 +85,13 @@ void Camera::processInput() {
         footPosition = theoreticalFootPosition;
     }
     
+    
     if((collisionHappend || mapCollisionHappend) && gravity)
         timeSinceLastOnFloor = SDL_GetTicks();
     
-    
     if(!gravity)
         timeSinceLastOnFloor = SDL_GetTicks();
+    
     
     
     if(!inVehicle)
@@ -150,4 +166,8 @@ float *Camera::getPitchPointer() {
 
 void Camera::setMapNoise(PerlinNoise *noise) {
     this->noise = noise;
+}
+
+void Camera::setMovementSpeed(MovementSpeeds speed) {
+    this->speed = speed;
 }

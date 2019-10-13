@@ -78,6 +78,7 @@ bool invOpen = false;
 bool opticsOn = false;
 bool wireframe = false;
 bool render = true;
+bool speedSelect = false;
 
 vec3 oldCamPos;
 vec2 oldCamMapPos;
@@ -264,6 +265,7 @@ int main(int argc, const char * argv[]) {
     Texture stoneTexture("resources/textures/stones.png");
     Texture invTexture("resources/textures/inv.png", TEXTURE_NO_MIP_MAP);
     Texture crosshairTexture("resources/textures/crosshair.png", TEXTURE_NO_MIP_MAP);
+    Texture speedSelectionBackroundTexture("resources/textures/speedSelectionBackround.png", TEXTURE_NO_MIP_MAP);
     
     
     PerlinNoise n(420);
@@ -277,7 +279,7 @@ int main(int argc, const char * argv[]) {
     
     Cube aabbTest(&basicShader, &renderData);
     aabbTest.setTexture(&gradient2Texture);
-    aabbTest.setPosition(vec3(5.0f, -1.0f, 0.0f));
+    aabbTest.setPosition(vec3(3.0f, -1.0f, 0.0f));
     objects.push_back(std::make_pair(0.0f, &aabbTest));
     
     AABB aabb1(vec3(4.5f, -1.5f, -0.5f), vec3(5.5f, -0.5f, 0.5f));
@@ -341,6 +343,10 @@ int main(int argc, const char * argv[]) {
     inv.setTexture(&invTexture);
     inv.setPixelSize(vec2(512.0f, 256.0f));
     
+    UIRectangle speedSelectionBackround(&uiShader, &uiData);
+    speedSelectionBackround.setTexture(&speedSelectionBackroundTexture);
+    speedSelectionBackround.setPixelSize(vec2(256.0f, 128.0f));
+    
     
     UIRectangle crosshair(&uiShader, &uiData);
     crosshair.setTexture(&crosshairTexture);
@@ -383,7 +389,7 @@ int main(int argc, const char * argv[]) {
     Sphere sphere(&basicShader, &renderData, &wireframe);
     sphere.setPosition(vec3(0.0f));
     sphere.setTexture(&gradientTexture);
-    objects.push_back(std::make_pair(0.0f, &sphere));
+//    objects.push_back(std::make_pair(0.0f, &sphere));
     
     
     
@@ -400,6 +406,17 @@ int main(int argc, const char * argv[]) {
     
     UIText speedTextkmh("", &textShader, &uiData);
     speedTextkmh.setSize(vec2(0.25f));
+    
+    
+    UIText speedSelectionInspectionSpeedText("Inspection speed 0.6m/s", &textShader, &uiData);
+    speedSelectionInspectionSpeedText.setSize(vec2(0.25f));
+    
+    UIText speedSelectionRegularSpeedText("Regular speed 1.6m/s", &textShader, &uiData);
+    speedSelectionRegularSpeedText.setSize(vec2(0.25f));
+    
+    UIText speedSelectionSprintingSpeedText("Sprinting speed 4.6m/s", &textShader, &uiData);
+    speedSelectionSprintingSpeedText.setSize(vec2(0.25f));
+    
     
     UIText rayText("Ray hit:", &textShader, &uiData);
     rayText.setSize(vec2(0.25f));
@@ -429,6 +446,9 @@ int main(int argc, const char * argv[]) {
     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
     positionText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, -float(windowHeight) / 2.0f + (charHeight / 2.0f) * 0.25f));
     
+    speedSelectionInspectionSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, 64.0f - 15.0f));
+    speedSelectionRegularSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, 0.0f));
+    speedSelectionSprintingSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, -64.0f + 15.0f));
     
     Ray crosshairRay(vec3(0.0f), vec3(0.0f), 0.1f);
     bool crosshairRayCollision = false;
@@ -521,7 +541,9 @@ int main(int argc, const char * argv[]) {
     float vehicleSpeed = 0.0f;
     
     std::thread sortThread(objectSort, &cam, &objects);
-
+    
+    float f = 0.0f;
+    srand(3982765348);
     while(running) {
         sortMutex.lock();
         sort = true;
@@ -562,6 +584,10 @@ int main(int argc, const char * argv[]) {
                     declinationMeterBar.setPixelPosition(vec2((-float(windowWidth) / 2.0f) + 32.0f, 0.0f));
                     fpsText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
                     positionText.setPixelPosition(vec2(-float(windowWidth) / 2.0f + (charWidth / 2.0f) * 0.25f, -float(windowHeight) / 2.0f + (charHeight / 2.0f) * 0.25f));
+                    
+                    speedSelectionInspectionSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, 64.0f - 15.0f));
+                    speedSelectionRegularSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, 0.0f));
+                    speedSelectionSprintingSpeedText.setPixelPosition(vec2(-128.0f + 15.0f, -64.0f + 15.0f));
                 }
                 
                 if(windowEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
@@ -575,10 +601,19 @@ int main(int argc, const char * argv[]) {
                 totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
                 vehicleSpeed += float(windowEvent.wheel.y) * 0.15f;
+//                f += float(windowEvent.wheel.y) * 0.15f;
             }
+            // 843  644
+            // 1328 678
+            
+            // 843  740
+            // 1265 781
+            
+            // 843  838
+            // 1307 877
             
             if(windowEvent.type == SDL_KEYDOWN) {
-                if(windowEvent.key.keysym.sym == SDLK_i)
+                if(windowEvent.key.keysym.sym == SDLK_i && !speedSelect)
                     swapBool(&invOpen);
                 
                 if(windowEvent.key.keysym.sym == SDLK_o)
@@ -590,17 +625,63 @@ int main(int argc, const char * argv[]) {
                 if(windowEvent.key.keysym.sym == SDLK_v)
                     swapBool(&inVehicle);
                 
+                if(windowEvent.key.keysym.sym == SDLK_c && !invOpen) {
+                    swapBool(&speedSelect);
+                    swapBool(&checkMouse);
+                }
+                
                 if(windowEvent.key.keysym.sym == SDLK_ESCAPE) {
                     render = false;
                     checkMouse = false;
                 }
             }
             
-            if(!invOpen)
+            if(!invOpen && !speedSelect)
                 cam.processMouseInput();
+            
+            if(speedSelect) {
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 664 - 1080 / 2.0f &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= 322 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 339 - 760 / 2.0f) {
+                    speedSelectionInspectionSpeedText.setColorMultiplier(vec4(1.0f));
+                    if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
+                        if(windowEvent.button.button == SDL_BUTTON_LEFT) {
+                            swapBool(&speedSelect);
+                            cam.setMovementSpeed(INSPECTION);
+                        }
+                    }
+                }
+                else
+                    speedSelectionInspectionSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
+                
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 632 - 1080 / 2.0f &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= 370 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 390 - 760 / 2.0f) {
+                    speedSelectionRegularSpeedText.setColorMultiplier(vec4(1.0f));
+                    if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
+                        if(windowEvent.button.button == SDL_BUTTON_LEFT) {
+                            swapBool(&speedSelect);
+                            cam.setMovementSpeed(REGULAR);
+                        }
+                    }
+                }
+                else
+                    speedSelectionRegularSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
+                
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 653 - 1080 / 2.0f &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= 419 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 438 - 760 / 2.0f) {
+                    speedSelectionSprintingSpeedText.setColorMultiplier(vec4(1.0f));
+                    if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
+                        if(windowEvent.button.button == SDL_BUTTON_LEFT) {
+                            swapBool(&speedSelect);
+                            cam.setMovementSpeed(SPRINTING);
+                        }
+                    }
+                }
+                else
+                    speedSelectionSprintingSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
+            }
         }
         
-        if(checkMouse)
+        if(checkMouse && !speedSelect)
             SDL_SetRelativeMouseMode(SDL_TRUE);
         else
             SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -611,8 +692,11 @@ int main(int argc, const char * argv[]) {
             
             cam.inVehicle = inVehicle;
             
-            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(1.5215f, 0.0f, 0.0f, 1.0f));
-            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) * vec4(-1.5215f, 0.0f, 0.0f, 1.0f));
+            axis1MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                                  vec4(1.5215f, 0.0f, 0.0f, 1.0f));
+            
+            axis2MiddlePosition = position + vec3(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
+                                                  vec4(-1.5215f, 0.0f, 0.0f, 1.0f));
             
             axis1MiddlePosition.y = (noise->octaveNoise(axis1MiddlePosition.x, axis1MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
             axis2MiddlePosition.y = (noise->octaveNoise(axis2MiddlePosition.x, axis2MiddlePosition.z) - 2.0f) + wheelDiameter / 2.0f;
@@ -647,11 +731,13 @@ int main(int argc, const char * argv[]) {
                                     rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
                                     rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f));
             
+            
             vehicleModelMat = translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z)) *
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                              rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
-                              rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
-                              translate(mat4(1), vec3(0.0, 0.97f, 0.0f));
+//                              rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+//                              rotate(mat4(1), fmin(fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), radians(10.0f)), vec3(1.0f, 0.0f, 0.0f)) *
+                                rotate(mat4(1), f, vec3(1.0f, 0.0f, 0.0f)) *
+                              translate(mat4(1), vec3(0.0f, 0.97f, 0.0f));
             
             
             base.setModelMat(vehicleModelMat);
@@ -738,7 +824,7 @@ int main(int argc, const char * argv[]) {
             
             glViewport(0, 0, windowWidth, windowHeight);
             if(!opticsOn) {
-                projection = infinitePerspective(radians(68.4f), float(windowWidth) / float(windowHeight), 0.005f);
+                projection = infinitePerspective(radians(46.9f), float(windowWidth) / float(windowHeight), 0.005f);
                 cam.setMouseSensitivity(0.25f);
             }
             else {
@@ -765,12 +851,23 @@ int main(int argc, const char * argv[]) {
             if(oldCamMapPos != glm::vec2(float((int(round(cam.getPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE))) {
                 map.update(cam.getPosition());
             }
+            
+            float rx = (float)(rand() % 100) / 80.0f,
+                ry = (float)(rand() % 100) / 80.0f;
+            
+            basicShader.sendFloat((float)totalFrames / 5.0f, "t");
+            basicShader.sendFloat(rx, "rx");
+            basicShader.sendFloat(ry, "ry");
+            printf("%f %f\n", rx, ry);
             map.render();
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
                 if(it->second->getShaderPointer() == &basicShader)
                     it->second->getShaderPointer()->sendVec3(cam.getPosition(), "viewPos");
+                basicShader.sendFloat(3.14f / 2.0f, "t");
+                basicShader.sendFloat(0.0f, "rx");
+                basicShader.sendFloat(0.0f, "ry");
                 it->second->render();
             }
             
@@ -806,12 +903,12 @@ int main(int argc, const char * argv[]) {
             
             if(inVehicle) {
                 std::stringstream speedStreamms;
-                speedStreamms << std::fixed << std::setprecision(3) << vehicleSpeed << "m/s";
+                speedStreamms << std::fixed << std::setprecision(2) << vehicleSpeed << "m/s";
                 speedTextms.setPixelPosition(vec2(float(windowWidth) / 2.0f - (charWidth * 0.25f * speedStreamms.str().length()) + (charWidth / 2.0f * 0.25f), float(windowHeight) / 2.0f - (charHeight / 2.0f) * 0.25f));
                 speedTextms.setText(speedStreamms.str());
                 
                 std::stringstream speedStreamkmh;
-                speedStreamkmh << std::fixed << std::setprecision(2) << vehicleSpeed * 3.6f<< "km/h";
+                speedStreamkmh << std::fixed << std::setprecision(1) << vehicleSpeed * 3.6f<< "km/h";
                 speedTextkmh.setPixelPosition(vec2(float(windowWidth) / 2.0f - (charWidth * 0.25f * speedStreamkmh.str().length()) + (charWidth / 2.0f * 0.25f), float(windowHeight) / 2.0f - (charHeight * 1.5f) * 0.25f));
                 speedTextkmh.setText(speedStreamkmh.str());
             }
@@ -831,6 +928,13 @@ int main(int argc, const char * argv[]) {
             
             if(invOpen)
                 inv.render();
+            
+            if(speedSelect) {
+                speedSelectionBackround.render();
+                speedSelectionInspectionSpeedText.render();
+                speedSelectionRegularSpeedText.render();
+                speedSelectionSprintingSpeedText.render();
+            }
             
             
             frame ++;

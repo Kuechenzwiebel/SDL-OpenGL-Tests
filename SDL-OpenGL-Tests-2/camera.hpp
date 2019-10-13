@@ -28,6 +28,7 @@
 
 #include "mapChunk.hpp"
 #include "perlinMap/perlinNoise.hpp"
+
 enum CameraMovement {
     FORWARD,
     BACKWARD,
@@ -35,6 +36,12 @@ enum CameraMovement {
     RIGHT,
     UP,
     DOWN
+};
+
+enum MovementSpeeds {
+    INSPECTION,
+    REGULAR,
+    SPRINTING
 };
 
 class Camera {
@@ -49,6 +56,7 @@ public:
     
     void setPosition(glm::vec3 position);
     void setMouseSensitivity(float sensitivity);
+    void setMovementSpeed(MovementSpeeds speed);
     
     float *getYawPointer();
     float *getPitchPointer();
@@ -76,9 +84,9 @@ private:
     float yaw;
     float pitch;
     
-    float movementSpeed;
     float mouseSensitivity;
     float zoom;
+    MovementSpeeds speed;
     
     void updateCameraVectors();
     

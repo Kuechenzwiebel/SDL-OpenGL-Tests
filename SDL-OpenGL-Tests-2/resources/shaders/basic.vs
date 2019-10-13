@@ -14,9 +14,14 @@ out vec3 SpacePos;
 out vec2 Uvs;
 out vec3 Normals;
 
+uniform float t;
+uniform float rx;
+uniform float ry;
+
 void main() {
     gl_Position = projection * view * model * vec4(positions, 1.0f);
-    
+    gl_Position.x += cos(t + rx) * 0.5f * 0.25f;
+    gl_Position.y += -abs(sin(t + ry)) * 0.125f * 0.25f;
     SpacePos = (model * vec4(positions, 1.0f)).xyz;
     Uvs = vec2(uvs.x, 1.0f - uvs.y);
     Normals = mat3(inverse(model)) * normals;
