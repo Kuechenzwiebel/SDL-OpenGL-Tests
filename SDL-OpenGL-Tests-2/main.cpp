@@ -80,7 +80,7 @@ bool wireframe = false;
 bool render = true;
 bool speedSelect = false;
 
-vec3 oldCamPos;
+vec3 oldCamFootPos;
 vec2 oldCamMapPos;
 
 bool sortDone = false;
@@ -115,9 +115,9 @@ void objectSort(Camera *cam, std::list<std::pair<float, Object*>> *objects) {
             sortDone = false;
             sortMutex.unlock();
             
-            if(cam->getPosition() != oldCamPos) {
+            if(cam->getFootPosition() != oldCamFootPos) {
                 for(std::list<std::pair<float, Object*>>::iterator it = objects->begin(); it != objects->end(); it++) {
-                    it->first = length(cam->getPosition() - it->second->getRealPosition());
+                    it->first = length(cam->getFootPosition() - it->second->getRealPosition());
                 }
                 
                 objects->sort();
@@ -431,7 +431,7 @@ int main(int argc, const char * argv[]) {
     
     
     
-    oldCamPos = cam.getPosition();
+    oldCamFootPos = cam.getFootPosition();
     
     PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
     CollisionInfo in = spherePointCollision(&s1, vec3(0.5f, 0.5f, 0.0f));
@@ -561,7 +561,7 @@ int main(int argc, const char * argv[]) {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         
-        SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1000.0f / fps) + " ms    Camera Pos X: " + std::to_string(cam.getPosition().x) + " Y: " + std::to_string(cam.getPosition().y) + " Z: " + std::to_string(cam.getPosition().z)).c_str());
+        SDL_SetWindowTitle(window, (windowTitle + "     FPS: " + std::to_string(fps) +  "  Frametime: " + std::to_string(1000.0f / fps) + " ms    Camera Pos X: " + std::to_string(cam.getFootPosition().x) + " Y: " + std::to_string(cam.getFootPosition().y) + " Z: " + std::to_string(cam.getFootPosition().z)).c_str());
      
         while(SDL_PollEvent(&windowEvent) != 0) {
             if(windowEvent.type == SDL_QUIT)
@@ -750,7 +750,7 @@ int main(int argc, const char * argv[]) {
                               rotate(mat4(1), fmin(fmax(alpha2R, alpha2L), radians(20.0f)), vec3(1.0f, 0.0f, 0.0f)));
             
             if(inVehicle) {
-                cam.setPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z) +
+                cam.setFootPosition(vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z) +
                                 (rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
                                  rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
                                  rotate(mat4(1), fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), vec3(1.0f, 0.0f, 0.0f)) *
@@ -848,8 +848,8 @@ int main(int argc, const char * argv[]) {
             
             
             basicShader.use();
-            if(oldCamMapPos != glm::vec2(float((int(round(cam.getPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE))) {
-                map.update(cam.getPosition());
+            if(oldCamMapPos != glm::vec2(float((int(round(cam.getFootPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getFootPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE))) {
+                map.update(cam.getFootPosition());
             }
             
             float rx = (float)(rand() % 100) / 80.0f,
@@ -864,7 +864,7 @@ int main(int argc, const char * argv[]) {
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
                 if(it->second->getShaderPointer() == &basicShader)
-                    it->second->getShaderPointer()->sendVec3(cam.getPosition(), "viewPos");
+                    it->second->getShaderPointer()->sendVec3(cam.getFootPosition(), "viewPos");
                 basicShader.sendFloat(3.14f / 2.0f, "t");
                 basicShader.sendFloat(0.0f, "rx");
                 basicShader.sendFloat(0.0f, "ry");
@@ -876,8 +876,8 @@ int main(int argc, const char * argv[]) {
             glClear(GL_DEPTH_BUFFER_BIT);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             
-            crosshairRay.setRayStartPosition(cam.getPosition());
-            crosshairRay.setRayDirection(cam.getPosition() + cam.getFront());
+            crosshairRay.setRayStartPosition(cam.getEyePosition());
+            crosshairRay.setRayDirection(cam.getEyePosition() + cam.getFront());
             crosshairRay.reset();
             
             crosshairRayCollision = false;
@@ -895,9 +895,9 @@ int main(int argc, const char * argv[]) {
                 rayText.setText("No ray hit!");
             
             
-            if(oldCamPos != cam.getPosition()) {
+            if(oldCamFootPos != cam.getFootPosition()) {
                 std::stringstream positionStream;
-                positionStream << std::fixed << std::setprecision(2) << "Position:   X: " << cam.getPosition().x << "  Y: " << cam.getPosition().y << "  Z: " << cam.getPosition().z;
+                positionStream << std::fixed << std::setprecision(2) << "Position:   X: " << cam.getFootPosition().x << "  Y: " << cam.getFootPosition().y << "  Z: " << cam.getFootPosition().z;
                 positionText.setText(positionStream.str());
             }
             
@@ -940,8 +940,8 @@ int main(int argc, const char * argv[]) {
             frame ++;
             totalFrames++;
             runTime += deltaTime;
-            oldCamPos = cam.getPosition();
-            oldCamMapPos = glm::vec2(float((int(round(cam.getPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE));
+            oldCamFootPos = cam.getFootPosition();
+            oldCamMapPos = glm::vec2(float((int(round(cam.getFootPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getFootPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE));
             
             SDL_GL_SwapWindow(window);
             glFlush();

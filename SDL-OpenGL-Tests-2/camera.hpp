@@ -50,11 +50,12 @@ public:
     
     glm::mat4 getViewMatrix();
     float getZoom();
-    glm::vec3 getPosition();
+    glm::vec3 getFootPosition();
+    glm::vec3 getEyePosition();
     glm::vec3 getFront();
     float getMouseSensitivity();
     
-    void setPosition(glm::vec3 position);
+    void setFootPosition(glm::vec3 position);
     void setMouseSensitivity(float sensitivity);
     void setMovementSpeed(MovementSpeeds speed);
     

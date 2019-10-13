@@ -143,15 +143,19 @@ float Camera::getZoom() {
     return this->zoom;
 }
 
-glm::vec3 Camera::getPosition() {
+glm::vec3 Camera::getFootPosition() {
     return this->footPosition;
+}
+
+glm::vec3 Camera::getEyePosition() {
+    return this->eyePosition;
 }
 
 glm::vec3 Camera::getFront() {
     return this->front;
 }
 
-void Camera::setPosition(glm::vec3 pos) {
+void Camera::setFootPosition(glm::vec3 pos) {
     this->footPosition = pos;
     this->theoreticalFootPosition = pos;
 }
