@@ -639,9 +639,9 @@ int main(int argc, const char * argv[]) {
             if(!invOpen && !speedSelect)
                 cam.processMouseInput();
             
-            if(speedSelect) {
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 664 - 1080 / 2.0f &&
-                   windowEvent.motion.y - windowHeight / 2.0f >= 322 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 339 - 760 / 2.0f) {
+            if(speedSelect) { //540 380
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f <= 104 &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= -58  && windowEvent.motion.y - windowHeight / 2.0f <= -41) {
                     speedSelectionInspectionSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
                         if(windowEvent.button.button == SDL_BUTTON_LEFT) {
@@ -653,7 +653,7 @@ int main(int argc, const char * argv[]) {
                 else
                     speedSelectionInspectionSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
                 
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 632 - 1080 / 2.0f &&
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 632 - 1080 / 2.0f &&
                    windowEvent.motion.y - windowHeight / 2.0f >= 370 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 390 - 760 / 2.0f) {
                     speedSelectionRegularSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
@@ -666,7 +666,7 @@ int main(int argc, const char * argv[]) {
                 else
                     speedSelectionRegularSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
                 
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= 421 - 1080 / 2.0f && windowEvent.motion.x - windowWidth / 2.0f  <= 653 - 1080 / 2.0f &&
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 653 - 1080 / 2.0f &&
                    windowEvent.motion.y - windowHeight / 2.0f >= 419 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 438 - 760 / 2.0f) {
                     speedSelectionSprintingSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
@@ -851,23 +851,12 @@ int main(int argc, const char * argv[]) {
             if(oldCamMapPos != glm::vec2(float((int(round(cam.getFootPosition().x)) / CHUNK_SIZE) * CHUNK_SIZE), float((int(round(cam.getFootPosition().z)) / CHUNK_SIZE) * CHUNK_SIZE))) {
                 map.update(cam.getFootPosition());
             }
-            
-            float rx = (float)(rand() % 100) / 80.0f,
-                ry = (float)(rand() % 100) / 80.0f;
-            
-            basicShader.sendFloat((float)totalFrames / 5.0f, "t");
-            basicShader.sendFloat(rx, "rx");
-            basicShader.sendFloat(ry, "ry");
-            printf("%f %f\n", rx, ry);
             map.render();
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
                 if(it->second->getShaderPointer() == &basicShader)
                     it->second->getShaderPointer()->sendVec3(cam.getFootPosition(), "viewPos");
-                basicShader.sendFloat(3.14f / 2.0f, "t");
-                basicShader.sendFloat(0.0f, "rx");
-                basicShader.sendFloat(0.0f, "ry");
                 it->second->render();
             }
             
@@ -935,7 +924,7 @@ int main(int argc, const char * argv[]) {
                 speedSelectionRegularSpeedText.render();
                 speedSelectionSprintingSpeedText.render();
             }
-            
+
             
             frame ++;
             totalFrames++;
