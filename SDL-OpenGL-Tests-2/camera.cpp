@@ -44,18 +44,23 @@ void Camera::processInput() {
     
     if(!inVehicle) {
         if(*checkMouse) {
+            glm::vec3 movementVector(0.0f);
+            
             if(keystates[SDL_SCANCODE_W])
-                this->theoreticalFootPosition += this->front * velocity;
+                movementVector += this->front;
             if(keystates[SDL_SCANCODE_D])
-                this->theoreticalFootPosition += this->right * velocity;
+                movementVector += this->right;
             if(keystates[SDL_SCANCODE_S])
-                this->theoreticalFootPosition -= this->front * velocity;
+                movementVector -= this->front;
             if(keystates[SDL_SCANCODE_A])
-                this->theoreticalFootPosition -= this->right * velocity;
+                movementVector -= this->right;
             if(keystates[SDL_SCANCODE_SPACE])
-                this->theoreticalFootPosition.y += velocity;
+                movementVector += glm::vec3(0.0f, 1.0f, 0.0f);
             if(keystates[SDL_SCANCODE_LSHIFT])
-                this->theoreticalFootPosition.y -= velocity;
+                movementVector -= glm::vec3(0.0f, 1.0f, 0.0f);
+            
+            if(movementVector != glm::vec3(0.0f))
+                theoreticalFootPosition += glm::normalize(movementVector) * *deltaTime;
         }
         
         collisionHappend = false;
@@ -65,9 +70,8 @@ void Camera::processInput() {
             theoreticalFootPosition.y -= (9.8f * (SDL_GetTicks() - timeSinceLastOnFloor) / 1000.0f) * *deltaTime;
         
         float mapPosition = 0.0f;
-        if(noise != nullptr) {
+        if(noise != nullptr)
             mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z) - 2.0f;
-        }
         
         if(theoreticalFootPosition.y < mapPosition) {
             theoreticalFootPosition.y = mapPosition;
