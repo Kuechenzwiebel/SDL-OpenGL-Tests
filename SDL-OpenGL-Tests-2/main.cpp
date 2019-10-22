@@ -630,6 +630,14 @@ int main(int argc, const char * argv[]) {
                     swapBool(&checkMouse);
                 }
                 
+                if(inVehicle) {
+                    if(windowEvent.key.keysym.sym == SDLK_a)
+                        totalRotation += 5.0f * deltaTime;
+                    
+                    if(windowEvent.key.keysym.sym == SDLK_d)
+                        totalRotation -= 5.0f * deltaTime;
+                }
+                
                 if(windowEvent.key.keysym.sym == SDLK_ESCAPE) {
                     render = false;
                     checkMouse = false;
@@ -639,7 +647,7 @@ int main(int argc, const char * argv[]) {
             if(!invOpen && !speedSelect)
                 cam.processMouseInput();
             
-            if(speedSelect) { //540 380
+            if(speedSelect) {
                 if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f <= 104 &&
                    windowEvent.motion.y - windowHeight / 2.0f >= -58  && windowEvent.motion.y - windowHeight / 2.0f <= -41) {
                     speedSelectionInspectionSpeedText.setColorMultiplier(vec4(1.0f));
@@ -653,8 +661,8 @@ int main(int argc, const char * argv[]) {
                 else
                     speedSelectionInspectionSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
                 
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 632 - 1080 / 2.0f &&
-                   windowEvent.motion.y - windowHeight / 2.0f >= 370 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 390 - 760 / 2.0f) {
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 92 &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= -10  && windowEvent.motion.y - windowHeight / 2.0f <= 10) {
                     speedSelectionRegularSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
                         if(windowEvent.button.button == SDL_BUTTON_LEFT) {
@@ -666,8 +674,8 @@ int main(int argc, const char * argv[]) {
                 else
                     speedSelectionRegularSpeedText.setColorMultiplier(vec4(0.8f, 0.8f, 0.8f, 1.0f));
                 
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 653 - 1080 / 2.0f &&
-                   windowEvent.motion.y - windowHeight / 2.0f >= 419 - 760 / 2.0f  && windowEvent.motion.y - windowHeight / 2.0f <= 438 - 760 / 2.0f) {
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 113 &&
+                   windowEvent.motion.y - windowHeight / 2.0f >= 39   && windowEvent.motion.y - windowHeight / 2.0f <= 58) {
                     speedSelectionSprintingSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
                         if(windowEvent.button.button == SDL_BUTTON_LEFT) {
@@ -734,9 +742,9 @@ int main(int argc, const char * argv[]) {
             
             vehicleModelMat = translate(mat4(1), vec3(position.x, (axis1MiddlePosition.y + axis2MiddlePosition.y) / 2.0f, position.z)) *
                               rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-//                              rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
-//                              rotate(mat4(1), fmin(fmin(fmin(alpha1R, alpha1L), fmin(alpha2R, alpha2L)), radians(10.0f)), vec3(1.0f, 0.0f, 0.0f)) *
-                                rotate(mat4(1), f, vec3(1.0f, 0.0f, 0.0f)) *
+                              rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                              rotate(mat4(1), alpha1L, vec3(1.0f, 0.0f, 0.0f)) *
+//                                rotate(mat4(1), f, vec3(1.0f, 0.0f, 0.0f)) *
                               translate(mat4(1), vec3(0.0f, 0.97f, 0.0f));
             
             
@@ -897,7 +905,7 @@ int main(int argc, const char * argv[]) {
                 speedTextms.setText(speedStreamms.str());
                 
                 std::stringstream speedStreamkmh;
-                speedStreamkmh << std::fixed << std::setprecision(1) << vehicleSpeed * 3.6f<< "km/h";
+                speedStreamkmh << std::fixed << std::setprecision(1) << vehicleSpeed * 3.6f << "km/h";
                 speedTextkmh.setPixelPosition(vec2(float(windowWidth) / 2.0f - (charWidth * 0.25f * speedStreamkmh.str().length()) + (charWidth / 2.0f * 0.25f), float(windowHeight) / 2.0f - (charHeight * 1.5f) * 0.25f));
                 speedTextkmh.setText(speedStreamkmh.str());
             }
