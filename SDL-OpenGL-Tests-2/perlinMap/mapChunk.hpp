@@ -22,11 +22,11 @@
 #include <glm/gtx/norm.hpp>
 
 #include "perlinNoise.hpp"
-#include "utils.hpp"
-#include "shader.hpp"
-#include "object.hpp"
+#include "../utils.hpp"
+#include "../shader.hpp"
+#include "../object.hpp"
 #include "../arrayBuffers/arrayBuffer.hpp"
-#include "texture.hpp"
+#include "../texture.hpp"
 
 #define CHUNK_SIZE 32
 

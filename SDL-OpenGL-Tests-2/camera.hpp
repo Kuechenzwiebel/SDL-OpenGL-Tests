@@ -26,7 +26,7 @@
 #include "physicsObjects/aabb.hpp"
 #include "physicsObjects/obb.hpp"
 
-#include "mapChunk.hpp"
+#include "perlinMap/mapChunk.hpp"
 #include "perlinMap/perlinNoise.hpp"
 
 enum CameraMovement {
