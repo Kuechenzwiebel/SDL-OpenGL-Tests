@@ -54,7 +54,6 @@ void Map::update(glm::vec3 cameraPosition) {
         std::cout << "\t\t\t";
         chunks.push_back(std::make_unique<MapChunk>(noise, shader, data, requiredChunks[i]));
         chunks[chunks.size() - 1]->setTexture(&texture);
-        chunks[chunks.size() - 1]->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
     }
     
     printf("\n\n");

@@ -71,7 +71,7 @@ void Camera::processInput() {
         
         float mapPosition = 0.0f;
         if(noise != nullptr)
-            mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z) - 2.0f;
+            mapPosition = noise->octaveNoise(theoreticalFootPosition.x, theoreticalFootPosition.z);
         
         if(theoreticalFootPosition.y < mapPosition) {
             theoreticalFootPosition.y = mapPosition;

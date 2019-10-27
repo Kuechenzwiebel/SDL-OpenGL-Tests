@@ -23,6 +23,7 @@ public:
     float multiplier;
     int octaves;
     unsigned int seed;
+    float offset;
     
 private:
     siv::PerlinNoise perlinNoise;
