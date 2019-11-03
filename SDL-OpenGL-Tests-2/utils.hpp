@@ -53,4 +53,6 @@ unsigned int prng(int seed, int x, int y);
 
 glm::vec4 eulerAnglesToAngleAxis(glm::vec3 rotation);
 
+void fadeToZero(float *x, float deltaTime, float timeToZero);
+
 #endif /* utils_hpp */

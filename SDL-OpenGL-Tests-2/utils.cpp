@@ -94,3 +94,21 @@ glm::vec4 eulerAnglesToAngleAxis(glm::vec3 rotation) {
     rot.z = rotation.z / maxRot;
     return rot;
 }
+
+
+void fadeToZero(float *x, float deltaTime, float timeToZero) {
+    if(*x == 0.0f)
+        return;
+    
+    float steps = deltaTime / timeToZero;
+    if(*x < 0.0f)
+        steps *= -1.0f;
+    
+    if((*x >= 0.0f && *x - steps < 0.0f) ||
+       (*x < 0.0f && *x - steps >= 0.0f)) {
+        *x = 0.0f;
+        return;
+    }
+    else
+        *x = *x - steps;
+}
