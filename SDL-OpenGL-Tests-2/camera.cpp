@@ -60,7 +60,7 @@ void Camera::processInput() {
                 movementVector -= glm::vec3(0.0f, 1.0f, 0.0f);
             
             if(movementVector != glm::vec3(0.0f))
-                theoreticalFootPosition += glm::normalize(movementVector) * *deltaTime;
+                theoreticalFootPosition += glm::normalize(movementVector) * velocity;
         }
         
         collisionHappend = false;
