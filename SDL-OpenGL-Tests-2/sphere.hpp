@@ -26,9 +26,9 @@
 #include "utils.hpp"
 #include "object.hpp"
 
-const float sphereResolution = 10.0f;
+const float sphereResolution = 2.5f;
 ///sphereArraySize can be calculated using this formula: round((360.0f / sphereResolution) * (360.0f / sphereResolution) * 6 * 0.5)
-const int sphereArraySize = 3888;
+const int sphereArraySize = 62208;
 
 
 class Sphere: public Object {

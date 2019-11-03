@@ -38,13 +38,13 @@ shader(shader), vertex(), colorBuffer(), translate(1), rotate(1), scale(1), mode
             sphereVertices[i + 5] = sphereSurface(angleXZ + (1.0f * sphereResolution), angleXY + (1.0f * sphereResolution));
             
             
-            sphereNormals[i + 0] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
-            sphereNormals[i + 1] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
-            sphereNormals[i + 2] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]) * -1.0f;
+            sphereNormals[i + 0] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]);
+            sphereNormals[i + 1] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]);
+            sphereNormals[i + 2] = glm::triangleNormal(sphereVertices[i + 0], sphereVertices[i + 1], sphereVertices[i + 2]);
            
-            sphereNormals[i + 3] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
-            sphereNormals[i + 4] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
-            sphereNormals[i + 5] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]) * -1.0f;
+            sphereNormals[i + 3] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]);
+            sphereNormals[i + 4] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]);
+            sphereNormals[i + 5] = glm::triangleNormal(sphereVertices[i + 5], sphereVertices[i + 4], sphereVertices[i + 3]);
             
             
             
