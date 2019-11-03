@@ -389,8 +389,15 @@ int main(int argc, const char * argv[]) {
     
     Sphere sphere(&basicShader, &renderData, &wireframe);
     sphere.setPosition(vec3(0.0f));
+    sphere.setRadius(0.2f);
     sphere.setTexture(&gradientTexture);
-//    objects.push_back(std::make_pair(0.0f, &sphere));
+    objects.push_back(std::make_pair(0.0f, &sphere));
+    
+    Sphere lightSource(&basicShader, &renderData);
+    lightSource.setRadius(0.3f);
+    lightSource.setTexture(&gradient2Texture);
+    lightSource.setPosition(vec3(0.0f, 2.45f, 0.0f));
+    objects.push_back(std::make_pair(0.0f, &lightSource));
     
     
     
@@ -425,7 +432,7 @@ int main(int argc, const char * argv[]) {
     uiObjects.push_back(&rayText);
     
     
-    Sphere jupiter(&basicShader, &renderData, &wireframe);
+    Sphere jupiter(&basicShader, &renderData);
     jupiter.setTexture(&jupiterTexture);
     jupiter.setPosition(vec3(10.0f));
     objects.push_back(std::make_pair(0.0f, &jupiter));
@@ -434,7 +441,7 @@ int main(int argc, const char * argv[]) {
     
     oldCamFootPos = cam.getFootPosition();
     
-    PhysicsSphere s1(1.0f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
+    PhysicsSphere s1(0.2f, vec3(0.0f)), s2(1.0f, vec3(1.0f, 1.0f, 0.0f));
     CollisionInfo in = spherePointCollision(&s1, vec3(0.5f, 0.5f, 0.0f));
     in = spherePointCollision(&s1, vec3(1.0f, 0.5f, 0.0f));
     
@@ -472,48 +479,48 @@ int main(int argc, const char * argv[]) {
     ObjModel backWindow1("resources/models/vehicle new/Back_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel backWindow2("resources/models/vehicle new/Back_Window_2.obj", &basicShader, &renderData, &wireframe);
     
-    objects.push_back(std::make_pair(0.0f, &backWindow1));
-    objects.push_back(std::make_pair(0.0f, &backWindow2));
+//    objects.push_back(std::make_pair(0.0f, &backWindow1));
+//    objects.push_back(std::make_pair(0.0f, &backWindow2));
     
     
     ObjModel backSideWindow1("resources/models/vehicle new/Back_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel backSideWindow2("resources/models/vehicle new/Back_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
     ObjModel backSideWindow3("resources/models/vehicle new/Back_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
     ObjModel backSideWindow4("resources/models/vehicle new/Back_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
-    
+    /*
     objects.push_back(std::make_pair(0.0f, &backSideWindow1));
     objects.push_back(std::make_pair(0.0f, &backSideWindow2));
     objects.push_back(std::make_pair(0.0f, &backSideWindow3));
     objects.push_back(std::make_pair(0.0f, &backSideWindow4));
-    
+    */
     
     ObjModel middleWindow1("resources/models/vehicle new/Middle_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel middleWindow2("resources/models/vehicle new/Middle_Window_2.obj", &basicShader, &renderData, &wireframe);
     ObjModel middleWindow3("resources/models/vehicle new/Middle_Window_3.obj", &basicShader, &renderData, &wireframe);
     ObjModel middleWindow4("resources/models/vehicle new/Middle_Window_4.obj", &basicShader, &renderData, &wireframe);
-    
+    /*
     objects.push_back(std::make_pair(0.0f, &middleWindow1));
     objects.push_back(std::make_pair(0.0f, &middleWindow2));
     objects.push_back(std::make_pair(0.0f, &middleWindow3));
     objects.push_back(std::make_pair(0.0f, &middleWindow4));
-    
+    */
     
     ObjModel frontSideWindow1("resources/models/vehicle new/Front_Side_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel frontSideWindow2("resources/models/vehicle new/Front_Side_Window_2.obj", &basicShader, &renderData, &wireframe);
     ObjModel frontSideWindow3("resources/models/vehicle new/Front_Side_Window_3.obj", &basicShader, &renderData, &wireframe);
     ObjModel frontSideWindow4("resources/models/vehicle new/Front_Side_Window_4.obj", &basicShader, &renderData, &wireframe);
-    
+    /*
     objects.push_back(std::make_pair(0.0f, &frontSideWindow1));
     objects.push_back(std::make_pair(0.0f, &frontSideWindow2));
     objects.push_back(std::make_pair(0.0f, &frontSideWindow3));
     objects.push_back(std::make_pair(0.0f, &frontSideWindow4));
-    
+    */
     
     ObjModel frontWindow1("resources/models/vehicle new/Front_Window_1.obj", &basicShader, &renderData, &wireframe);
     ObjModel frontWindow2("resources/models/vehicle new/Front_Window_2.obj", &basicShader, &renderData, &wireframe);
     
-    objects.push_back(std::make_pair(0.0f, &frontWindow1));
-    objects.push_back(std::make_pair(0.0f, &frontWindow2));
+//    objects.push_back(std::make_pair(0.0f, &frontWindow1));
+//    objects.push_back(std::make_pair(0.0f, &frontWindow2));
     
 
     vec3 axisFrontMiddlePosition, axisBackMiddlePosition;
@@ -524,14 +531,12 @@ int main(int argc, const char * argv[]) {
     float wheelDiameter = 0.76f;
     float alphaFrontRight = 0.0f, alphaBackRight = 0.0f;
     float alphaFrontLeft = 0.0f, alphaBackLeft = 0.0f;
-    float a = wheelDistance / 2.0f;
-    float b1R = 0.0f, b2R = 0.0f;
-    float b1L = 0.0f, b2L = 0.0f;
     
     float valpha = 0.0f;
     float va = 3.18f, vb = 0.0f;
     
     float totalRotation = 0.0f;
+    float totalRotationChange = 0.0f;
     vec3 vehicleMidPosition(0.0f, 4.0f, 0.0f);
     
     mat4 totalRotationMat(1);
@@ -544,7 +549,7 @@ int main(int argc, const char * argv[]) {
     std::thread sortThread(objectSort, &cam, &objects);
     
     srand(3982765348);
-    float f = 0.0f;
+    
     while(running) {
         sortMutex.lock();
         sort = true;
@@ -601,7 +606,7 @@ int main(int argc, const char * argv[]) {
             if(windowEvent.type == SDL_MOUSEWHEEL) {
                 totalRotation += float(windowEvent.wheel.x) * 0.025f;
                 
-                f += float(windowEvent.wheel.y) * 0.15f;
+//                vehicleSpeed += float(windowEvent.wheel.y) * 0.15f;
             }
             
             if(windowEvent.type == SDL_KEYDOWN) {
@@ -624,10 +629,10 @@ int main(int argc, const char * argv[]) {
                 
                 if(inVehicle) {
                     if(windowEvent.key.keysym.sym == SDLK_a)
-                        totalRotation += 5.0f * deltaTime;
+                        totalRotationChange += 5.0f * deltaTime;
                     
                     if(windowEvent.key.keysym.sym == SDLK_d)
-                        totalRotation -= 5.0f * deltaTime;
+                        totalRotationChange -= 5.0f * deltaTime;
                 }
                 
                 if(windowEvent.key.keysym.sym == SDLK_ESCAPE) {
@@ -640,7 +645,7 @@ int main(int argc, const char * argv[]) {
                 cam.processMouseInput();
             
             if(speedSelect) {
-                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f <= 104 &&
+                if(windowEvent.motion.x - windowWidth / 2.0f  >= -119 && windowEvent.motion.x - windowWidth / 2.0f  <= 104 &&
                    windowEvent.motion.y - windowHeight / 2.0f >= -58  && windowEvent.motion.y - windowHeight / 2.0f <= -41) {
                     speedSelectionInspectionSpeedText.setColorMultiplier(vec4(1.0f));
                     if(windowEvent.type == SDL_MOUSEBUTTONDOWN) {
@@ -687,66 +692,77 @@ int main(int argc, const char * argv[]) {
             SDL_SetRelativeMouseMode(SDL_FALSE);
         
         if(render) {
-//            vehicleMidPosition.x += vehicleSpeed * deltaTime * cos(totalRotation);
-//            vehicleMidPosition.z += vehicleSpeed * deltaTime * -sin(totalRotation);
+            totalRotation += totalRotationChange;
+            fadeToZero(&totalRotationChange, deltaTime, 30.0f);
+            
+            vehicleMidPosition.x += vehicleSpeed * deltaTime * cos(totalRotation);
+            vehicleMidPosition.z += vehicleSpeed * deltaTime * -sin(totalRotation);
             
             totalRotationMat = rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f));
             cam.inVehicle = inVehicle;
             
-            axisFrontMiddlePosition = vehicleMidPosition + vec3(totalRotationMat *
-                                                                vec4(1.5215f, 0.0f, 0.0f, 1.0f));
-            axisBackMiddlePosition = vehicleMidPosition + vec3(totalRotationMat *
-                                                               vec4(-1.5215f, 0.0f, 0.0f, 1.0f));
             
-            axisFrontMiddlePosition.y = noise.octaveNoise(axisFrontMiddlePosition.x, axisFrontMiddlePosition.z) + wheelDiameter / 2.0f;
-            axisBackMiddlePosition.y = noise.octaveNoise(axisBackMiddlePosition.x, axisBackMiddlePosition.z) + wheelDiameter / 2.0f;
+            axisFrontMiddlePosition = (translate(mat4(1), vehicleMidPosition) *
+                                       totalRotationMat *
+                                       vec4(1.5215f, 0.0f, 0.0f, 1.0f)).xyz();
+            
+            axisBackMiddlePosition = (translate(mat4(1), vehicleMidPosition) *
+                                      totalRotationMat *
+                                      vec4(-1.5215f, 0.0f, 0.0f, 1.0f)).xyz();
+            
+            axisFrontMiddlePosition.y = noise.octaveNoise(axisFrontMiddlePosition.x, axisFrontMiddlePosition.z);
+            axisBackMiddlePosition.y = noise.octaveNoise(axisBackMiddlePosition.x, axisBackMiddlePosition.z);
 
             
-            axisFrontRight = vehicleMidPosition + vec3(totalRotationMat *
-                                                       vec4(1.5215f, 0.0f, wheelDistance / 2.0f, 1.0f));
-            axisBackRight = vehicleMidPosition + vec3(totalRotationMat *
-                                                      vec4(-1.5215f, 0.0f, wheelDistance / 2.0f, 1.0f));
+            axisFrontRight = (translate(mat4(1), vehicleMidPosition) *
+                              totalRotationMat *
+                              vec4(1.5215f, 0.0f, wheelDistance / 2.0f, 1.0f)).xyz();
             
-            axisFrontLeft = vehicleMidPosition + vec3(totalRotationMat *
-                                                      vec4(1.5215f, 0.0f, -wheelDistance / 2.0f, 1.0f));
-            axisBackLeft = vehicleMidPosition + vec3(totalRotationMat *
-                                                     vec4(-1.5215f, 0.0f, -wheelDistance / 2.0f, 1.0f));
+            axisBackRight = (translate(mat4(1), vehicleMidPosition) *
+                             totalRotationMat *
+                             vec4(-1.5215f, 0.0f, wheelDistance / 2.0f, 1.0f)).xyz();
             
+            axisFrontLeft = (translate(mat4(1), vehicleMidPosition) *
+                             totalRotationMat *
+                             vec4(1.5215f, 0.0f, -wheelDistance / 2.0f, 1.0f)).xyz();
             
-            b1R = (axisFrontMiddlePosition.y - wheelDiameter / 2.0f) - noise.octaveNoise(axisFrontRight.x, axisFrontRight.z);
-            b2R = (axisBackMiddlePosition.y - wheelDiameter / 2.0f) - noise.octaveNoise(axisBackRight.x, axisBackRight.z);
-            
-            b1L = (axisFrontMiddlePosition.y - wheelDiameter / 2.0f) - noise.octaveNoise(axisFrontLeft.x, axisFrontLeft.z);
-            b2L = (axisBackMiddlePosition.y - wheelDiameter / 2.0f) - noise.octaveNoise(axisBackLeft.x, axisBackLeft.z);
-            
-            alphaFrontRight = atan(b1R / a);
-            alphaBackRight = atan(b2R / a);
-            
-            alphaFrontLeft = -atan(b1L / a);
-            alphaBackLeft = -atan(b2L / a);
+            axisBackLeft = (translate(mat4(1), vehicleMidPosition) *
+                            totalRotationMat *
+                            vec4(-1.5215f, 0.0f, -wheelDistance / 2.0f, 1.0f)).xyz();
             
             
-            vb = axisFrontMiddlePosition.y - axisBackMiddlePosition.y;
-            valpha = atan(vb / va);
+            axisFrontRight.y = noise.octaveNoise(axisFrontRight.x, axisFrontRight.z);
+            axisFrontLeft.y  = noise.octaveNoise(axisFrontLeft.x, axisFrontLeft.z);
+            axisBackRight.y  = noise.octaveNoise(axisBackRight.x, axisBackRight.z);
+            axisBackLeft.y   = noise.octaveNoise(axisBackLeft.x, axisBackLeft.z);
+    
+            
+            alphaFrontRight = atan((axisFrontMiddlePosition.y - axisFrontRight.y) / (wheelDistance * 0.5f));
+            alphaBackRight =  atan((axisBackMiddlePosition.y - axisBackRight.y) / (wheelDistance * 0.5f));
+            
+            alphaFrontLeft = -atan((axisFrontMiddlePosition.y - axisFrontLeft.y) / (wheelDistance * 0.5f));
+            alphaBackLeft =  -atan((axisBackMiddlePosition.y - axisBackLeft.y) / (wheelDistance * 0.5f));
             
             
-            vehicleWindowPosition = vec3(vehicleMidPosition.x, (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f, vehicleMidPosition.z);
-            
-            vehicleWindowRotation = rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                                    rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
-                                    rotate(mat4(1), fmin(fmin(alphaFrontRight, alphaFrontLeft), fmin(alphaBackRight, alphaBackLeft)), vec3(1.0f, 0.0f, 0.0f));
+            vb = (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f;
+            valpha = atan((axisFrontMiddlePosition.y - (axisBackMiddlePosition.y / 2.0f)) / -1.5215f);
             
             
-            vehicleModelMat = translate(mat4(1), vehicleMidPosition);
             
             
-            base.setModelMat(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                             translate(mat4(1), vehicleMidPosition) *
-                             rotate(mat4(1), radians(f), vec3(1.0f, 0.0f, 0.0f)));
+            base.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
+                             totalRotationMat *
+                             rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)));
             
-            axisFront.setModelMat(rotate(mat4(1), totalRotation, vec3(0.0f, 1.0f, 0.0f)) *
-                             translate(mat4(1), vec3(vehicleMidPosition.x, axisFrontMiddlePosition.y, vehicleMidPosition.z) + vec3(1.5215f, 0.0f, 0.0f)) *
-                             rotate(mat4(1), alphaFrontRight, vec3(1.0f, 0.0f, 0.0f)));
+            axisFront.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, axisFrontMiddlePosition.y + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
+                                  totalRotationMat *
+                                  translate(mat4(1), vec3(1.5215f, 0.0f, 0.0f)) *
+                                  rotate(mat4(1), fmin(alphaFrontRight, alphaFrontRight), vec3(1.0f, 0.0f, 0.0f)));
+            
+            axisBack.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, axisBackMiddlePosition.y + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
+                                 totalRotationMat *
+                                 translate(mat4(1), vec3(-1.5215f, 0.0f, 0.0f)) *
+                                 rotate(mat4(1), fmin(alphaBackRight, alphaBackLeft), vec3(1.0f, 0.0f, 0.0f)));
             
             
             if(inVehicle) {
@@ -757,7 +773,7 @@ int main(int argc, const char * argv[]) {
                                  vec4(0.35f, 0.45f + 0.97f, -0.45f, 1.0f)).xyz());
             }
             
-            
+            /*
             backWindow1.setModelMat(vehicleModelMat);
             backWindow2.setModelMat(vehicleModelMat);
             
@@ -800,7 +816,7 @@ int main(int argc, const char * argv[]) {
             
             frontWindow1.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.79f, 0.38f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
             frontWindow2.setRealPosition(vehicleWindowPosition + (vehicleWindowRotation * vec4(vec3(1.75f, 0.36f, 0.0f) - vec3(0.98f, 0.0f, 0.0f), 1.0f)).xyz());
-            
+            */
             
             
             
@@ -856,7 +872,7 @@ int main(int argc, const char * argv[]) {
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
                 if(it->second->getShaderPointer() == &basicShader)
-                    it->second->getShaderPointer()->sendVec3(cam.getFootPosition(), "viewPos");
+                    it->second->getShaderPointer()->sendVec3(cam.getEyePosition(), "viewPos");
                 it->second->render();
             }
             
