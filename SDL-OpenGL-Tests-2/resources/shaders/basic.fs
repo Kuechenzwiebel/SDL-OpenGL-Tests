@@ -12,19 +12,22 @@ uniform vec3 viewPos;
 uniform int wireframe;
 
 void main() {
-    /*
+    if(wireframe == 1) {
+        color = vec4(1.0f);
+        return;
+    }
+    
     vec3 normals = normalize(Normals);
     
     vec3 lightDir = normalize(vec3(0.0f, 2.45f, 0.0f) - SpacePos);
     float diff = max(dot(normals, lightDir), 0.0);
     vec3 diffuse = diff * vec3(1.0f);
     
-    color = vec4(diffuse + vec3(0.2f), 1.0f) * texture(tex, Uvs);*/
-     
-    if(wireframe == 0) {
-        color = texture(tex, Uvs);
-    }
-    else {
-        color = vec4(1.0f);
-    }
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - SpacePos);
+    vec3 reflectDir = reflect(-lightDir, normals);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * vec3(1.0f);
+    
+    color = vec4(specular + diffuse + vec3(0.2f), 1.0f) * texture(tex, Uvs);
 }
