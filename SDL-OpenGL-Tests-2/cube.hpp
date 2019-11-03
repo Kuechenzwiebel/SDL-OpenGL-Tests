@@ -10,12 +10,14 @@
 #define cube_hpp
 
 #define GLM_FORCE_SWIZZLE
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/normal.hpp>
+#include <glm/glm.hpp> 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/normal.hpp>
+#include <glm/gtx/norm.hpp>
 #include <string>
 
 #include "arrayBuffers/arrayBuffer.hpp"
