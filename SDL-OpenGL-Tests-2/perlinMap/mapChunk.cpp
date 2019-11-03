@@ -39,7 +39,8 @@ tex(nullptr), model(1), translate(1), vertex(), texCoord(), normal(), position(0
         
         
         
-        glm::vec3 n1 = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f, n2 = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
+        glm::vec3 n1 = glm::triangleNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2]) * -1.0f,
+                  n2 = glm::triangleNormal(vertices[i + 5], vertices[i + 4], vertices[i + 3]) * -1.0f;
         
         normals[i + 0] = n1;
         normals[i + 1] = n1;
