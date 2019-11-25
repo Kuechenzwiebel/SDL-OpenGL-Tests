@@ -10,6 +10,7 @@
 #define perlinNoise_hpp
 
 #include <stdio.h>
+#include <vector>
 
 #include "sivPerlinNoise.hpp"
 
@@ -17,7 +18,7 @@ class PerlinNoise {
 public:
     PerlinNoise(unsigned int seed);
     
-    float octaveNoise(float x, float y);
+    virtual float octaveNoise(float x, float y);
     
     float frequency;
     float multiplier;
