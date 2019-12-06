@@ -38,7 +38,7 @@ void Camera::processInput() {
             break;
             
         case SPRINTING:
-            velocity *= 4.6f;
+            velocity *= 40.6f;
             break;
     }
     
