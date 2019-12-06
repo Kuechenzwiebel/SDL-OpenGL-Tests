@@ -8,7 +8,7 @@
 
 #include "objModel.hpp"
 
-ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe):
+ObjModel::ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe, bool autoLoadTextures):
 shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), position(glm::vec3(0.0f)), size(glm::vec3(1.0f)), rotation(glm::vec4(0.0f)), wireframe(wireframe), realPositionSet(false) {
     realPosition = position;
     glGenVertexArrays(1, &VAO);
@@ -36,8 +36,10 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
             
             first = false;
             
-            textures.emplace_back(Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png"));
-            std::cout << "Opening texture: " << hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png" << std::endl;
+            if(autoLoadTextures) {
+                textures.emplace_back(Texture(hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png"));
+                std::cout << "Opening texture: " << hg::substr(path, 0, int(path.find_last_of("/"))) + "/" + hg::substr(fileLines[i], 2, int(fileLines[i].length())) + ".png" << std::endl;
+            }
         }
         
         else if(fileLines[i].substr(0, 2) == "v ") {
@@ -88,7 +90,6 @@ shader(shader), data(data), translate(1), rotate(1), scale(1), model(1), positio
         }
     }
     ends[ends.size() - 1].second = int(vertices.size()) - lastSize;
-    
     vertex.setData(vertices.data(), sizeof(glm::vec3) * vertices.size(), 0);
     uv.setData(uvs.data(), sizeof(glm::vec2) * uvs.size(), 1);
     normal.setData(normals.data(), sizeof(glm::vec3) * normals.size(), 2);
@@ -134,6 +135,12 @@ void ObjModel::render() {
     }
 }
 
+
+void ObjModel::setTextures(std::vector<Texture> *textures) {
+    for(int i = 0; i < textures->size(); i++) {
+        this->textures.push_back((*textures)[i]);
+    }
+}
 
 void ObjModel::setRealPosition(glm::vec3 position) {
     this->realPosition = position;

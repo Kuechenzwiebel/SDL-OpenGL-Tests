@@ -31,7 +31,7 @@
 
 class ObjModel: public Object {
 public:
-    ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe = nullptr);
+    ObjModel(std::string path, Shader *shader, const RenderData *data, bool *wireframe = nullptr, bool autoLoadTextures = true);
     ~ObjModel();
     
     void render();
@@ -41,6 +41,8 @@ public:
     void setSize(glm::vec3 size);
     void setRotation(glm::vec4 rotation);
     void setModelMat(glm::mat4 modelMat);
+    
+    void setTextures(std::vector<Texture> *textures);
     
     glm::vec3 getPosition();
     glm::vec4 getRotation();
