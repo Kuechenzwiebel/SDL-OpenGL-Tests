@@ -66,6 +66,7 @@ using namespace glm;
 #include "physicsObjects/physicsWorld.hpp"
 #include "objModel.hpp"
 #include "perlinMap/map.hpp"
+#include "perlinMap/multiPerlinNoise.hpp"
 
 int windowWidth = 1080, windowHeight = 760;
 //int windowWidth = 760, windowHeight = 760;
@@ -256,7 +257,7 @@ int main(int argc, const char * argv[]) {
     
     Texture gradientTexture("resources/textures/grad.png", TEXTURE_NO_MIP_MAP);
     Texture gradient2Texture("resources/models/grad.png", TEXTURE_NO_MIP_MAP);
-    Texture nebulaTexture("resources/textures/nebel.jpg");
+//    Texture nebulaTexture("resources/textures/nebel.jpg");
     Texture compassHeadbarTex("resources/textures/compassBar2.png");
     Texture compassSelectorTex("resources/textures/compassSelector.png", TEXTURE_NO_MIP_MAP);
     Texture declinationMeterTex("resources/textures/declinationMeter2.png");
@@ -268,11 +269,35 @@ int main(int argc, const char * argv[]) {
     Texture speedSelectionBackroundTexture("resources/textures/speedSelectionBackround.png", TEXTURE_NO_MIP_MAP);
     
     
-    PerlinNoise noise(420);
-    noise.frequency = 200.0f;
-    noise.multiplier = 40.0f;
-    noise.octaves = 4;
-    noise.offset = -2.0f;
+    unsigned char data[] = {(unsigned char) (1.0f * 255),
+                            (unsigned char) (1.0f * 255), 
+                            (unsigned char) (1.0f * 255),
+                            (unsigned char) (0.5f * 255)};
+    
+    Texture nebulaTexture(data, 1, 1);
+    
+    MultiPerlinNoise noise;
+    PerlinNoise componentNoises[] = {420, 420, 320};
+    
+    componentNoises[0].frequency = 200.0f;
+    componentNoises[0].multiplier = 40.0f;
+    componentNoises[0].octaves = 4;
+    componentNoises[0].offset = -2.0f;
+    
+    componentNoises[1].frequency = 30.0f;
+    componentNoises[1].multiplier = 4.0f;
+    componentNoises[1].octaves = 6;
+    componentNoises[1].offset = -2.0f;
+    
+    componentNoises[2].frequency = 1760.0f;
+    componentNoises[2].multiplier = 165.0f;
+    componentNoises[2].octaves = 2;
+    componentNoises[2].offset = -2.0f;
+    
+    
+    noise.perlinNoises.push_back(&componentNoises[0]);
+    noise.perlinNoises.push_back(&componentNoises[1]);
+    noise.perlinNoises.push_back(&componentNoises[2]);
     
     cam.setMapNoise(&noise);
     
@@ -429,7 +454,7 @@ int main(int argc, const char * argv[]) {
     UIText rayText("Ray hit:", &textShader, &uiData);
     rayText.setSize(vec2(0.25f));
     rayText.setPixelPosition(vec2(100.0f));
-    uiObjects.push_back(&rayText);
+//    uiObjects.push_back(&rayText); 
     
     
     Sphere jupiter(&basicShader, &renderData);
@@ -526,6 +551,7 @@ int main(int argc, const char * argv[]) {
     vec3 axisFrontMiddlePosition, axisBackMiddlePosition;
     vec3 axisFrontRight, axisBackRight;
     vec3 axisFrontLeft, axisBackLeft;
+    float axisFrontDistance = 1.5215f, axisBackDistance = 1.5215f;
     
     float wheelDistance = 1.73f;
     float wheelDiameter = 0.76f;
@@ -533,7 +559,6 @@ int main(int argc, const char * argv[]) {
     float alphaFrontLeft = 0.0f, alphaBackLeft = 0.0f;
     
     float valpha = 0.0f;
-    float va = 3.18f, vb = 0.0f;
     
     float totalRotation = 0.0f;
     float totalRotationChange = 0.0f;
@@ -541,9 +566,6 @@ int main(int argc, const char * argv[]) {
     
     mat4 totalRotationMat(1);
     
-    mat4 vehicleModelMat(1);
-    mat4 vehicleWindowRotation(1);
-    vec3 vehicleWindowPosition;
     float vehicleSpeed = 0.0f;
     
     std::thread sortThread(objectSort, &cam, &objects);
@@ -712,7 +734,35 @@ int main(int argc, const char * argv[]) {
             
             axisFrontMiddlePosition.y = noise.octaveNoise(axisFrontMiddlePosition.x, axisFrontMiddlePosition.z);
             axisBackMiddlePosition.y = noise.octaveNoise(axisBackMiddlePosition.x, axisBackMiddlePosition.z);
+            
+            vehicleMidPosition.y = (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f + wheelDiameter * 5.0f / 8.0f;
 
+//            printf("\t\tDistance: %f\n", distance(vehicleMidPosition, axisFrontMiddlePosition));
+            
+            /*
+            if(distance(axisFrontMiddlePosition, vehicleMidPosition) > 1.5215f) {
+                for(float f = 0.0f; f < 1.5f; f += 0.001f) {
+                    axisFrontDistance = 1.5215f - f;
+                    
+                    axisFrontMiddlePosition = (translate(mat4(1), vehicleMidPosition) *
+                                               totalRotationMat *
+                                               vec4(axisFrontDistance, 0.0f, 0.0f, 1.0f)).xyz();
+                    
+                    axisFrontMiddlePosition.y = noise.octaveNoise(axisFrontMiddlePosition.x, axisFrontMiddlePosition.z);
+                    vehicleMidPosition.y = (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f + wheelDiameter * 5.0f / 8.0f;
+                    
+                    printf("%f Distance: %f\n", axisFrontDistance, distance(axisFrontMiddlePosition, vehicleMidPosition));
+                    if(distance(axisFrontMiddlePosition, vehicleMidPosition) <= 1.5215f) {
+                        printf("Success\n");
+                        break;
+                    }
+                }
+            }
+            else {
+                printf("Nothing to correct");
+            }
+            printf("Done!\n");
+*/
             
             axisFrontRight = (translate(mat4(1), vehicleMidPosition) *
                               totalRotationMat *
@@ -738,25 +788,25 @@ int main(int argc, const char * argv[]) {
     
             
             alphaFrontRight = atan((axisFrontMiddlePosition.y - axisFrontRight.y) / (wheelDistance * 0.5f));
-            alphaBackRight =  atan((axisBackMiddlePosition.y - axisBackRight.y) / (wheelDistance * 0.5f));
+            alphaBackRight =  atan((axisBackMiddlePosition.y - axisBackRight.y  ) / (wheelDistance * 0.5f));
             
-            alphaFrontLeft = -atan((axisFrontMiddlePosition.y - axisFrontLeft.y) / (wheelDistance * 0.5f));
-            alphaBackLeft =  -atan((axisBackMiddlePosition.y - axisBackLeft.y) / (wheelDistance * 0.5f));
+            alphaFrontLeft = -atan((axisFrontMiddlePosition.y - axisFrontLeft.y ) / (wheelDistance * 0.5f));
+            alphaBackLeft =  -atan((axisBackMiddlePosition.y - axisBackLeft.y   ) / (wheelDistance * 0.5f));
             
-            
-            vb = (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f;
-            valpha = atan((axisFrontMiddlePosition.y - (axisBackMiddlePosition.y / 2.0f)) / -1.5215f);
+            valpha = atan((((axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f) - axisBackMiddlePosition.y) / 1.5215f);
             
             
+    
             
-            
-            base.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, (axisFrontMiddlePosition.y + axisBackMiddlePosition.y) / 2.0f + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
+            base.setModelMat(translate(mat4(1), vehicleMidPosition) *
                              totalRotationMat *
-                             rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)));
+                             rotate(mat4(1), valpha, vec3(0.0f, 0.0f, 1.0f)) *
+                             rotate(mat4(1), fmin(fmin(alphaFrontRight, alphaFrontRight), fmin(alphaBackRight, alphaBackLeft)), vec3(1.0f, 0.0f, 0.0f)));
+            
             
             axisFront.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, axisFrontMiddlePosition.y + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
                                   totalRotationMat *
-                                  translate(mat4(1), vec3(1.5215f, 0.0f, 0.0f)) *
+                                  translate(mat4(1), vec3(axisFrontDistance, 0.0f, 0.0f)) *
                                   rotate(mat4(1), fmin(alphaFrontRight, alphaFrontRight), vec3(1.0f, 0.0f, 0.0f)));
             
             axisBack.setModelMat(translate(mat4(1), vec3(vehicleMidPosition.x, axisBackMiddlePosition.y + wheelDiameter * 5.0f / 8.0f, vehicleMidPosition.z)) *
@@ -871,8 +921,9 @@ int main(int argc, const char * argv[]) {
             
             for(std::list<std::pair<float, Object*>>::reverse_iterator it = objects.rbegin(); it != objects.rend(); it++) {
                 it->second->getShaderPointer()->use();
-                if(it->second->getShaderPointer() == &basicShader)
+                if(it->second->getShaderPointer() == &basicShader) {
                     it->second->getShaderPointer()->sendVec3(cam.getEyePosition(), "viewPos");
+                }
                 it->second->render();
             }
             
