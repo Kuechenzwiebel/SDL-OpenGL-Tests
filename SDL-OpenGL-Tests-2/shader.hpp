@@ -35,6 +35,9 @@ public:
     void sendInt(int data, std::string name);
     void sendFloat(float data, std::string name);
     
+    float getFloat(std::string name);
+    glm::vec3 getVec3(std::string name);
+    
     GLint getLoc(std::string name);
     
 private:

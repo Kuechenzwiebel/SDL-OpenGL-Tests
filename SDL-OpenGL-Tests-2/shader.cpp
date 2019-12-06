@@ -16,11 +16,13 @@ Shader::~Shader() {
     glDeleteProgram(program);
 }
 
+
 void Shader::use() {
     if(program != 0) {
         glUseProgram(program);
     }
 }
+
 
 void Shader::sendVec2(glm::vec2 data, std::string name) {
     glUniform2f(getLoc(name), data.x, data.y);
@@ -46,9 +48,25 @@ void Shader::sendFloat(float data, std::string name) {
     glUniform1f(getLoc(name), data);
 }
 
+
+float Shader::getFloat(std::string name) {
+    float f;
+    glGetUniformfv(program, getLoc(name), &f);
+    return f;
+}
+
+glm::vec3 Shader::getVec3(std::string name) {
+    float f[3] = {0.0f};
+    glGetUniformfv(program, getLoc(name), f);
+    return glm::vec3(f[0], f[1], f[2]);
+}
+
+
 GLint Shader::getLoc(std::string name) {
     return glGetUniformLocation(program, name.c_str());
 }
+
+
 
 void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
     GLuint vertex = 0, fragment = 0;
@@ -72,6 +90,7 @@ void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
         glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &errorLenght);
         infoLog = new GLchar[errorLenght];
         glGetShaderInfoLog(vertex, errorLenght, NULL, infoLog);
+        
         printf(PRINTF_RED);
         printf("Vertex Shader failed compiliton! Infolog: %s\n", infoLog);
         printf(PRINTF_DEFAULT);
@@ -87,6 +106,7 @@ void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
         glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &errorLenght);
         infoLog = new GLchar[errorLenght];
         glGetShaderInfoLog(fragment, errorLenght, NULL, infoLog);
+        
         printf(PRINTF_RED);
         printf("Fragment Shader failed compiliton! Infolog: %s\n", infoLog);
         printf(PRINTF_DEFAULT);
@@ -104,6 +124,7 @@ void Shader::compileShader(const char* vertexCode, const char* fragmentCode) {
         glGetShaderiv(program, GL_INFO_LOG_LENGTH, &errorLenght);
         infoLog = new GLchar[errorLenght];
         glGetShaderInfoLog(fragment, errorLenght, NULL, infoLog);
+        
         printf(PRINTF_RED);
         printf("Shader linking failed! Infolog: %s\n", infoLog);
         printf(PRINTF_DEFAULT);
