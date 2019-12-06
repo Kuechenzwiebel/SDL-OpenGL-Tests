@@ -28,7 +28,14 @@
 #include "../arrayBuffers/arrayBuffer.hpp"
 #include "../texture.hpp"
 
+#include "../configDefines.hpp"
+
+
+#define CHUNK_TRIANGLE_WIDTH 2.0f
 #define CHUNK_SIZE 32
+#define CHUNK_ARRAY_SIZE int((CHUNK_SIZE / CHUNK_TRIANGLE_WIDTH) * (CHUNK_SIZE / CHUNK_TRIANGLE_WIDTH) * 6)
+#define SINGLE_STONE_TEX_WIDTH 16.0f
+#define SINGLE_STONE_TEX_HEIGHT 8.0f
 
 class MapChunk: public Object {
 public:

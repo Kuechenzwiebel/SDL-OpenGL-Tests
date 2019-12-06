@@ -40,23 +40,31 @@ void Map::update(glm::vec3 cameraPosition) {
         }
         
         if(chunkNotNeeded) {
+#ifdef PRINT_MAP_TIMES
             printf("Erasing %d\n", i);
+#endif
             chunks.erase(chunks.begin() + i);
             i--;
         }
     }
      
+#ifdef PRINT_MAP_TIMES
     printf("\n%lu chunks to generate \n\n", requiredChunks.size());
+#endif
     
     for(int i = 0; i < requiredChunks.size(); i++) {
+#ifdef PRINT_MAP_TIMES
         std::cout << "Generating chunk at\t\t";
         printVec2(requiredChunks[i], false);
         std::cout << "\t\t\t";
+#endif
         chunks.push_back(std::make_unique<MapChunk>(noise, shader, data, requiredChunks[i]));
         chunks[chunks.size() - 1]->setTexture(&texture);
     }
     
+#ifdef PRINT_MAP_TIMES
     printf("\n\n");
+#endif
 }
 
 void Map::render() {

@@ -18,8 +18,9 @@
 #include <vector>
 
 #include "mapChunk.hpp"
+#include "../configDefines.hpp"
 
-const int viewRange = CHUNK_SIZE * 9;
+const int viewRange = CHUNK_SIZE * 19;
 
 class Map {
 public:
