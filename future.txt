@@ -1,0 +1,17 @@
+EN:
+Features that should be added to the next major release of this project:
+	Support for transparent 3D objects
+	Unifrom variables indipendent from shader class -> own uniform class
+	Multithreaded map generation
+	Rotation for UI Objects
+	Light calculations
+
+DE:
+Funktionen die in der nächsten großen Version hinzugefügt werden sollen:
+	Transparente 3D Objekte
+	Uniform Variablen unabhängig von der Shader Klasse -> Eigene Uniform Klasse
+	Mehrkernberechnung für Landschaftsgeneration
+	Rotation für UI Objekte
+	Lichtberechnungen
+
+
